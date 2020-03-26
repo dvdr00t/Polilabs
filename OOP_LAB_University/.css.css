@@ -1,0 +1,162 @@
+body {
+	margin: 0.5cm;
+	/*
+	font-size: 13px;
+	*/
+	}
+p   {
+    margin-top: 0.1em;
+    margin-bottom: 0.5em;
+    }
+code   {
+	font-family: monospace;
+	color: MidnightBlue;
+	background: #f0f0f0;
+	border-radius: 2pt;
+	padding: 1pt;
+/*
+    font-size=85%;
+	border: 1pt dotted silver;
+*/
+	}
+a   {
+	font-family: sans-serif;
+	}
+b,strong   {
+	font-family: monospace;
+	color: MidnightBlue;
+	background: #f0f0f0;
+	border-radius: 2pt;
+	padding: 1pt;
+/*
+    font-size=85%;
+	border: 1pt dotted silver;
+*/
+	}
+
+i,em   {
+	color: Navy;
+	font-family: monospace;
+	}
+	
+h1  {
+	font-family: sans-serif;
+	text-align: center;
+    line-height: 1.1em;
+    color: Navy;
+    border-top: 2pt solid Navy;
+    display:block;
+	}
+	
+h2  {
+    /*float: left;*/
+    margin-top: 0;
+    margin-bottom: 0.1em;
+    padding: 10px 15px 10px 0px;
+    line-height: 0.9em;
+	color: RoyalBlue;
+	font-family: sans-serif;
+	border-top: 1px dotted gray;
+	}
+table {
+	float: right;
+	margin: 20px;
+	border-collapse:collapse;
+	border-bottom: 1px solid Navy;
+	border-top: 1px solid Navy;
+	}
+td, th  {
+	padding: 1px 5px 1px 5px;
+	}
+tr:nth-child(even) {
+    background-color:aliceblue;
+    border: 1pt solid PowderBlue;
+	}
+
+ul.hint {
+    list-style: none; /* Remove list bullets */
+    padding: 0;
+    margin: 0;
+}
+
+.hint li { 
+    padding-left: 2em;
+    padding-bottom: 3pt;
+}
+
+
+.hint li:before {
+    content: "\01f4a1";
+    margin-left: -1.75em;
+    display: inline-block;
+    width: 1.5em;
+}
+
+section {
+    display: block;
+	margin-top: 2ex;
+}
+
+header {
+
+}
+
+footer {
+	color: lightgray;
+	font-family: sans-serif;
+	text-align: right;
+	font-size: 8pt;
+	margin-top: 1em;
+    padding: 2pt 1em;
+	border-top: 1pt solid aliceblue;
+    border-bottom: 2pt solid Navy;
+	}
+	
+tbd {
+	background-color: yellow;
+	border-radius: 5px;
+	border: 0.5px orange solid;
+	font-family: Helvetica, sans-serif;
+	display: table;
+	padding: 5px;
+	margin: 5px auto;
+}
+tbd:before {
+	content:"To Be Done";
+}
+
+
+/***********************************************/
+
+@media print {  /* adjusted to print the html to a single-page pdf */
+body {
+	font-size: 10px;
+}
+h2 {
+    margin-top: 1pt;
+    margin-bottom: 2pt;
+    padding: 5px 5px 5px 0px;
+    line-height: 0.8em;
+}
+p   {
+    margin-top: 0.1em;
+    margin-bottom: 0.2em;
+    }
+
+h3 {
+	margin-bottom: 1pt;
+	padding-bottom: 1pt;
+	margin-top: 1pt;
+	padding-top: 1pt;
+}
+ul {
+	margin: 0.2em 0;
+}
+.noprint {
+	display: none;
+}
+}
+.en {
+	display: none;
+	}
+
