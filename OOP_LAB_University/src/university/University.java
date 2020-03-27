@@ -7,13 +7,36 @@ package university;
  *
  */
 public class University {
+	
+	/**
+	 *	ATTRIBUTES 
+	 */
+	
+	//CONSTANTS
+	private final int MAX_STUDENTS_NUMBER = 1000;
+	private final int MAX_COURSES_NUMBER = 50;
+	
+	//UNIVERSITY INFORMATION
+	private String universityName;
+	private String rectorName;
+	private String rectorSurname;
+	
+	//STUDENTS AND COURSES INFORMATION
+	private int studentsNumber = 0;
+	private int coursesNumber = 0;
+	private Student[] students = new Student[MAX_STUDENTS_NUMBER];
+	private Course[] courses = new Course[MAX_COURSES_NUMBER];
+	
+	
 
 	/**
 	 * Constructor
 	 * @param name name of the university
 	 */
 	public University(String name){
-		//TODO: to be implemented
+		
+		//ASSIGNING THE NAME PASSED IN THE CONSTRUCTOR TO THE UNIVERISTY NAME
+		this.universityName = name;
 	}
 	
 	/**
@@ -21,9 +44,13 @@ public class University {
 	 * @return name of university
 	 */
 	public String getName(){
-		//TODO: to be implemented
-		return null;
+		
+		//RETURNING THE NAME OF THE UNIVERSITY TO THE CALLER
+		return this.universityName;
 	}
+	
+	
+	
 	
 	/**
 	 * Defines the rector for the university
@@ -32,7 +59,10 @@ public class University {
 	 * @param last
 	 */
 	public void setRector(String first, String last){
-		//TODO: to be implemented
+		
+		//ASSIGNING THE NAME AND THE SURNAME TO THE RECTOR
+		this.rectorName = first;
+		this.rectorSurname = last;
 	}
 	
 	/**
@@ -41,8 +71,9 @@ public class University {
 	 * @return
 	 */
 	public String getRector(){
-		//TODO: to be implemented
-		return null;
+		
+		//RETURNING THE FULL NAME OF THE RECTOR
+		return (this.rectorName + " " + this.rectorSurname);
 	}
 	
 	/**
@@ -53,8 +84,28 @@ public class University {
 	 * @return
 	 */
 	public int enroll(String first, String last){
-		//TODO: to be implemented
-		return -1;
+		
+		//CHECKING IF THERE IS SPACE FOR STUDENTS
+		if (this.studentsNumber < MAX_STUDENTS_NUMBER) {
+			
+			//CREATING A NEW STUDENT
+			Student studentTMP = new Student(first, last);
+			studentTMP.setIdStudent(this.studentsNumber);
+			
+			//ASSIGNING THE NEW STUDENT TO THE ARRAY OF STUDENTS
+			students[this.studentsNumber] = studentTMP;
+			
+			//INCREMENTING THE NUMBER OF STUDENTS
+			this.studentsNumber++;
+			
+			//RETURNING THE NEW STUDENT ID
+			return studentTMP.getIdStudent();
+		}
+		
+		else {
+			System.out.println("Ops! Seems like we have no more space for new students!");
+			return -1;
+		}
 	}
 	
 	/**
@@ -64,9 +115,22 @@ public class University {
 	 * @return information about the student
 	 */
 	public String student(int id){
-		//TODO: to be implemented
-		return null;
+		
+		//CHECKING IF THE STUDENT ID IS CORRECT
+		if (id >= 10000 && id < 10000 + MAX_STUDENTS_NUMBER) {
+			
+			//RETURNING STUDENT INFORMATION
+			return (id + " " + students[id-10000].getNameStudent() + " " + students[id-10000].getSurnameStudent());
+		}
+		
+		else
+			return "Ops, this student does not exist!";
 	}
+	
+	
+	
+	
+	
 	
 	/**
 	 * Activates a new course with the given teacher
@@ -76,8 +140,27 @@ public class University {
 	 * @return the unique code assigned to the course
 	 */
 	public int activate(String title, String teacher){
-		//TODO: to be implemented
-		return -1;
+		
+		//CHECKING IS THERE IS SPACE FOR NEW COURSES
+		if (this.coursesNumber < MAX_COURSES_NUMBER) {
+			
+			//CREATING A NEW COURSE
+			Course courseTMP = new Course(title, teacher);
+			courseTMP.setIdCourse(this.coursesNumber);
+			
+			//ASSIGNING THE NEW COURSE TO THE COURSES ARRAY
+			courses[this.coursesNumber] = courseTMP;
+			
+			//INCREMENTING THE NUMBER OF COURSE
+			this.coursesNumber++;
+			
+			//RETURNING THE NEW COURSE
+			return courseTMP.getIdCourse();
+		}
+		else {
+			System.out.println("Ops! Seems like we have no more room for new courses!");
+			return -1;
+		}
 	}
 	
 	/**
@@ -87,9 +170,23 @@ public class University {
 	 * @return information about the course
 	 */
 	public String course(int code){
-		//TODO: to be implemented
-		return null;
+		
+		//CHECKING IF THE COURSE CODE IS CORRECT 
+		if (code >= 10 && code < 10 + MAX_COURSES_NUMBER) {
+			
+			//RETURNING COURSE INFORMATION
+			return (code + ", " + courses[code-10].getCourseName() + ", " + courses[code-10].getTeacherName());
+		}
+		else 
+			return "Ops! This course does not exist!";
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * Register a student to attend a course
@@ -97,8 +194,13 @@ public class University {
 	 * @param courseCode id of the course
 	 */
 	public void register(int studentID, int courseCode){
-		//TODO: to be implemented
+		
+		//LINKING COURSES AND STUDENTS
+		courses[courseCode-10].enrollStudent(students[studentID-10000]);
+		students[studentID-10000].attendCourse(courses[courseCode-10]);
+		
 	}
+	
 	
 	/**
 	 * Retrieve a list of attendees
@@ -107,10 +209,13 @@ public class University {
 	 * @return list of attendees separated by "\n"
 	 */
 	public String listAttendees(int courseCode){
-		//TODO: to be implemented
-		return null;
+		
+		//RETURNING THE LIST OF STUDENTS ENROLLED FOR THE COURSE
+		return courses[courseCode-10].showEnrolled();
 	}
 
+	
+	
 	/**
 	 * Retrieves the study plan for a student
 	 * 
@@ -118,7 +223,8 @@ public class University {
 	 * @return list of courses the student is registered for
 	 */
 	public String studyPlan(int studentID){
-		//TODO: to be implemented
-		return null;
+		
+		//RETURNING THE LIST OF COURSES ATTENDED BY THE STUDENT
+		return students[studentID-10000].showAttended();
 	}
 }
