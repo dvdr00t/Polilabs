@@ -13,6 +13,8 @@ public class Course {
 	private String courseName;
 	private String teacherName;
 	private int idCourse;
+	private int[] grades = new int[MAX_ENROLLED_STUDENTS];
+	private int nGrades = 0;
 	
 	//STUDENTS ENROLLED FOR THE COURSE
 	private int enrolledStudentNumber = 0;
@@ -84,5 +86,54 @@ public class Course {
 		
 	}
 	
+	/**
+	 * Register the grade
+	 * 
+	 * @param grade
+	 * @return void
+	 */
 	
+	void registerGrade(int grade) {
+		
+		//REGISTERING THE GRADE IN THE FOIRST AVAILABLE POSITION
+		for (int i = 0; i < grades.length; i++) {
+			if (grades[i] == 0) {
+				grades[i] = grade;
+				++this.nGrades;
+				System.out.println("Grade has been registered with success!");
+				return;
+			}
+		}
+
+		System.out.println("Grades has not been registered...");
+		return;
+	}
+	
+
+	/**
+	 * Computing average grades
+	 * 
+	 * @param void
+	 * @return average
+	 */
+
+	float computeAvg () {
+		
+		float sum = 0;
+		
+		//CHECKING IF THE STUDENT HAS TAKES AT LEAST ONE EXAM
+		if (this.nGrades != 0) {
+			
+			//COMPUTING THE AVG
+			for (int i = 0; i < this.nGrades; i++) {
+				sum = sum + this.grades[i];
+			}
+			return (sum/this.nGrades);
+		}
+		
+		//RETURNING THE FLAG VALUE FOR NO EXAMS TAKES
+		else
+			return -1;
+	}
+
 }

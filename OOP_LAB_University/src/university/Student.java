@@ -13,9 +13,11 @@ public class Student {
 	private String nameStudent;
 	private String surnameStudent;
 	private int idStudent;
+	private int[] exams = new int[MAX_ATTENDED_COURSE];
+	private int nExams = 0;
 	
 	//COURSES ATTENDED BY THE STUDEND
-	private Course[] attendedCourses = new Course[25];
+	private Course[] attendedCourses = new Course[MAX_ATTENDED_COURSE];
 	private int attendedCoursesNumber = 0;
 	
 	
@@ -91,5 +93,54 @@ public class Student {
 	}
 	
 	
+	/**
+	 * Register the grade fo the exam
+	 * 
+	 * @param grade
+	 * @return void
+	 */
+	
+	void registerGrade (int grade) {
+		
+		//REGISTERING THE NEW GRADE IN THE FIRST AVAILABLE POSITION
+		for (int i = 0; i < exams.length; i++) {
+			if (exams[i] == 0) {
+				exams[i] = grade;
+				this.nExams++;
+				System.out.println("Exam has been registered with success!");
+				return;
+			}
+		}
+		
+		System.out.println("Could not register the exam...");
+		return;
+	}
+	
+	/**
+	 * Computing average grades
+	 * 
+	 * @param void
+	 * @return average
+	 */
 
+	float computeAvg () {
+		
+		float sum = 0;
+		
+		//CHECKING IF THE STUDENT HAS TAKES AT LEAST ONE EXAM
+		if (this.nExams != 0) {
+			
+			//COMPUTING THE AVG
+			for (int i = 0; i < this.nExams; i++) {
+				sum = sum + this.exams[i];
+			}
+			return (sum/this.nExams);
+		}
+		
+		//RETURNING THE FLAG VALUE FOR NO EXAMS TAKES
+		else
+			return -1;
+	}
+	
+	
 }

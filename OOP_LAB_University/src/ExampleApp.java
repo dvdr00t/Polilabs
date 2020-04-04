@@ -33,5 +33,18 @@ public class ExampleApp {
 		System.out.println(poli.studyPlan(s2));
 		// 10,Macro Economics,Paul Krugman
 		// 11,Object Oriented Programming,Marco Torchiano
+		
+		
+		poli.exam(s1, macro, 90);
+		poli.exam(s2, macro, 90);
+		poli.exam(s2, oop, 10);
+		
+		System.out.println(poli.studentAvg(s1));
+		System.out.println(poli.studentAvg(s2));
+		System.out.println(poli.courseAvg(oop));
+		System.out.println(poli.courseAvg(macro));
+		
+		
+		
 	}
 }

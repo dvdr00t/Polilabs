@@ -227,4 +227,73 @@ public class University {
 		//RETURNING THE LIST OF COURSES ATTENDED BY THE STUDENT
 		return students[studentID-10000].showAttended();
 	}
+	
+	
+	/**
+	 * Register an exam
+	 * 
+	 * @param studentID, courseCODE, grade
+	 * @return void
+	 */
+	
+	public void exam(int studentId, int courseId, int grade) {
+		
+		//REGISTERING THE EXAM FOR THE STUDENT
+		students[studentId-10000].registerGrade(grade);
+		
+		//REGISTERING THE GRADE FOR THE COURSE
+		courses[courseId-10].registerGrade(grade);
+		
+	}
+	
+	/**
+	 * Showing average grades for a student
+	 * 
+	 * @param studentID
+	 * @return String
+	 */
+	
+	public String studentAvg(int studentId) {
+		
+		//COMPUTING AVERAGE GRADES
+		float avg = students[studentId-10000].computeAvg();
+		if (avg == -1) {
+			return "Student " + studentId + " hasn't taken any exams.";
+		}
+		else {
+			return "Student " + studentId + ": " + avg;
+		}
+	}
+	
+	/**
+	 * Showing average grades for an exam
+	 * 
+	 * @param courseCODE
+	 * @return String
+	 */
+	
+	public String courseAvg(int courseCode) {
+		
+		//COMPUTING AVERAGE GRADES
+		float avg = courses[courseCode-10].computeAvg();
+		if (avg == -1) {
+			return "No students ha take the exams in " + courses[courseCode-10].getCourseName();
+		}
+		else {
+			return "The average for the course " + courses[courseCode-10].getCourseName() + " is: " + avg;
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
