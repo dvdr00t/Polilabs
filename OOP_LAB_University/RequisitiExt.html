@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head lang="it">
+	<meta charset="utf-8">
+	<link href=".css.css" rel="stylesheet" type="text/css">
+	<title>Gestione Ateneo - Estensione</title>
+</head>
+<body>
+<h1 style="text-align: center;">Gestione Ateneo - <b>Estensione</b></h1>
+
+Estendere all'interno della classe <b>UniversityExt</b>
+ le <a href="Requisiti.html">funzionalità già implementate</a> 
+ nella classe <i>University</i>.
+<p>
+La nuova classe <b>UniversityExt</b> estende la classe <i>University</i>.
+
+
+<h2 id="R5">R5. Esami</h2>
+<p>
+Gli studenti possono sostenere gli esami degli insegnamenti a cui sono iscritti.
+Il voto di un esame può essere registrato tramite il metodo <b>exam()</b>
+che riceve come parametri l'ID dello studente, il codice del corso ed il voto (un intero in 0-30).
+</p><p>
+per ottenere la media dei voti di uno studente si usa il metodo <b>studentAvg()</b>
+che accetta come parametro l'ID dello studente.
+Se lo studente ha sostenuto almeno un esame il metodo restituisce uan stringa
+con il seguente formato <i>"Student STUDENT_ID : AVG_GRADE"</i>.
+Altrimenti restituisce <i>"Student STUDENT_ID hasn't taken any exams"</i>.
+</p><p>
+È possibile otterene la media dei voti di tutti gli studenti che hanno sostenuto
+l'esame di un dato insegnamento tramite il metodo <b>courseAvg()</b>, che accetta
+come parametro il codice del corso.
+Il formato è il seguente <i>"The average for the course COURSE_TITLE is: COURSE_AVG"</i>,
+se almeno uno studente ha sostenuto l'esame per l'insegnamento dato.
+Altrimenti il metodo restituisce <i>"No student has taken the exam in COURSE_TITLE"</i>.
+</p>
+<ul class="hint">
+<li>Si può assumere che se uno studente sostiene un esame
+sia stato precedentemente iscritto all'insegnamento.
+</ul>
+
+<h2 id="R6">R6. Premi per gli studenti</h2>
+<p>
+L'ateneo ha deciso di premiare i migliori studenti per il loro lavoro.
+Il metodo <b>topThreeStudents()</b> è utilizzato per reperire le informazioni
+che aiutino la commissione che dovrà prendere la decisione.
+<p> 
+Il punteggio degli studenti è valutato sulla base della media degli esami sostenuti.
+Per tenere in considerazione anche il numero di esami sostenuti e non solo la media,
+viene assegnato un bonus aggiuntivo alla media:
+il numero degli esami sostenuti divviso il numero di insegnamenti a cui è iscritto lo studente,
+moltiplicato per 10 viene sommato all media. 
+<p>
+Il metodo restituisce una una stringa con le informazioni relative ai tre studenti
+con il punteggio più alto.
+Gli studenti vengono riportati uno per riga (le righe sono terminate dal carattere
+ di fine linea <i>'\n'</i>) e ciascuna linea è formattata come segue:
+ <i>"STUDENT_FIRSTNAME STUDENT_LASTNAME : SCORE"</i>.
+ </p>
+
+<ul class="hint">
+<li>Si assuma che non ci siano parimerito.
+</ul>
+
+
+<h2 id="R7">R7. Logger</h2>
+<p>
+Si aggiunga un log per le operazioni eseguite tramite la classe di facciata
+<i>UniversityExt</i>.
+Tali operazioni includono: 
+<ul>
+<li>iscrizione di uno studente: es. <i>"New student enrolled: 10000, Mario Rossi"</i><br></li>
+<li>attivazione di un nuovo insegnamento: es. <i>"New course activated: 11, Object Oriented Programming James Gosling"</i><br></li>
+<li>iscrizione di uno studente ad un insegnamento: es. <i>"Student 10004 signed up for course 11"</i><br></li>
+<li>assegnazione del voto per un esame: es. <i>"Student 10001 took an exam in course 12 with grade 27"</i><br></li>
+</ul>
+</p>
+
+<ul class="hint">
+<li>per eseguire il logging, è disponibile un oggetto <i>logger</i> di classe 
+<a href="https://oop.polito.it/api/java/util/logging/Logger.html"><i>java.util.logging.Logger</i></a> 
+all'interno della classe <i>UniversityExt</i>;
+<li>si usi il <a href="https://oop.polito.it/api/java/util/logging/Logger.html#info-java.lang.String-"
+>metodo <i>info()</i></a> dell'oggetto <i>logger</i> per generare i messaggi;
+<li>si noti che per default il logger stampa i messaggi sulla console.
+</ul>
+
+<footer>
+Version 1.1 - April 5, 2019
+</footer>
+</body>
+</html>
