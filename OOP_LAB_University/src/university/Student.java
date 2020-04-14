@@ -13,10 +13,13 @@ public class Student {
 	private String nameStudent;
 	private String surnameStudent;
 	private int idStudent;
+	
+	//EXAMS GIVEN BY THE STUDENT
 	private int[] exams = new int[MAX_ATTENDED_COURSE];
+	private float avgExams;
 	private int nExams = 0;
 	
-	//COURSES ATTENDED BY THE STUDEND
+	//COURSES ATTENDED BY THE STUDENT
 	private Course[] attendedCourses = new Course[MAX_ATTENDED_COURSE];
 	private int attendedCoursesNumber = 0;
 	
@@ -58,6 +61,17 @@ public class Student {
 		return surnameStudent;
 	}
 
+	/*
+	 * 	GETTERS AND SETTERS FOR AVERAGE 
+	 */	
+	void setAvgExams(float avg) {
+		this.avgExams = avg;
+	}
+	public float getAvgExams() {
+		return this.avgExams;
+	}
+	
+	
 	
 	/*
 	 * 	METHODS

@@ -1,5 +1,6 @@
 package university;
-
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.logging.Logger;
 
 public class UniversityExt extends University {
@@ -12,19 +13,17 @@ public class UniversityExt extends University {
 		logger.info("Creating extended university object");
 	}
 	
-	public void exam(int studentId, int courseID, int grade) {
-		
-	}
-
-	public String studentAvg(int studentId) {
-		return null;
-	}
-	
-	public String courseAvg(int courseId) {
-		return null;
-	}
-	
+	/*
+	 * METHODS
+	 */
 	public String topThreeStudents() {
-		return null;
+		
+		//SORTING ARRAY BY AVERAGE
+		Arrays.sort(this.students, Comparator.comparing(Student::getAvgExams));
+		
+		//SHOWING BEST STUDENTS
+		String string = "\n";
+		
+		return string;
 	}
 }

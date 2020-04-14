@@ -22,9 +22,9 @@ public class University {
 	private String rectorSurname;
 	
 	//STUDENTS AND COURSES INFORMATION
-	private int studentsNumber = 0;
+	protected int studentsNumber = 0;
 	private int coursesNumber = 0;
-	private Student[] students = new Student[MAX_STUDENTS_NUMBER];
+	protected Student[] students = new Student[MAX_STUDENTS_NUMBER];
 	private Course[] courses = new Course[MAX_COURSES_NUMBER];
 	
 	
@@ -240,6 +240,7 @@ public class University {
 		
 		//REGISTERING THE EXAM FOR THE STUDENT
 		students[studentId-10000].registerGrade(grade);
+		students[studentId-10000].setAvgExams(students[studentId-10000].computeAvg());
 		
 		//REGISTERING THE GRADE FOR THE COURSE
 		courses[courseId-10].registerGrade(grade);
@@ -248,7 +249,7 @@ public class University {
 	
 	/**
 	 * Showing average grades for a student
-	 * 
+	 *
 	 * @param studentID
 	 * @return String
 	 */
@@ -256,7 +257,7 @@ public class University {
 	public String studentAvg(int studentId) {
 		
 		//COMPUTING AVERAGE GRADES
-		float avg = students[studentId-10000].computeAvg();
+		float avg = students[studentId-10000].getAvgExams();
 		if (avg == -1) {
 			return "Student " + studentId + " hasn't taken any exams.";
 		}
