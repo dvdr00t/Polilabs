@@ -19,7 +19,7 @@ public class UniversityExt extends University {
 	public String topThreeStudents() {
 		
 		//SORTING ARRAY BY AVERAGE
-		Arrays.sort(this.students, Comparator.comparing(Student::getAvgExams));
+		Arrays.sort(this.students, Comparator.comparing(Student::getAvgExamsAward));
 		
 		//SHOWING BEST STUDENTS
 		String string = "\n";

@@ -17,6 +17,7 @@ public class Student {
 	//EXAMS GIVEN BY THE STUDENT
 	private int[] exams = new int[MAX_ATTENDED_COURSE];
 	private float avgExams;
+	private float avgExamsAward;
 	private int nExams = 0;
 	
 	//COURSES ATTENDED BY THE STUDENT
@@ -70,13 +71,19 @@ public class Student {
 	public float getAvgExams() {
 		return this.avgExams;
 	}
-	
+	public float getAvgExamsAward() {
+		return avgExamsAward;
+	}
+	void setAvgExamsAward(float avgExamsAward) {
+		this.avgExamsAward = avgExamsAward;
+	}
 	
 	
 	/*
 	 * 	METHODS
 	 */
-	
+
+
 	public void attendCourse (Course course) {
 		
 		//CHEKCING IF THE STUDENT CAN ATTEND OTHER COURSES
@@ -108,7 +115,7 @@ public class Student {
 	
 	
 	/**
-	 * Register the grade fo the exam
+	 * Register the grade for the exam
 	 * 
 	 * @param grade
 	 * @return void
@@ -156,5 +163,15 @@ public class Student {
 			return -1;
 	}
 	
+	/**
+	 * Computing additional bonus for the best student award
+	 * 
+	 * @param void
+	 * 
+	 * @return value to be added
+	 */
+	float computeAvgAward() {
+		return (this.nExams/this.attendedCoursesNumber)*10;
+	}
 	
 }

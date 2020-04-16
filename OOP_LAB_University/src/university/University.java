@@ -241,6 +241,7 @@ public class University {
 		//REGISTERING THE EXAM FOR THE STUDENT
 		students[studentId-10000].registerGrade(grade);
 		students[studentId-10000].setAvgExams(students[studentId-10000].computeAvg());
+		students[studentId-10000].setAvgExamsAward(students[studentId-10000].computeAvgAward());
 		
 		//REGISTERING THE GRADE FOR THE COURSE
 		courses[courseId-10].registerGrade(grade);
