@@ -7,10 +7,14 @@ package hydraulic;
  * {@link #setFlow(double) setFlow()}.
  */
 public class Source extends Element {
+	
+	/*
+	 * 	ATTRIBUTE FOR THE SOURCES ELEMENTS
+	 */
+	private double flow;	//CUBIC METERS PER HOURS
 
 	public Source(String name) {
 		super(name);
-		//TODO: complete
 	}
 
 	/**
@@ -19,7 +23,7 @@ public class Source extends Element {
 	 * @param flow
 	 */
 	public void setFlow(double flow){
-		//TODO: complete
+		this.flow = flow;
 	}
 	
 }

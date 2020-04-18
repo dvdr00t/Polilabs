@@ -9,12 +9,18 @@ package hydraulic;
  */
 public class Element {
 	
+	/*
+	 * ATTRIBUTE FOR ABSTRACT ELEMENT
+	 */
+	String name;			//NAME OF THE ELEMENTS
+	Element output;			//OUTPUT LINKED WITH THE ELEMENT
+	
 	/**
 	 * Constructor
 	 * @param name the name of the element
 	 */
 	public Element(String name){
-		// TODO: to be implemented
+		this.name = name;
 	}
 
 	/**
@@ -22,8 +28,7 @@ public class Element {
 	 * @return the name of the element
 	 */
 	public String getName(){
-		// TODO: to be implemented
-		return null;
+		return this.name;
 	}
 	
 	/**
@@ -32,7 +37,13 @@ public class Element {
 	 * @param elem the element that will be placed downstream
 	 */
 	public void connect(Element elem){
-		// TODO: to be implemented
+		
+		//CHECKING IF THIS ELEMENT IS NOT A SINK
+		if (this instanceof Sink)
+			return;
+		
+		//CONNECTING THIS OUTPUT WITH THE ELEMENT GIVEN
+		this.output = elem;
 	}
 	
 	/**
@@ -40,8 +51,7 @@ public class Element {
 	 * @return downstream element
 	 */
 	public Element getOutput(){
-		// TODO: to be implemented
-		return null;
+		return this.output;
 	}
 	
 }

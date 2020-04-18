@@ -1,4 +1,7 @@
 package hydraulic;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Main class that act as a container of the elements for
@@ -7,12 +10,18 @@ package hydraulic;
  */
 public class HSystem {
 	
+	
+	/*
+	 * ATTRIBUTE OF THE HYDRAULIC SYSTEM
+	 */
+	private LinkedList<Element> elements = new LinkedList<Element>();
+	
 	/**
 	 * Adds a new element to the system
 	 * @param elem
 	 */
 	public void addElement(Element elem){
-		// TODO: to be implemented
+		this.elements.add(elem);
 	}
 	
 	/**
@@ -22,8 +31,13 @@ public class HSystem {
 	 * @return an array of the elements added to the hydraulic system
 	 */
 	public Element[] getElements(){
-		// TODO: to be implemented
-		return null;
+		
+		//CREATING A NEW ARRAY OF ELEMENTS (IN ORDER TO CONVERT THE LIST TO AN ARRAY SUCCESSFULLY)
+		Element[] elementsArray = new Element[this.elements.size()];
+		
+		//RETURNING THE LIST CONVERTED TO THE ARRAY
+		return this.elements.toArray(elementsArray);
+		
 	}
 	
 	/**

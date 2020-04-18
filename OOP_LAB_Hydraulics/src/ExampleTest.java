@@ -1,5 +1,4 @@
 import hydraulic.*;
-
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -15,7 +14,7 @@ public class ExampleTest {
 	public void testAll(){
 		
 		HSystem s = new HSystem();
-		
+
 		assertNotNull("Apparently not implemented yet",s.getElements());
 		assertEquals("Initially no elements are present in the system",0,s.getElements().length);
 	
