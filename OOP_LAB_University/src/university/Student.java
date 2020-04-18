@@ -72,7 +72,7 @@ public class Student {
 		return this.avgExams;
 	}
 	public float getAvgExamsAward() {
-		return avgExamsAward;
+		return this.avgExamsAward;
 	}
 	void setAvgExamsAward(float avgExamsAward) {
 		this.avgExamsAward = avgExamsAward;
@@ -173,5 +173,7 @@ public class Student {
 	float computeAvgAward() {
 		return (this.nExams/this.attendedCoursesNumber)*10;
 	}
+
+
 	
 }

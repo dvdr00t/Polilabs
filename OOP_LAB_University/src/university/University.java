@@ -1,5 +1,7 @@
 package university;
 
+import java.util.logging.Logger;
+
 /**
  * This class represents a university education system.
  * 
@@ -11,6 +13,7 @@ public class University {
 	/**
 	 *	ATTRIBUTES 
 	 */
+	protected final static Logger logger = Logger.getLogger("University");
 	
 	//CONSTANTS
 	private final int MAX_STUDENTS_NUMBER = 1000;
@@ -95,8 +98,13 @@ public class University {
 			//ASSIGNING THE NEW STUDENT TO THE ARRAY OF STUDENTS
 			students[this.studentsNumber] = studentTMP;
 			
+			//ADDING INFORMATION TO THE LOGGER
+			logger.info("New student enrolled: " + studentTMP.getIdStudent() + ", " + studentTMP.getNameStudent() + " " + studentTMP.getSurnameStudent());
+			
 			//INCREMENTING THE NUMBER OF STUDENTS
 			this.studentsNumber++;
+			
+			
 			
 			//RETURNING THE NEW STUDENT ID
 			return studentTMP.getIdStudent();
@@ -151,6 +159,9 @@ public class University {
 			//ASSIGNING THE NEW COURSE TO THE COURSES ARRAY
 			courses[this.coursesNumber] = courseTMP;
 			
+			//ADDING INFORMATION TO THE LOGGER
+			logger.info("New course activated: " + courseTMP.getIdCourse() + ", " + courseTMP.getCourseName() + " with " + courseTMP.getTeacherName());
+			
 			//INCREMENTING THE NUMBER OF COURSE
 			this.coursesNumber++;
 			
@@ -199,6 +210,9 @@ public class University {
 		courses[courseCode-10].enrollStudent(students[studentID-10000]);
 		students[studentID-10000].attendCourse(courses[courseCode-10]);
 		
+		//ADDING INFORMATION TO THE LOGGER
+		logger.info("Student " + students[studentID-10000].getIdStudent() + " signed up for course " + courses[courseCode-10].getCourseName());
+		
 	}
 	
 	
@@ -241,10 +255,13 @@ public class University {
 		//REGISTERING THE EXAM FOR THE STUDENT
 		students[studentId-10000].registerGrade(grade);
 		students[studentId-10000].setAvgExams(students[studentId-10000].computeAvg());
-		students[studentId-10000].setAvgExamsAward(students[studentId-10000].computeAvgAward());
+		students[studentId-10000].setAvgExamsAward(students[studentId-10000].getAvgExams() + students[studentId-10000].computeAvgAward());
 		
 		//REGISTERING THE GRADE FOR THE COURSE
 		courses[courseId-10].registerGrade(grade);
+		
+		//ADDING INFORMATION TO THE LOGGER
+		logger.info("Student " + students[studentId-10000].getIdStudent() + " took an exam in course " + courses[courseId-10].getCourseName() + " with grade " + grade);
 		
 	}
 	
