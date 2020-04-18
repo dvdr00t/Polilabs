@@ -12,7 +12,7 @@ public class Sink extends Element {
 	 */
 	public Sink(String name) {
 		super(name);
-		//TODO: complete
+		this.className = "Sink";
 	}
 	
 }

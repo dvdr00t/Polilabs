@@ -2,6 +2,8 @@ package hydraulic;
 
 import static hydraulic.SimulationObserver.exists;
 
+import java.util.Arrays;
+
 /**
  * Sample implementation of {@link SimulationObserver}.
  * This simulation observer simply prints out the notification info
@@ -16,8 +18,8 @@ public class PrintingObserver implements SimulationObserver {
 	@Override
 	public void notifyFlow(String type, String name, double inFlow, double... outFlow) {
 		System.out.println(type + " " + name + ": ");
-		if(exists(inFlow)) System.out.println("\t-> in flow=" + inFlow);
-		if(exists(outFlow)) System.out.println("\t<- out flow=" + outFlow);
+		if(exists(inFlow)) System.out.println("\t-> in flow = " + inFlow);
+		if(exists(outFlow)) System.out.println("\t<- out flow = " + Arrays.toString(outFlow));
 		countNotifications++;
 	}
 	

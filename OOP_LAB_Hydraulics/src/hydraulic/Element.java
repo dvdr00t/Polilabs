@@ -12,8 +12,30 @@ public class Element {
 	/*
 	 * ATTRIBUTE FOR ABSTRACT ELEMENT
 	 */
-	String name;			//NAME OF THE ELEMENTS
-	Element output;			//OUTPUT LINKED WITH THE ELEMENT
+	private String name;			//NAME OF THE ELEMENTS
+	private Element output;			//OUTPUT LINKED WITH THE ELEMENT
+	private double inputFlow = 0;
+	private double outputFlow = 0;
+	protected String className;
+	
+	public String getClassName() {
+		return className;
+	}
+	/*
+	 *  GETTERS AND SETTERS METHOD FOR FLOW
+	 */
+	public double getInputFlow() {
+		return this.inputFlow;
+	}
+	public void setInputFlow(double inputFlow) {
+		this.inputFlow += inputFlow;
+	}
+	public double getOutputFlow() {
+		return this.outputFlow;
+	}
+	public void setOutputFlow(double outputFlow) {
+		this.outputFlow += outputFlow;
+	}
 	
 	/**
 	 * Constructor

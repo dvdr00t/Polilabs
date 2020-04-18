@@ -16,7 +16,7 @@ public class Tap extends Element {
 	
 	public Tap(String name) {
 		super(name);
-		//TODO: complete
+		this.className = "Tap";
 	}
 	
 	/**
