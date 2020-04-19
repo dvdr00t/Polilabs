@@ -29,7 +29,7 @@ public class ExampleTest {
 		s.addElement(sink1);
 		Sink sink2 = new Sink("sink B");
 		s.addElement(sink2);
-
+		
 		assertEquals("Src",src.getName());
 		assertEquals("sink B",sink2.getName());
 		assertArrayEquals(new Element[] {src,r,t,sink1,sink2}, s.getElements());
@@ -41,6 +41,7 @@ public class ExampleTest {
 		r.connect(t);
 		t.connect(sink1,0);
 		t.connect(sink2,1);
+		
 		
 		assertSame("Output of src should be r",r,src.getOutput());
 		

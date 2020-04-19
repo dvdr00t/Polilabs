@@ -62,7 +62,6 @@ public class HSystem {
 		for (int i = 0; i < elementsArray.length; i++) {
 			
 			Element current = elementsArray[i];
-			Element next;
 			
 			//CHECKING IF WE ARE IN A STARTING POINT
 			if (current instanceof Source) {
@@ -70,54 +69,59 @@ public class HSystem {
 				//SINCE WE ARE IN A SOURCE, WE CAN PRINT ITS FLOW PARAMETERS
 				observer.notifyFlow(current.getClassName(), current.getName(), current.getInputFlow(), current.getOutputFlow());
 				
-				
-				//GOING THROUGH THE FLOW UNTIL WE REACH THE SINKS
-				while (!(current instanceof Sink)) {
-					Element next = current.getOutput();
-					
-					//CHECKING IF THE NEXT ELEMENT IS A SPLIT OR NOT
-					if (next == null)
-						return;
-					else if (next instanceof Split) {
-						
-						//SETTING NEW PARAMETERS
-						next.setInputFlow(current.getOutputFlow());
-						next.setOutputFlow(next.getInputFlow());
-						observer.notifyFlow(((Split) next).getClassName(), next.getName(), next.getInputFlow(), next.getOutputFlow());
-						
-						//SPLITTING
-						Element[] nextAfterSplit = ((Split) next).getOutputs();
-						nextAfterSplit[0].setInputFlow(next.getOutputFlow()/2);
-						nextAfterSplit[1].setInputFlow(next.getOutputFlow()/2);
-						nextAfterSplit[0].setOutputFlow(nextAfterSplit[0].getInputFlow());
-						nextAfterSplit[1].setOutputFlow(nextAfterSplit[1].getInputFlow());
-						observer.notifyFlow(nextAfterSplit[0].getClassName(), nextAfterSplit[0].getName(), nextAfterSplit[0].getInputFlow(), nextAfterSplit[0].getOutputFlow());
-						observer.notifyFlow(nextAfterSplit[1].getClassName(), nextAfterSplit[1].getName(), nextAfterSplit[1].getInputFlow(), nextAfterSplit[1].getOutputFlow());
-						
-						current = current.getOutput();
-						
-					}
-					else {
-						
-						//SETTING NEW PARAMETERS
-						
-						observer.notifyFlow(next.getClassName(), next.getName(), next.getInputFlow(), next.getOutputFlow());
-						current = current.getOutput();
-					}
-				};
+				//VISITING TREE
+				treeVisit(current.getOutput(), current.getOutputFlow(), observer);
+	
 			}
 		}
 	}
 
 	
 	/*
-	 * DEPTH-FIRST SEARCH UTIL METHOD
+	 * VISIT TO THE TREE
 	 */
-	void DFSUtil(Element[] elementsArray, int v, Boolean visited[]) {
+	private void treeVisit(Element vertex, double inFlow, SimulationObserver observer) {
 		
-		//MARK THE CURRENT NODE A VISITED AND COMPUTE ITS FLOWS
-		visited[v] = true;
-		elementsArray[v].setInputFlow(inputFlow);
+		
+		//TERMINAL CONDITION
+		if (vertex == null)
+			return;
+		
+		//CHECKING IF WE ARE IN A SPLIT
+		if (vertex instanceof Split) {
+			
+			//GETTING OUTPUTS
+			Element[] next = ((Split) vertex).getOutputs();
+			
+			//COMPUTING FLOW
+			vertex.setInputFlow(inFlow);
+			vertex.setOutputFlow(vertex.getInputFlow());
+			
+			//SHOWING DATA
+			observer.notifyFlow(vertex.getClassName(), vertex.getName(), vertex.getInputFlow(), vertex.getOutputFlow());
+			
+			//VISIT LEFT CHILD
+			treeVisit(next[0], vertex.getOutputFlow()/2, observer);
+			
+			//VISIT RIGHT CHILD
+			treeVisit(next[1], vertex.getOutputFlow()/2, observer);
+			
+		}
+		else {
+			
+			//COMPUTING FLOWS
+			vertex.setInputFlow(inFlow);
+			vertex.setOutputFlow(vertex.getInputFlow());
+			
+			//SHOWING DATA
+			observer.notifyFlow(vertex.getClassName(), vertex.getName(), vertex.getInputFlow(), vertex.getOutputFlow());
+			
+			//VISITING CHILD
+			treeVisit(vertex.getOutput(), vertex.getOutputFlow(), observer);
+			
+		}
+		
+		
 		
 	}
 }
