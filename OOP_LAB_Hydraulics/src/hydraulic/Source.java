@@ -1,5 +1,7 @@
 package hydraulic;
 
+import java.util.Observer;
+
 /**
  * Represents a source of water, i.e. the initial element for the simulation.
  *
@@ -19,7 +21,7 @@ public class Source extends Element {
 	 * @param flow
 	 */
 	public void setFlow(double flow){
-		this.setInputFlow(0);
+		this.setInputFlow(SimulationObserver.NO_FLOW);
 		this.setOutputFlow(flow);
 	}
 

@@ -82,24 +82,37 @@ public class HSystem {
 	 */
 	private void treeVisit(Element vertex, double inFlow, SimulationObserver observer) {
 		
-		
 		//TERMINAL CONDITION
 		if (vertex == null)
 			return;
+		
+		
+		//COMPUTING INPUT FLOW
+		vertex.setInputFlow(inFlow);
+		
+		//COMPUTING OUTPUT FLOW
+		if (vertex instanceof Sink)
+			vertex.setOutputFlow(SimulationObserver.NO_FLOW);
+		
+		else if (vertex instanceof Tap && !((Tap) vertex).getStatus()) {
+			vertex.setOutputFlow(SimulationObserver.NO_FLOW);
+			//SHOWING DATA
+			observer.notifyFlow(vertex.getClassName(), vertex.getName(), vertex.getInputFlow(), vertex.getOutputFlow());
+			return;
+		}
+		
+		else
+			vertex.setOutputFlow(vertex.getInputFlow());
+		
+		//SHOWING DATA
+		observer.notifyFlow(vertex.getClassName(), vertex.getName(), vertex.getInputFlow(), vertex.getOutputFlow());
 		
 		//CHECKING IF WE ARE IN A SPLIT
 		if (vertex instanceof Split) {
 			
 			//GETTING OUTPUTS
 			Element[] next = ((Split) vertex).getOutputs();
-			
-			//COMPUTING FLOW
-			vertex.setInputFlow(inFlow);
-			vertex.setOutputFlow(vertex.getInputFlow());
-			
-			//SHOWING DATA
-			observer.notifyFlow(vertex.getClassName(), vertex.getName(), vertex.getInputFlow(), vertex.getOutputFlow());
-			
+						
 			//VISIT LEFT CHILD
 			treeVisit(next[0], vertex.getOutputFlow()/2, observer);
 			
@@ -107,21 +120,9 @@ public class HSystem {
 			treeVisit(next[1], vertex.getOutputFlow()/2, observer);
 			
 		}
-		else {
-			
-			//COMPUTING FLOWS
-			vertex.setInputFlow(inFlow);
-			vertex.setOutputFlow(vertex.getInputFlow());
-			
-			//SHOWING DATA
-			observer.notifyFlow(vertex.getClassName(), vertex.getName(), vertex.getInputFlow(), vertex.getOutputFlow());
-			
+		else if (vertex instanceof Tap && ((Tap) vertex).getStatus()) {			
 			//VISITING CHILD
-			treeVisit(vertex.getOutput(), vertex.getOutputFlow(), observer);
-			
-		}
-		
-		
-		
+			treeVisit(vertex.getOutput(), vertex.getOutputFlow(), observer);	
+		}		
 	}
 }

@@ -28,13 +28,13 @@ public class Element {
 		return this.inputFlow;
 	}
 	public void setInputFlow(double inputFlow) {
-		this.inputFlow += inputFlow;
+		this.inputFlow = inputFlow;
 	}
 	public double getOutputFlow() {
 		return this.outputFlow;
 	}
 	public void setOutputFlow(double outputFlow) {
-		this.outputFlow += outputFlow;
+		this.outputFlow = outputFlow;
 	}
 	
 	/**

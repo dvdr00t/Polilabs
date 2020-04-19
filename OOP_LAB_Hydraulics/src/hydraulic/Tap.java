@@ -28,4 +28,9 @@ public class Tap extends Element {
 		this.status = open;
 	}
 
+	public boolean getStatus() {
+		return status;
+	}
+
+	
 }
