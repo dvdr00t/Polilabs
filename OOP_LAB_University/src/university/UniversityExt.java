@@ -62,11 +62,12 @@ public class UniversityExt extends University {
 		StringBuffer top3 = new StringBuffer();
 		
 		//CHECKING NUMBER OF STUDENTS
-		int top;
-		if (this.studentsNumber > 3)
-			top = 3;
-		else 
-			top = this.studentsNumber;
+		int top = 0;
+		for (int i = 0; i < this.studentsNumber; i++) {
+			if (this.students[i].getAvgExams() > 0) {
+				top++;
+			}
+		}
 			
 		//CREATING STRING TO RETURN
 		for (int i = 0; i < top; i++)

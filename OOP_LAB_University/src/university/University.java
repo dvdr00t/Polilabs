@@ -296,7 +296,7 @@ public class University {
 		//COMPUTING AVERAGE GRADES
 		float avg = courses[courseCode-10].computeAvg();
 		if (avg == -1) {
-			return "No students ha take the exams in " + courses[courseCode-10].getCourseName();
+			return "No student has taken the exams in " + courses[courseCode-10].getCourseName();
 		}
 		else {
 			return "The average for the course " + courses[courseCode-10].getCourseName() + " is: " + avg;

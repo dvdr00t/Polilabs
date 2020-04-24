@@ -16,7 +16,7 @@ public class Student {
 	
 	//EXAMS GIVEN BY THE STUDENT
 	private int[] exams = new int[MAX_ATTENDED_COURSE];
-	private float avgExams;
+	private float avgExams = -1;
 	private float avgExamsAward;
 	private int nExams = 0;
 	
@@ -77,6 +77,9 @@ public class Student {
 	void setAvgExamsAward(float avgExamsAward) {
 		this.avgExamsAward = avgExamsAward;
 	}
+	
+	
+	
 	
 	
 	/*
