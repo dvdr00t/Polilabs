@@ -7,7 +7,7 @@ package hydraulic;
  * Any element can be connect to a downstream element
  * using the method {@link #connect(Element) connect()}.
  */
-public class Element {
+public abstract class Element {
 	
 	/*
 	 * ATTRIBUTE FOR ABSTRACT ELEMENT
@@ -75,5 +75,10 @@ public class Element {
 	public Element getOutput(){
 		return this.output;
 	}
+	
+	/*
+	 * TO BE IMPLEMENTED IN SUBCLASSES
+	 */
+	public abstract void simulate(Double inFlow, SimulationObserver observer);
 	
 }

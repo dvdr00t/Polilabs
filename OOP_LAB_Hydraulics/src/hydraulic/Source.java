@@ -25,5 +25,23 @@ public class Source extends Element {
 		this.setOutputFlow(flow);
 	}
 
+	/*
+	 * SIMULATE METHOD FOR THE SOURCE
+	 */
+	
+	@Override
+	public void simulate(Double inFlow, SimulationObserver observer) {
+		
+		//GETTING OUTPUTFLOW
+		Double outFlow = this.getOutputFlow();
+		
+		//SHOWING DATA ABOUT THIS ELEMENT FLOW
+		observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
+		
+		//SIMULATE NEXT ELEMENT FLOW
+		this.getOutput().simulate(outFlow, observer);
+		
+	}
+
 	
 }

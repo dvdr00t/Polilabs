@@ -32,5 +32,32 @@ public class Tap extends Element {
 		return status;
 	}
 
+	@Override
+	public void simulate(Double inFlow, SimulationObserver observer) {
+		
+		//COMPUTING OUTPUT FLOW
+		double outFlow = inFlow;
+		
+		//CHECKING IF THE TAP IS OPEN OR NOT
+		if (this.status) {
+			
+			//SHOWING DATA ABOUT THIS ELEMENT
+			observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
+			
+			//SIMULATING NEXT ELEMENT FLOW
+			this.getOutput().simulate(outFlow, observer);
+		}
+		else {
+			
+			//SETTING TO ZERO THE OUTPUT AND SHOWING DATA ABOUT THIS ELEMENT
+			outFlow = 0.0;
+			observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
+			
+			//SIMULATING NEXT ELEMENT FLOW
+			this.getOutput().simulate(outFlow, observer);
+		}
+		
+	}
+
 	
 }

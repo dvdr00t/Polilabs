@@ -43,4 +43,18 @@ public class Split extends Element {
 		//CONNECTING ELEMENT WITH ITS OUTPUT
 		this.outputs[noutput] = elem;
 	}
+
+	@Override
+	public void simulate(Double inFlow, SimulationObserver observer) {
+		
+		//COMPUTING OUTPUT FLOW
+		double outFlow = inFlow/2;
+		
+		//SHOWING DATA ABOUT THIS ELEMENT FLOW
+		observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow, outFlow);
+		
+		//SIMULATING NEXT ELEMENTS
+		this.outputs[0].simulate(outFlow, observer);
+		this.outputs[1].simulate(outFlow, observer);
+	}
 }

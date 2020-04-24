@@ -54,6 +54,7 @@ public class HSystem {
 	 */
 	public void simulate(SimulationObserver observer){
 		
+		
 		//CONVERTING LINKED LIST TO AN ARRAY
 		Element[] elementsArray = new Element[this.elements.size()];
 		this.elements.toArray(elementsArray);
@@ -66,63 +67,10 @@ public class HSystem {
 			//CHECKING IF WE ARE IN A STARTING POINT
 			if (current instanceof Source) {
 				
-				//SINCE WE ARE IN A SOURCE, WE CAN PRINT ITS FLOW PARAMETERS
-				observer.notifyFlow(current.getClassName(), current.getName(), current.getInputFlow(), current.getOutputFlow());
-				
-				//VISITING TREE
-				treeVisit(current.getOutput(), current.getOutputFlow(), observer);
-	
+				//STARTING SIMULATION
+				current.simulate(observer.NO_FLOW, observer);
+
 			}
 		}
-	}
-
-	
-	/*
-	 * VISIT TO THE TREE
-	 */
-	private void treeVisit(Element vertex, double inFlow, SimulationObserver observer) {
-		
-		//TERMINAL CONDITION
-		if (vertex == null)
-			return;
-		
-		
-		//COMPUTING INPUT FLOW
-		vertex.setInputFlow(inFlow);
-		
-		//COMPUTING OUTPUT FLOW
-		if (vertex instanceof Sink)
-			vertex.setOutputFlow(SimulationObserver.NO_FLOW);
-		
-		else if (vertex instanceof Tap && !((Tap) vertex).getStatus()) {
-			vertex.setOutputFlow(SimulationObserver.NO_FLOW);
-			//SHOWING DATA
-			observer.notifyFlow(vertex.getClassName(), vertex.getName(), vertex.getInputFlow(), vertex.getOutputFlow());
-			return;
-		}
-		
-		else
-			vertex.setOutputFlow(vertex.getInputFlow());
-		
-		//SHOWING DATA
-		observer.notifyFlow(vertex.getClassName(), vertex.getName(), vertex.getInputFlow(), vertex.getOutputFlow());
-		
-		//CHECKING IF WE ARE IN A SPLIT
-		if (vertex instanceof Split) {
-			
-			//GETTING OUTPUTS
-			Element[] next = ((Split) vertex).getOutputs();
-						
-			//VISIT LEFT CHILD
-			treeVisit(next[0], vertex.getOutputFlow()/2, observer);
-			
-			//VISIT RIGHT CHILD
-			treeVisit(next[1], vertex.getOutputFlow()/2, observer);
-			
-		}
-		else if (vertex instanceof Tap && ((Tap) vertex).getStatus()) {			
-			//VISITING CHILD
-			treeVisit(vertex.getOutput(), vertex.getOutputFlow(), observer);	
-		}		
 	}
 }
