@@ -15,7 +15,8 @@ public class HSystem {
 	/*
 	 * ATTRIBUTE OF THE HYDRAULIC SYSTEM
 	 */
-	private LinkedList<Element> elements = new LinkedList<Element>();
+	protected LinkedList<Element> elements = new LinkedList<Element>();
+	private String layout;
 	
 	/**
 	 * Adds a new element to the system
@@ -73,4 +74,6 @@ public class HSystem {
 			}
 		}
 	}
+
+
 }

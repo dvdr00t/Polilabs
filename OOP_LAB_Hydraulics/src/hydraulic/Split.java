@@ -7,13 +7,30 @@ package hydraulic;
  * receive a stream that is half the input stream of the split.
  */
 
-public class Split extends Element {
+public class Split extends ElementExt {
 	
 	/*
 	 * ATTRIBUTE FOR THE SPLIT ELEMENT
 	 */
-	Element[] outputs = new Element[2];		//OUTPUT IS SPLITTED IN TWO
-
+	private int numOutputs;
+	private Element[] outputs;
+	
+	
+	/*
+	 * GETTERS AND SETTERS
+	 */
+	public int getNumOutputs() {
+		return numOutputs;
+	}
+	public void setNumOutputs(int numOutputs) {
+		this.numOutputs = numOutputs;
+	}
+	
+	public void setOutputs(Element[] outputs) {
+		this.outputs = outputs;
+	}
+	
+	
 	/**
 	 * Constructor
 	 * @param name
@@ -21,6 +38,14 @@ public class Split extends Element {
 	public Split(String name) {
 		super(name);
 		this.className = "Split";
+		
+		/*
+		 * Setting the number of outputs (two) and creating outputs array 
+		 * of length two (we are in a simple split)
+		 */
+		this.numOutputs = 2;
+		this.outputs = new Element[this.numOutputs];	
+
 	}
     
 	/**
@@ -40,8 +65,10 @@ public class Split extends Element {
      */
 	public void connect(Element elem, int noutput){
 		
-		//CONNECTING ELEMENT WITH ITS OUTPUT
-		this.outputs[noutput] = elem;
+		if (noutput < 2)
+			//CONNECTING ELEMENT WITH ITS OUTPUT
+			this.outputs[noutput] = elem;
+		
 	}
 
 	@Override
@@ -56,5 +83,31 @@ public class Split extends Element {
 		//SIMULATING NEXT ELEMENTS
 		this.outputs[0].simulate(outFlow, observer);
 		this.outputs[1].simulate(outFlow, observer);
+	}
+	@Override
+	public String layout(String layoutString) {
+		layoutString = layoutString + "[" + this.getName() + "]" + "Split +-> " + this.getOutput().layout(layoutString);
+		return layoutString;
+	}
+	@Override
+	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+		
+		//CHECKING IF THE INFLOW EXCEDES THE MAXIMUM VALUE
+		if(inFlow > this.getMaxFlow())
+			observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
+		else {
+			
+			//COMPUTING OUTPUT FLOW
+			double outFlow = inFlow/2;
+			
+			//SHOWING DATA ABOUT THIS ELEMENT FLOW
+			observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow, outFlow);
+			
+			//SIMULATING NEXT ELEMENTS
+			this.outputs[0].simulateMaximumFlow(outFlow, observer);
+			this.outputs[1].simulateMaximumFlow(outFlow, observer);
+			
+		}
+		
 	}
 }

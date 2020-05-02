@@ -8,6 +8,13 @@ package hydraulic;
  */
 
 public class Multisplit extends Split {
+	
+	
+	/*
+	 * Attributes for the class
+	 */
+	private double[] proportion;
+	
 
 	/**
 	 * Constructor
@@ -15,8 +22,21 @@ public class Multisplit extends Split {
 	 * @param numOutput
 	 */
 	public Multisplit(String name, int numOutput) {
-		super(name); //you can edit also this line
-		// TODO: to be implemented
+		super(name); //you can edit also this lines
+		
+		/*
+		 * Setting the number of outputs (numOutput) and
+		 * creating an array of length numOutput (we are in a
+		 * multiplit)
+		 */
+		this.setNumOutputs(numOutput);
+		this.setOutputs(new Element[this.getNumOutputs()]);
+		
+		/*
+		 * Creating array for proportion of length numOutput
+		 */
+		this.proportion = new double[numOutput];
+		
 	}
     
 	/**
@@ -24,8 +44,7 @@ public class Multisplit extends Split {
 	 * @return array containing the two downstream element
 	 */
     public Element[] getOutputs(){
-    	//TODO: complete
-        return null;
+        return super.getOutputs();
     }
 
     /**
@@ -36,7 +55,11 @@ public class Multisplit extends Split {
      * @param noutput the output number to be used to connect the element
      */
 	public void connect(Element elem, int noutput){
-		//TODO: complete
+		
+		if (noutput < this.getNumOutputs())
+			//CONNECTING ELEMENT WITH ITS OUTPUT
+			this.getOutputs()[noutput] = elem;
+		
 	}
 	
 	/**
@@ -49,6 +72,57 @@ public class Multisplit extends Split {
 	 * @param proportions the proportions of flow for each output
 	 */
 	public void setProportions(double... proportions) {
-		// TODO: to be implemented
+		
+		double sum = 0;
+		for (double p: proportions)
+			sum += p;
+		
+		if (sum == 1) {
+			int i = 0;
+			for (double p: proportions)
+				this.proportion[i++] = p;
+		}
+		else 
+			return;	
 	}
+	
+	
+	@Override
+	public void simulate(Double inFlow, SimulationObserver observer) {
+		
+		//COMPUTING OUTPUT FLOWS
+		double[] outFlows = new double[this.getNumOutputs()];
+		for (int i = 0; i < outFlows.length; i++)
+			outFlows[i] = inFlow * this.proportion[i];
+		
+		//SHOWING DATA ABOUT THIS ELEMENT FLOW
+		observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlows);
+		
+		//SIMULATE NEXT ELEMENT
+		Element[] next = this.getOutputs();
+		for (int i = 0; i < next.length; i++)
+			next[i].simulate(inFlow*this.proportion[i], observer);
+	}
+	
+	@Override
+	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+		
+		if (inFlow > this.getMaxFlow())
+			observer.notifyFlowError(getClassName(), getName(), inFlow, getMaxFlow());
+		else {
+			//COMPUTING OUTPUT FLOWS
+			double[] outFlows = new double[this.getNumOutputs()];
+			for (int i = 0; i < outFlows.length; i++)
+				outFlows[i] = inFlow * this.proportion[i];
+			
+			//SHOWING DATA ABOUT THIS ELEMENT FLOW
+			observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlows);
+			
+			//SIMULATE NEXT ELEMENT
+			Element[] next = this.getOutputs();
+			for (int i = 0; i < next.length; i++)
+				next[i].simulateMaximumFlow(inFlow*this.proportion[i], observer);
+		}
+	}
+	
 }

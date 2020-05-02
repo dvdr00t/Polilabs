@@ -14,6 +14,7 @@ public abstract class Element {
 	 */
 	private String name;			//NAME OF THE ELEMENTS
 	private Element output;			//OUTPUT LINKED WITH THE ELEMENT
+	private Element input;			//INPUT LINKED WITH THE ELEMENT
 	private double inputFlow = 0;
 	private double outputFlow = 0;
 	protected String className;
@@ -36,6 +37,14 @@ public abstract class Element {
 	public void setOutputFlow(double outputFlow) {
 		this.outputFlow = outputFlow;
 	}
+	public Element getInput() {
+		return input;
+	}
+	public void setInput(Element input) {
+		this.input = input;
+	}
+	
+	
 	
 	/**
 	 * Constructor
@@ -66,6 +75,9 @@ public abstract class Element {
 		
 		//CONNECTING THIS OUTPUT WITH THE ELEMENT GIVEN
 		this.output = elem;
+		
+		//CONNECTING THE INPUT WITH THE ELEMENT
+		elem.setInput(this);
 	}
 	
 	/**
@@ -79,6 +91,8 @@ public abstract class Element {
 	/*
 	 * TO BE IMPLEMENTED IN SUBCLASSES
 	 */
+	public abstract void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer);
 	public abstract void simulate(Double inFlow, SimulationObserver observer);
+	public abstract String layout(String layoutString);
 	
 }

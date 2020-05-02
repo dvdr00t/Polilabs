@@ -7,7 +7,7 @@ package hydraulic;
  * {@link #setOpen(boolean) setOpen()}.
  */
 
-public class Tap extends Element {
+public class Tap extends ElementExt {
 	
 	/*
 	 * 	ATTRIBUTE FOR THE TAP ELEMENT
@@ -43,7 +43,7 @@ public class Tap extends Element {
 			
 			//SHOWING DATA ABOUT THIS ELEMENT
 			observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
-			
+
 			//SIMULATING NEXT ELEMENT FLOW
 			this.getOutput().simulate(outFlow, observer);
 		}
@@ -58,6 +58,49 @@ public class Tap extends Element {
 		}
 		
 	}
+
+	@Override
+	public String layout(String layoutString) {
+		layoutString = layoutString + "[" + this.getName() + "]" + "Tap -> " + this.getOutput().layout(layoutString);
+		return layoutString;
+	}
+
+	@Override
+	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+		
+		//CHECKING IF THE INFLOW EXCEDES THE MAXIMUM VALUE
+		if(inFlow > this.getMaxFlow())
+			observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
+		else {
+			
+			//COMPUTING OUTPUT FLOW
+			double outFlow = inFlow;
+			
+			//CHECKING IF THE TAP IS OPEN OR NOT
+			if (this.status) {
+				
+				//SHOWING DATA ABOUT THIS ELEMENT
+				observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
+				
+				//SIMULATING NEXT ELEMENT FLOW
+				this.getOutput().simulateMaximumFlow(outFlow, observer);
+			}
+			else {
+				
+				//SETTING TO ZERO THE OUTPUT AND SHOWING DATA ABOUT THIS ELEMENT
+				outFlow = 0.0;
+				observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
+				
+				//SIMULATING NEXT ELEMENT FLOW
+				this.getOutput().simulateMaximumFlow(outFlow, observer);
+			}
+			
+		}
+		
+	}
+
+
+
 
 	
 }

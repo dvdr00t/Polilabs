@@ -8,7 +8,7 @@ import java.util.Observer;
  * The status of the source is defined through the method
  * {@link #setFlow(double) setFlow()}.
  */
-public class Source extends Element {
+public class Source extends ElementExt {
 	
 	public Source(String name) {
 		super(name);
@@ -42,6 +42,29 @@ public class Source extends Element {
 		this.getOutput().simulate(outFlow, observer);
 		
 	}
+
+	@Override
+	public String layout(String layoutString) {
+		layoutString = layoutString + "[" + this.getName() + "]" + "Source -> " + this.getOutput().layout(layoutString);
+		return layoutString;
+		
+	}
+
+	@Override
+	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+		
+		//GETTING OUTPUTFLOW
+		Double outFlow = this.getOutputFlow();
+						
+		//SHOWING DATA ABOUT THIS ELEMENT FLOW
+		observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
+						
+		//SIMULATE NEXT ELEMENT FLOW
+		this.getOutput().simulateMaximumFlow(outFlow, observer);
+		
+	}
+
+
 
 	
 }

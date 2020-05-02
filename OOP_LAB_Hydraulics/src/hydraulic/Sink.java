@@ -4,7 +4,7 @@ package hydraulic;
  * Represents the sink, i.e. the terminal element of a system
  *
  */
-public class Sink extends Element {
+public class Sink extends ElementExt {
 
 	/**
 	 * Constructor
@@ -25,6 +25,22 @@ public class Sink extends Element {
 		observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
 		
 		//NO MORE SIMULATION FROM A SINK
+		
+	}
+
+	@Override
+	public String layout(String layoutString) {
+		return layoutString + "[" + this.getName() + "]" + "Sink * ";
+	}
+
+	@Override
+	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+		
+		//CHECKING THE INFLOW EXCEDES THE MAXIMUM VALUE
+		if(inFlow > this.getMaxFlow())
+			observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
+		else
+			this.simulate(inFlow, observer);
 		
 	}
 	
