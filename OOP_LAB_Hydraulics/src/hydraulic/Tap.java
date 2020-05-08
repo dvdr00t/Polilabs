@@ -66,12 +66,13 @@ public class Tap extends ElementExt {
 	}
 
 	@Override
-	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+	public void simulate(Double inFlow, SimulationObserverExt observer, boolean enableMaxFlowCheck) {
 		
-		//CHECKING IF THE INFLOW EXCEDES THE MAXIMUM VALUE
-		if(inFlow > this.getMaxFlow())
-			observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
-		else {
+		
+		if (enableMaxFlowCheck) {
+			//CHECKING IF THE INFLOW EXCEDES THE MAXIMUM VALUE
+			if(inFlow > this.getMaxFlow())
+				observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
 			
 			//COMPUTING OUTPUT FLOW
 			double outFlow = inFlow;
@@ -83,7 +84,7 @@ public class Tap extends ElementExt {
 				observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
 				
 				//SIMULATING NEXT ELEMENT FLOW
-				this.getOutput().simulateMaximumFlow(outFlow, observer);
+				this.getOutput().simulate(outFlow, observer, enableMaxFlowCheck);
 			}
 			else {
 				
@@ -92,15 +93,11 @@ public class Tap extends ElementExt {
 				observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
 				
 				//SIMULATING NEXT ELEMENT FLOW
-				this.getOutput().simulateMaximumFlow(outFlow, observer);
+				this.getOutput().simulate(outFlow, observer, enableMaxFlowCheck);
 			}
-			
 		}
-		
+		else {
+			this.simulate(inFlow, observer);
+		}
 	}
-
-
-
-
-	
 }

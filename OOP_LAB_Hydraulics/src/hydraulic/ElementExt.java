@@ -30,4 +30,6 @@ public abstract class ElementExt extends Element{
 		return this.maxFlow;
 	}
 	
+	public abstract void simulate(Double inFlow, SimulationObserverExt observer, boolean enableMaxFlowCheck);
+	
 }

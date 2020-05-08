@@ -92,7 +92,7 @@ public class HSystemExt extends HSystem{
 				if (current instanceof Source) {
 					
 					//STARTING SIMULATION
-					((Source) current).simulateMaximumFlow(observer.NO_FLOW, observer);
+					((Source) current).simulate(observer.NO_FLOW, observer, enableMaxFlowCheck);
 				}
 			}
 					

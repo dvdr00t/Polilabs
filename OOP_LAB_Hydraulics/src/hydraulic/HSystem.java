@@ -74,6 +74,31 @@ public class HSystem {
 			}
 		}
 	}
+	
+	/**
+	 * starts the simulation of the system
+	 */
+	public void simulate(SimulationObserver observer, boolean enableMaxFlowCheck){
+		
+		
+		//CONVERTING LINKED LIST TO AN ARRAY
+		Element[] elementsArray = new Element[this.elements.size()];
+		this.elements.toArray(elementsArray);
+		
+		//EVALUATING EVERY ELEMENT LOOKING FOR THE SOURCE ELEMENT
+		for (int i = 0; i < elementsArray.length; i++) {
+			
+			Element current = elementsArray[i];
+			
+			//CHECKING IF WE ARE IN A STARTING POINT
+			if (current instanceof Source) {
+				
+				//STARTING SIMULATION
+				current.simulate(observer.NO_FLOW, observer);
+
+			}
+		}
+	}
 
 
 }

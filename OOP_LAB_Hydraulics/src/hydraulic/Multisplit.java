@@ -27,7 +27,7 @@ public class Multisplit extends Split {
 		/*
 		 * Setting the number of outputs (numOutput) and
 		 * creating an array of length numOutput (we are in a
-		 * multiplit)
+		 * multisplit)
 		 */
 		this.setNumOutputs(numOutput);
 		this.setOutputs(new Element[this.getNumOutputs()]);
@@ -105,11 +105,13 @@ public class Multisplit extends Split {
 	}
 	
 	@Override
-	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+	public void simulate(Double inFlow, SimulationObserverExt observer, boolean enableMaxFlowCheck) {
 		
-		if (inFlow > this.getMaxFlow())
-			observer.notifyFlowError(getClassName(), getName(), inFlow, getMaxFlow());
-		else {
+		if (enableMaxFlowCheck) {
+			//CHECKING IF THE INFLOW EXCEDES THE MAXIMUM VALUE
+			if (inFlow > this.getMaxFlow())
+				observer.notifyFlowError(getClassName(), getName(), inFlow, getMaxFlow());
+			
 			//COMPUTING OUTPUT FLOWS
 			double[] outFlows = new double[this.getNumOutputs()];
 			for (int i = 0; i < outFlows.length; i++)
@@ -121,8 +123,10 @@ public class Multisplit extends Split {
 			//SIMULATE NEXT ELEMENT
 			Element[] next = this.getOutputs();
 			for (int i = 0; i < next.length; i++)
-				next[i].simulateMaximumFlow(inFlow*this.proportion[i], observer);
+				next[i].simulate(inFlow*this.proportion[i], observer);
+			
 		}
-	}
-	
+		else 
+			this.simulate(inFlow, observer);
+	}	
 }

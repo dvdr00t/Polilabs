@@ -51,7 +51,7 @@ public class Source extends ElementExt {
 	}
 
 	@Override
-	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+	public void simulate(Double inFlow, SimulationObserverExt observer, boolean enableMaxFlowCheck) {
 		
 		//GETTING OUTPUTFLOW
 		Double outFlow = this.getOutputFlow();
@@ -60,7 +60,7 @@ public class Source extends ElementExt {
 		observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow);
 						
 		//SIMULATE NEXT ELEMENT FLOW
-		this.getOutput().simulateMaximumFlow(outFlow, observer);
+		this.getOutput().simulate(outFlow, observer, enableMaxFlowCheck);
 		
 	}
 

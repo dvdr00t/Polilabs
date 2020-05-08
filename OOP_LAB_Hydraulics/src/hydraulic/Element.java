@@ -91,7 +91,7 @@ public abstract class Element {
 	/*
 	 * TO BE IMPLEMENTED IN SUBCLASSES
 	 */
-	public abstract void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer);
+	public abstract void simulate(Double inFlow, SimulationObserverExt observer, boolean enableMaxFlowCheck);
 	public abstract void simulate(Double inFlow, SimulationObserver observer);
 	public abstract String layout(String layoutString);
 	

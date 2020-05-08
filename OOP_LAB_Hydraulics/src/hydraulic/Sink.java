@@ -34,11 +34,15 @@ public class Sink extends ElementExt {
 	}
 
 	@Override
-	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+	public void simulate(Double inFlow, SimulationObserverExt observer, boolean enableMaxFlowCheck) {
 		
-		//CHECKING THE INFLOW EXCEDES THE MAXIMUM VALUE
-		if(inFlow > this.getMaxFlow())
-			observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
+		if (enableMaxFlowCheck) {
+			//CHECKING THE INFLOW EXCEDES THE MAXIMUM VALUE
+			if(inFlow > this.getMaxFlow())
+				observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
+			
+			this.simulate(inFlow, observer);
+		}
 		else
 			this.simulate(inFlow, observer);
 		

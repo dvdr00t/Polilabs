@@ -90,12 +90,12 @@ public class Split extends ElementExt {
 		return layoutString;
 	}
 	@Override
-	public void simulateMaximumFlow(Double inFlow, SimulationObserverExt observer) {
+	public void simulate(Double inFlow, SimulationObserverExt observer, boolean enableMaxFlowCheck) {
 		
-		//CHECKING IF THE INFLOW EXCEDES THE MAXIMUM VALUE
-		if(inFlow > this.getMaxFlow())
-			observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
-		else {
+		if (enableMaxFlowCheck) {
+			//CHECKING IF THE INFLOW EXCEDES THE MAXIMUM VALUE
+			if(inFlow > this.getMaxFlow())
+				observer.notifyFlowError(getClassName(), getName(), inFlow, this.getMaxFlow());
 			
 			//COMPUTING OUTPUT FLOW
 			double outFlow = inFlow/2;
@@ -104,10 +104,10 @@ public class Split extends ElementExt {
 			observer.notifyFlow(this.getClassName(), this.getName(), inFlow, outFlow, outFlow);
 			
 			//SIMULATING NEXT ELEMENTS
-			this.outputs[0].simulateMaximumFlow(outFlow, observer);
-			this.outputs[1].simulateMaximumFlow(outFlow, observer);
-			
+			this.outputs[0].simulate(outFlow, observer, enableMaxFlowCheck);
+			this.outputs[1].simulate(outFlow, observer, enableMaxFlowCheck);
 		}
-		
+		else 
+			this.simulate(inFlow, observer);		
 	}
 }
