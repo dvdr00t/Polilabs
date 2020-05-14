@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+   <link href=".css.css" rel="stylesheet" type="text/css">
+   <title>OOP Lab - Diet</title>
+   <meta name="revision" content="May 12, 2019">
+</head>
+<body>
+
+<h1>DietExt</h1>
+<h1 style="color:red">Extended Requirements</h1>
+
+<p>The application to manage a diet by means of nutritional values computation 
+has been extended to provide services for ordering and delivering food (takeaway).
+</p>
+<p>The application allow creating restaurants, registering users, making orders, etc.
+</p>
+<p>All the classes must be in the package "<b>diet</b>".</p>
+
+
+<h2>R5 - Restaurant<br>
+</h2>
+<p>The <b>Restaurant</b> can be created providing a name and a reference to a <i>Food</i> object so that 
+all the ingredients, products, and recipes can be defined for each of the restaurants individually.
+</p>
+<p>A restaurant can be identified by its name. 
+Through the method <b>setHours()</b> working hours can be set for the restaurant.
+The methods accepts an array of strings (even number of elements) in the format <i>"HH:MM"</i>, 
+so that the closing hours follow the opening hours (e.g., for a restaurant opened from 8:15 until 14:00 
+and from 19:00 until 00:00, arguments would be <i>"08:15", "14:00", "19:00", "00:00"</i>).
+Getter <b>getName()</b> returns a restaurant's name. 
+Restaurant offer different menus, and they can be created through the method 
+<b>createMenu()</b> having as argument menu's name and returning <i>Menu</i> object. 
+</p>
+<p>Restaurants can be registered with the system using the method <b>addRestaurant()</b>
+of the facade class <b>Takeaway</b>.
+The method <b>restaurants()</b> returns the names of the registered restaurants.
+</p>
+
+<h2>R6 - Users</h2>
+
+<p>A user is defined by providing its first name, last name, email and phone number to the method <b>registerUser()</b> that
+returns a <b>User</b> object.
+Getters are provided for all of the fields (<b>getFirstName()</b>, <b>getLastName()</b>, <b>getEmail()</b>, <b>getPhone()</b>),
+while setters are provided for the email and phone number only (<b>setEmail()</b>, <b>setPhone</b>).
+
+The string representation of a <i>User</i> object returns the last name separated by a space and followed by the first name.
+</p>
+
+<p> To retrieve information about the users we can use the method <b>users()</b> of class <i>Takeaway</i> that returns
+a collection of users sorted first by their last name and then by first name.
+</p>
+
+
+<h2>R7 - Orders</h2>
+
+<p>A registered user can make an order at one of the available restaurants.
+For such purpose method <b>createOrder()</b> accepts as arguments the <i>User</i> object making the order,
+restaurant's name (<i>String</i>) and the desired delivery time (hour and minute as integers). 
+Furthermore, if for the given order delivery time is outside of the working hours for the restaurant,
+delivery time is set to the first successive opening hour (e.g., making an order for a restaurant having 
+working hours from 8:15 until 14:00 and from 19:00 until 00:00, and asking for a 
+delivery at 15:30, would result in having the delivery time set for 19:00).
+</p>
+
+<p>An order can have three statuses: <code>ORDERED</code>, <code>READY</code>, <code>DELIVERED</code> accessible through setter and getter 
+<b>setStatus()</b> and <b>getStatus()</b> (<code>ORDERED</code> by default).
+Furthermore, payment type for an order can be: <code>PAID</code>, <code>CASH</code>, <code>CARD</code>, accessible through setter and getter 
+<b>setPaymentMethod()</b> and <b>getPaymentMethod()</b> (<code>CASH</code> by default).
+</p>
+
+<p>Menus can be added to an order by calling the method <b>addMenus</b> and specifying the menu name (String) and the quantity (integer). 
+</p>
+
+<p>When an order is printed, it should be formatted as:
+<pre>
+"RESTAURANT_NAME, USER_FIRST_NAME USER_LAST_NAME : DELIVERY(HH:MM):
+	MENU_NAME_1->MENU_QUANTITY_1
+	...
+	MENU_NAME_k->MENU_QUANTITY_k
+"
+</pre>
+
+<p>The menus are sorted by menu name and are printed on different lines
+preceded by a tab (<i>'\t'</i>).
+</p>
+
+
+<p>
+<ul class="hint"><li><strong>Warning</strong>:
+If a certain menu is already added to an order, using it again as an argument in <b>addMenus()</b>, 
+should overwrite the previously defined quantity
+</li></ul>
+
+
+<h2>R8 - Information</h2>
+
+<p>
+To retrieve some information about the restaurants we can use the method <b>openedRestaurants()</b> that has one string argument
+in format "HH:MM" and returns a collection of <i>Restaurant</i> that are opened at the given time, 
+sorted by their name alphabetically. A restaurant is opened if there is at least one
+working hour segment such that the defined time is inside the range [<code>open</code>, <code>close</code>). 
+</p>
+
+<p>Information about certain orders for a restaurant can be obtained through method <b>ordersWithStatus()</b> of the class Restaurant. 
+Such method returns a String obtained by concatenating all orders satisfying the criteria.
+<pre>
+Napoli, Judi Dench : (19:00):
+	M6->1
+Napoli, Ralph Fiennes : (19:00):
+	M1->2
+	M6->1
+</pre>
+</p>
+<p>The list is sorted by name of restaurant, name of the user, and delivery time.</p>
+
+
+</body>
+</html>

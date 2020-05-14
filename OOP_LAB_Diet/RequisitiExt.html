@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+   <link href=".css.css" rel="stylesheet" type="text/css">
+   <title>OOP Lab - Diet</title>
+   <meta name="revision" content="May 12, 2019">
+</head>
+<body>
+
+<h1>DietExt</h1>
+<h1 style="color:red">Requisiti Estesi</h1>
+
+<p>L'applicazione progettata per gestire una dieta grazie al calcolo dei valori nutrizionali &egrave; stata modificata per fornire servizi per ordinare e consegnare cibo takeaway.
+</p>
+<p>L'applicazione permette di creare ristoranti, registrare utenti, inserire ordini, ecc.
+</p>
+<p>Tutte le classi devono essere nel package "<b>diet</b>".</p>
+
+
+<h2>R5 - Ristorante<br>
+</h2>
+<p>Un oggetto <b>Restaurant</b> pu&ograve; essere creato fornendo un nome ed un riferimento all'oggetto <i>Food</i> in modo che tutti gli ingredienti, i prodotti e le ricette possano essere definite per ciascun ristorante individualmente.
+</p>
+<p>Un ristorante &egrave; identificato dal suo nome. 
+Attraverso il metodo <b>setHours()</b> &egrave; possibile definire l'orario di servizio del ristorante.
+Il metodo accetta un vettore di stringhe (in numero pari di elementi) secondo il formato <i>"HH:MM"</i>, 
+tale per cui le ore di chiusura seguono le ore di apertura (es., per un ristorante aperto dalle 8:15 alle 14:00 
+e dalle 19:00 alle 00:00, gli argomenti devono essere <i>"08:15", "14:00", "19:00", "00:00"</i>).
+Il metodo getter <b>getName()</b> restituisce il nome del ristorante. 
+Un ristorante offre diversi men&ugrave; che possono essere creati utilizzando il metodo 
+<b>createMenu()</b> che ha per argomento il nome del men&ugrave; e ritorna un oggetto <i>Menu</i>. 
+</p>
+<p>I ristoranti possono essere inseriti nel sistema utilizzando il metodo <b>addRestaurant()</b>
+della classe di facciata <b>Takeaway</b>.
+Il metodo <b>restaurants()</b> ritorna i nomi dei ristoranti inseriti.
+</p>
+
+<h2>R6 - Utenti</h2>
+
+<p>Un utente &egrave; definito fornendo il suo nome, cognome, email e numero di telefono al metodo <b>registerUser()</b> il quale ritorna un oggetto <b>User</b>.
+Sono disponibili dei metodi getter per tutti i campi (<b>getFirstName()</b>, <b>getLastName()</b>, <b>getEmail()</b>, <b>getPhone()</b>),
+mentre i metodi setter sono forniti solo per l'email ed il numero di telefono (<b>setEmail()</b>, <b>setPhone()</b>).
+
+La rappresentazione come stringa dell'oggetto <i>User</i> &egrave; il cognome separato da uno spazio e seguito dal nome.
+</p>
+
+<p>Per ottenere gli utenti disponibili &egrave; possibile utilizzare il metodo <b>users()</b> della classe <i>Takeaway</i> che ritorna
+una collezione di utenti ordinati per cognome e, nel caso di cognomi uguali, per nome.
+</p>
+
+
+<h2>R7 - Ordini</h2>
+
+<p>Un utente registrato pu&ograve; effettuare un ordine in uno dei ristoranti disponibili.
+Per tale scopo il metodo <b>createOrder()</b> accetta come argomenti l'oggetto <i>User</i> che effettua l'ordine,
+il nome del ristorante (<i>String</i>) e l'orario di consegna desiderato (con ore e minuti come numeri interi). 
+Inoltre, se per un certo ordine l'orario di consegna &egrave; al di fuori dell'orario di servizio del ristorante,
+l'orario di consegna &egrave; impostato alla prima ora di apertura successiva (es., facendo un ordine per un ristorante con 
+orario di servizio dalle 8:15 alle 14:00 e dalle 19:00 alle 00:00, e richiedendo una 
+consegna per le 15:30, l'orario di consegna sar&agrave; impostato alle 19:00).
+</p>
+
+<p>Un ordine pu&ograve; essere in uno dei seguenti stati: <code>ORDERED</code>, <code>READY</code> e <code>DELIVERED</code>, accessibile attraverso i metodi setter e getter 
+<b>setStatus()</b> e <b>getStatus()</b> (<code>ORDERED</code> &egrave; lo stato di default).
+Inoltre, il tipo di pagamento di un ordine pu&ograve; essere: <code>PAID</code>, <code>CASH</code> o <code>CARD</code>, accessibile attraverso i metodi setter e getter 
+<b>setPaymentMethod()</b> e <b>getPaymentMethod()</b> (<code>CASH</code> &egrave; il pagamento di default).
+</p>
+
+<p>I men&ugrave; possono essere aggiunti ad un ordine chiamando il metodo <b>addMenus</b> e specificando il nome del men&ugrave; (come stringa) e la quantit&agrave; (come numero intero). 
+</p>
+
+<p>Quando un ordine &egrave; stampato, deve essere formattato come segue:
+<pre>
+"RESTAURANT_NAME, USER_FIRST_NAME USER_LAST_NAME : DELIVERY(HH:MM):
+	MENU_NAME_1->MENU_QUANTITY_1
+	...
+	MENU_NAME_k->MENU_QUANTITY_k
+"
+</pre>
+
+<p>I men&ugrave; sono ordinati per nome e sono riportati, uno per linea,
+ preceduti da una tabulazione (<i>'\t'</i>).
+</p>
+
+
+<p>
+ 
+<ul class="hint"><li><strong>Attenzione</strong>:
+Se un certo men&ugrave; &egrave; gi&agrave; stato aggiunto ad un ordine, l'usarlo di nuovo come argomento di <b>addMenus()</b>
+deve sovrascrivere la quantit&agrave; definita in precedenza.
+</li></ul>
+
+
+<h2>R8 - Informazioni</h2>
+
+<p>
+Per ottenere alcune informazioni relative ai ristoranti pu&ograve; essere utilizzato il metodo <b>openedRestaurants()</b> il quale ha un argomento di tipo stringa
+nel formato "HH:MM" e ritorna una collezione di oggetti <i>Restaurant</i> che sono aperti in un certo orario, 
+ordinati alfabeticamente per nome. Un ristorante &egrave; aperto se c'&egrave; almeno un segmento di orario di servizio
+tale per cui l'orario richiesto &egrave; compreso nell'intervallo [<code>aperto</code>, <code>chiuso</code>). 
+</p>
+
+<p>Le informazioni relative agli ordini di un ristorante possono essere ottenute attraverso il metodo <b>ordersWithStatus()</b> della classe Restaurant. 
+Tale metodo ritorna una stringa ottenuta dalla concatenazione di tutti gli ordini che soddisfano il criterio.
+<pre>
+Napoli, Judi Dench : (19:00):
+	M6->1
+Napoli, Ralph Fiennes : (19:00):
+	M1->2
+	M6->1
+</pre>
+</p>
+
+<p>La lista &egrave; ordinata per nome del ristorante, nome dell'utente ed orario di consegna.
+</p>
+
+</body>
+</html>
