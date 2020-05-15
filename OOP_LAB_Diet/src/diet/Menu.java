@@ -100,8 +100,12 @@ public class Menu extends EdibleElement implements NutritionalElement {
 		float sum = 0;
 		
 		//Computing the total Kcal in the menu
-		for (NutritionalElement n: this.composition.keySet())
-			sum += (float) (n.getProteins() * this.composition.get(n));
+		for (NutritionalElement n: this.composition.keySet()) {
+			if (n.per100g())
+				sum += ((float) (n.getProteins() * this.composition.get(n))) / 100;
+			else 
+				sum += n.getProteins();
+		}
 		
 		return sum;
 	}
@@ -114,8 +118,12 @@ public class Menu extends EdibleElement implements NutritionalElement {
 		float sum = 0;
 		
 		//Computing the total Kcal in the menu
-		for (NutritionalElement n: this.composition.keySet())
-			sum += (float) (n.getCarbs() * this.composition.get(n));
+		for (NutritionalElement n: this.composition.keySet()) {
+			if (n.per100g())
+				sum += ((float) (n.getCarbs() * this.composition.get(n))) / 100;
+			else 
+				sum += n.getCarbs();
+		}
 		
 		return sum;
 	}
@@ -128,8 +136,12 @@ public class Menu extends EdibleElement implements NutritionalElement {
 		float sum = 0;
 		
 		//Computing the total Kcal in the menu
-		for (NutritionalElement n: this.composition.keySet())
-			sum += (float) (n.getFat() * this.composition.get(n));
+		for (NutritionalElement n: this.composition.keySet()) {
+			if (n.per100g())
+				sum += ((float) (n.getFat() * this.composition.get(n))) / 100;
+			else
+				sum += n.getFat();
+		}
 		
 		return sum;
 	}

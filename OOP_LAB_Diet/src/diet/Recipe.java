@@ -54,46 +54,70 @@ public class Recipe extends EdibleElement implements NutritionalElement {
 
 	@Override
 	public double getCalories() {
-		float sum = 0;
+		
+		//Useful values
+		float caloriesForTotalGrams = 0;
+		double totalGram = 0;
+		
 		
 		//Computing the sum of all the nutritional values for the recipe
-		for (RawMaterial ingredient: this.ingredients.keySet())
-			sum += ((float) (ingredient.getCalories() * this.ingredients.get(ingredient))) / 100;
+		for (RawMaterial ingredient: this.ingredients.keySet()) {
+			caloriesForTotalGrams += ((float) (ingredient.getCalories() * this.ingredients.get(ingredient))) / 100;
+			totalGram += this.ingredients.get(ingredient);
+		}
 		
-		return sum;
+		return ((caloriesForTotalGrams * 100)/totalGram);
 	}
 
 	@Override
 	public double getProteins() {
-		float sum = 0;
+		
+		//Useful values
+		float proteinsForTotalGrams = 0;
+		double totalGram = 0;
+		
 		
 		//Computing the sum of all the nutritional values for the recipe
-		for (RawMaterial ingredient: this.ingredients.keySet())
-			sum += (float) ingredient.getProteins();
+		for (RawMaterial ingredient: this.ingredients.keySet()) {
+			proteinsForTotalGrams += ((float) (ingredient.getProteins() * this.ingredients.get(ingredient))) / 100;
+			totalGram += this.ingredients.get(ingredient);
+		}
 		
-		return sum/100;
+		return ((proteinsForTotalGrams * 100)/totalGram);
 	}
 
 	@Override
 	public double getCarbs() {
-		float sum = 0;
+		
+		//Useful values
+		float carbsForTotalGrams = 0;
+		double totalGram = 0;
+		
 		
 		//Computing the sum of all the nutritional values for the recipe
-		for (RawMaterial ingredient: this.ingredients.keySet())
-			sum += (float) ingredient.getCarbs();
+		for (RawMaterial ingredient: this.ingredients.keySet()) {
+			carbsForTotalGrams += ((float) (ingredient.getCarbs() * this.ingredients.get(ingredient))) / 100;
+			totalGram += this.ingredients.get(ingredient);
+		}
 		
-		return sum/100;
+		return ((carbsForTotalGrams * 100)/totalGram);
 	}
 
 	@Override
 	public double getFat() {
-		float sum = 0;
+		
+		//Useful values
+		float fatForTotalGrams = 0;
+		double totalGram = 0;
+		
 		
 		//Computing the sum of all the nutritional values for the recipe
-		for (RawMaterial ingredient: this.ingredients.keySet())
-			sum += (float) ingredient.getFat();
+		for (RawMaterial ingredient: this.ingredients.keySet()) {
+			fatForTotalGrams += ((float) (ingredient.getFat() * this.ingredients.get(ingredient))) / 100;
+			totalGram += this.ingredients.get(ingredient);
+		}
 		
-		return sum/100;
+		return ((fatForTotalGrams * 100)/totalGram);
 	}
 
 	/**
