@@ -1,6 +1,17 @@
 package diet;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 
 
 /**
@@ -9,7 +20,20 @@ import java.util.Collection;
  *
  */
 public class Food {
-
+	
+	
+	/*
+	 * ATTRIBUTES
+	 */
+	protected Map<String, NutritionalElement> collection;
+	
+	/*
+	 * CONSTRUCTOR
+	 */
+	public Food() {
+		this.collection = new TreeMap<>();
+	}
+	
 	/**
 	 * Define a new raw material.
 	 * 
@@ -20,11 +44,10 @@ public class Food {
 	 * @param carbs		carbs per 100g
 	 * @param fat 		fats per 100g
 	 */
-	public void defineRawMaterial(String name,
-									  double calories,
-									  double proteins,
-									  double carbs,
-									  double fat){
+	public void defineRawMaterial(String name, double calories, double proteins, double carbs, double fat){
+		
+		//Adding the element to the collection of NutritionalElements
+		collection.put(name, new RawMaterial(name, calories, proteins, carbs, fat));
 	}
 	
 	/**
@@ -33,7 +56,22 @@ public class Food {
 	 * @return collection of raw materials though the {@link NutritionalElement} interface
 	 */
 	public Collection<NutritionalElement> rawMaterials(){
-		return null;
+				
+		/*
+		 * Creating a copy of the collection to be returned to the user.
+		 * The collection is a collection of any generic elements that extend the
+		 * NutritionalElement interface. The collection is create from the map values
+		 * which are already sorted.
+		 */
+		Collection<NutritionalElement> toBeReturned = new LinkedList<NutritionalElement>();
+		
+		for (NutritionalElement n: this.collection.values())
+			if (n instanceof RawMaterial)
+				toBeReturned.add(n);
+
+		
+		//Returning the collection of elements
+		return toBeReturned;
 	}
 	
 	/**
@@ -44,6 +82,16 @@ public class Food {
 	 * @return  a raw material though the {@link NutritionalElement} interface
 	 */
 	public NutritionalElement getRawMaterial(String name){
+		
+		//Checking if the element exist in the collection of food or not
+		if (this.collection.containsKey(name)) {
+			
+			//Returning a copy of the element
+			NutritionalElement toBeReturned = this.collection.get(name);		//CLONE() ??????????
+			return toBeReturned;
+			
+		}
+		
 		return null;
 	}
 
@@ -57,11 +105,11 @@ public class Food {
 	 * @param carbs		carbs for a product unit
 	 * @param fat 		fats for a product unit
 	 */
-	public void defineProduct(String name,
-								  double calories,
-								  double proteins,
-								  double carbs,
-								  double fat){
+	public void defineProduct(String name, double calories, double proteins, double carbs, double fat){
+		
+		//Adding the element to the collection of NutritionalElements
+		collection.put(name, new Product(name, calories, proteins, carbs, fat));
+		
 	}
 	
 	/**
@@ -70,7 +118,20 @@ public class Food {
 	 * @return collection of products though the {@link NutritionalElement} interface
 	 */
 	public Collection<NutritionalElement> products(){
-		return null;
+		/*
+		 * Creating a copy of the collection to be returned to the user.
+		 * The collection is a collection of any generic elements that extend the
+		 * NutritionalElement interface. The collection is create from the map values
+		 * which are already sorted.
+		 */
+		Collection<NutritionalElement> toBeReturned = new LinkedList<NutritionalElement>();
+		
+		for (NutritionalElement n: this.collection.values())
+			if (n instanceof RawMaterial)
+				toBeReturned.add(n);
+		
+		//Returning the collection of elements
+		return toBeReturned;
 	}
 	
 	/**
@@ -79,6 +140,16 @@ public class Food {
 	 * @return  a product though the {@link NutritionalElement} interface
 	 */
 	public NutritionalElement getProduct(String name){
+
+		//Checking if the element exist in the collection of food or not
+		if (this.collection.containsKey(name)) {
+			
+			//Returning a copy of the element
+			NutritionalElement toBeReturned = this.collection.get(name);		//CLONE() ??????????
+			return toBeReturned;
+			
+		}
+		
 		return null;
 	}
 	
@@ -90,7 +161,13 @@ public class Food {
 	 * @return the newly created Recipe object
 	 */
 	public Recipe createRecipe(String name) {
-		return null;
+		
+		//Creating the recipe
+		Recipe recipe = new Recipe(name, this.collection);
+		//Adding the recipe in the collection
+		collection.put(name, recipe);
+		
+		return recipe;
 	}
 	
 	/**
@@ -99,7 +176,21 @@ public class Food {
 	 * @return collection of recipes though the {@link NutritionalElement} interface
 	 */
 	public Collection<NutritionalElement> recipes(){
-		return null;
+
+		/*
+		 * Creating a copy of the collection to be returned to the user.
+		 * The collection is a collection of any generic elements that extend the
+		 * NutritionalElement interface. The collection is create from the map values
+		 * which are already sorted.
+		 */
+		Collection<NutritionalElement> toBeReturned = new LinkedList<NutritionalElement>();
+		
+		for (NutritionalElement n: this.collection.values())
+			if (n instanceof Recipe)
+				toBeReturned.add(n);
+
+		//Returning the collection of elements
+		return toBeReturned;
 	}
 	
 	/**
@@ -110,6 +201,15 @@ public class Food {
 	 * @return  a recipe though the {@link NutritionalElement} interface
 	 */
 	public NutritionalElement getRecipe(String name){		
+
+		//Checking if the element exist in the collection of food or not
+		if (this.collection.containsKey(name)) {
+			
+			//Returning a copy of the element
+			NutritionalElement toBeReturned = this.collection.get(name);		//CLONE() ??????????
+			return toBeReturned;
+		}
+		
 		return null;
 	}
 	
@@ -121,7 +221,14 @@ public class Food {
 	 * @return the newly created menu
 	 */
 	public Menu createMenu(String name) {
-		return null;
+
+		//Creating the recipe
+		Menu menu = new Menu(name, this.collection);
+		
+		//Adding the recipe in the collection
+		collection.put(name, menu);
+		
+		return menu;
 	}
-	
+
 }

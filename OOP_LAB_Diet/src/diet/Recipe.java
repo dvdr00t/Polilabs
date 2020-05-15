@@ -1,5 +1,8 @@
 package diet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents a recipe of the diet.
  * 
@@ -9,7 +12,22 @@ package diet;
  * 
  *
  */
-public class Recipe implements NutritionalElement {
+public class Recipe extends EdibleElement implements NutritionalElement {
+
+	/*
+	 * ATTRIBUTES
+	 */
+	private Map <RawMaterial, Double> ingredients;
+	private Map<String, NutritionalElement> collection;
+	
+	/*
+	 * CONSTRUCTOR
+	 */
+	public Recipe (String name, Map<String, NutritionalElement> collection) {
+		this.name = name;
+		this.ingredients = new HashMap<>();
+		this.collection = collection;	//Creating a link
+	}
     
 
 	/**
@@ -21,32 +39,61 @@ public class Recipe implements NutritionalElement {
 	 * @return the same Recipe object, it allows method chaining.
 	 */
 	public Recipe addIngredient(String material, double quantity) {
-		return null;
+		
+		RawMaterial ingredient = (RawMaterial) this.collection.get(material);
+		
+		//Adding the ingredient to the recipe
+		ingredients.put(ingredient, quantity);
+		return this;
 	}
 
 	@Override
 	public String getName() {
-		return null;
+		return this.name;
 	}
 
 	@Override
 	public double getCalories() {
-		return 0.0;
+		float sum = 0;
+		
+		//Computing the sum of all the nutritional values for the recipe
+		for (RawMaterial ingredient: this.ingredients.keySet())
+			sum += ((float) (ingredient.getCalories() * this.ingredients.get(ingredient))) / 100;
+		
+		return sum;
 	}
 
 	@Override
 	public double getProteins() {
-		return 0.0;
+		float sum = 0;
+		
+		//Computing the sum of all the nutritional values for the recipe
+		for (RawMaterial ingredient: this.ingredients.keySet())
+			sum += (float) ingredient.getProteins();
+		
+		return sum/100;
 	}
 
 	@Override
 	public double getCarbs() {
-		return 0.0;
+		float sum = 0;
+		
+		//Computing the sum of all the nutritional values for the recipe
+		for (RawMaterial ingredient: this.ingredients.keySet())
+			sum += (float) ingredient.getCarbs();
+		
+		return sum/100;
 	}
 
 	@Override
 	public double getFat() {
-		return 0.0;
+		float sum = 0;
+		
+		//Computing the sum of all the nutritional values for the recipe
+		for (RawMaterial ingredient: this.ingredients.keySet())
+			sum += (float) ingredient.getFat();
+		
+		return sum/100;
 	}
 
 	/**
@@ -78,6 +125,11 @@ public class Recipe implements NutritionalElement {
 	 */
 	@Override
 	public String toString() {
-		return null;
+		
+		String toBeReturned = "";
+		for (RawMaterial ingredient: this.ingredients.keySet())
+			toBeReturned += ingredient.getName() + " " + this.ingredients.get(ingredient) + "\n";
+		
+		return toBeReturned;
 	}
 }

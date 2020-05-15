@@ -15,7 +15,7 @@ package diet;
  * </ul>
  */
 public interface NutritionalElement {
-
+	
 	/**
 	 * Retrieves the name of the nutritional element.
 	 * Typically the name is unique within a specific category (e.g. raw materials)

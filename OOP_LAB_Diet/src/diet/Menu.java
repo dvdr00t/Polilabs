@@ -1,12 +1,31 @@
 package diet;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents a complete menu.
  * 
  * It can be made up of both packaged products and servings of given recipes.
  *
  */
-public class Menu implements NutritionalElement {
+public class Menu extends EdibleElement implements NutritionalElement {
+	
+	/*
+	 * ATTRIBUTES
+	 */
+	private Map<NutritionalElement, Double> composition;
+	private Map<String, NutritionalElement> collection;
+	
+	/*
+	 * CONSTRUCTOR
+	 */
+	public Menu (String name, Map<String, NutritionalElement> collection) {
+		this.name = name;
+		this.composition = new HashMap<>();
+		this.collection = collection;
+		
+	}
 	
 	/**
 	 * Adds a given serving size of a recipe.
@@ -19,7 +38,14 @@ public class Menu implements NutritionalElement {
 	 * @return the same Menu to allow method chaining
 	 */
 	public Menu addRecipe(String recipe, double quantity) {
-		return null;
+		
+		//Retrieving the recipe from the collection
+		Recipe menuRecipe = (Recipe) this.collection.get(recipe);
+		
+		//Adding the recipe to the menu
+		this.composition.put(menuRecipe, quantity);
+		return this;
+		
 	}
 
 	/**
@@ -31,7 +57,13 @@ public class Menu implements NutritionalElement {
 	 * @return the same Menu to allow method chaining
 	 */
 	public Menu addProduct(String product) {
-		return null;
+		
+		//Retrieving the product from the collection
+		Product menuProduct = (Product) this.collection.get(product);
+		
+		//Adding the product to the menu
+		this.composition.put(menuProduct, 1.0);
+		return this;
 	}
 
 	/**
@@ -39,7 +71,7 @@ public class Menu implements NutritionalElement {
 	 */
 	@Override
 	public String getName() {
-		return null;
+		return this.name;
 	}
 
 	/**
@@ -47,7 +79,17 @@ public class Menu implements NutritionalElement {
 	 */
 	@Override
 	public double getCalories() {
-		return 0.0;
+		float sum = 0;
+		
+		//Computing the total Kcal in the menu
+		for (NutritionalElement n: this.composition.keySet()) {
+			if (n.per100g())
+				sum += ((float) (n.getCalories() * this.composition.get(n))) / 100;
+			else
+				sum += n.getCalories();
+		}
+		
+		return sum;
 	}
 
 	/**
@@ -55,7 +97,13 @@ public class Menu implements NutritionalElement {
 	 */
 	@Override
 	public double getProteins() {
-		return 0.0;
+		float sum = 0;
+		
+		//Computing the total Kcal in the menu
+		for (NutritionalElement n: this.composition.keySet())
+			sum += (float) (n.getProteins() * this.composition.get(n));
+		
+		return sum;
 	}
 
 	/**
@@ -63,7 +111,13 @@ public class Menu implements NutritionalElement {
 	 */
 	@Override
 	public double getCarbs() {
-		return 0.0;
+		float sum = 0;
+		
+		//Computing the total Kcal in the menu
+		for (NutritionalElement n: this.composition.keySet())
+			sum += (float) (n.getCarbs() * this.composition.get(n));
+		
+		return sum;
 	}
 
 	/**
@@ -71,7 +125,13 @@ public class Menu implements NutritionalElement {
 	 */
 	@Override
 	public double getFat() {
-		return 0.0;
+		float sum = 0;
+		
+		//Computing the total Kcal in the menu
+		for (NutritionalElement n: this.composition.keySet())
+			sum += (float) (n.getFat() * this.composition.get(n));
+		
+		return sum;
 	}
 
 	/**
