@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="it">
+  <link href=".css.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <title>Laboratorio - Rifugi di montagna</title>
+  <meta name="revision" content="2020-05-21">
+  <meta name="author" content="Marco Torchiano">
+</head>
+
+<body>
+
+  <h1>Rifugi di montagna</h1>
+
+  <p>Sviluppare un'applicazione che consenta di gestire le informazioni sui rifugi di montagna di una regione.<br>
+    L'applicazione deve permettere di inserire le informazioni su intervalli di altitudine, comuni e rifugi di
+    montagna.<br>
+    Tutte le classi devono essere nel package "<b>mountainhuts</b>".</p>
+
+  <h2>R1 - Intervalli di altitudine</h2>
+
+  <p>L'interazione con il sistema avviene tramite la classe <b>Region</b>. Il metodo <b>getName()</b> della classe
+    <b>Region</b> ritorna il nome della regione specificato nel suo costruttore.</p>
+
+  <p>I rifugi sono classificati in base a delle fasce di altezza, che possono essere definite secondo le
+    necessit&agrave;. Per definire gli intervalli di altitudine disponibili si utilizza il metodo
+    <b>setAltitudeRanges()</b> che riceve come parametro un vettore di strighe. Ogni stringa rappresenta un intervallo
+    di altitudine utilizzando il formato "<i>[minValue]-[maxValue]</i>". Per esempio, l'intervallo "<i>0-1000</i>"
+    rappresenta le altitudini da 0 a 1000 metri sul livello del mare, estremi inclusi. Si supponga che gli intervalli
+    siano tra loro disgiunti.</p>
+
+  <p>Il metodo <b>getAltitudeRange()</b> riceve come parametro il valore di un'altitudine e ritorna la rappresentazione
+    testuale dell'intervallo (tra quelli predefiniti) in cui tale altitudine &egrave; presente, estremi inclusi.
+    Se non &egrave; disponibile alcun intervallo per tale altitudine, il metodo ritorna l'intervallo di default
+    "<i>0-INF</i>".
+  </p>
+
+  <h2>R2 - Comuni e rifugi di montagna</h2>
+
+  <p>I comuni sono definiti utilizzando il metodo <b>createOrGetMunicipality()</b> che accetta come parametri la
+    denominazione univoca del comune, la provincia e l'altitudine. Il metodo restistuisce un oggetto di classe
+    <b>Municipality</b>. Se un comune con la stessa denominazione &egrave; stato creato in precedenza, il metodo ritorna
+    il comune gi&agrave; disponibile, ignorando gli altri parametri.</p>
+
+  <p>I rifugi di montagna sono definiti utilizzando il metodo <b>createOrGetMountainHut()</b> che accetta come parametri
+    la denominazione univoca del rifugio, la categoria, il numero di posti letto ed il comune in cui è situato. Il
+    metodo <b>createOrGetMountainHut()</b> accetta opzionalmente il parametro relativo all'altitudine del rifugio. Il
+    metodo restistuisce un oggetto di classe <b>MountainHut</b>. Se un rifugio con la stessa denominazione &egrave;
+    stato creato in precedenza, il metodo ritorna il rifugio gi&agrave; disponibile, ignorando gli altri parametri.</p>
+
+  <p>Le classi <i>Municipality</i> e <i>MountainHut</i> offrono gli ovvi metodi getter. Il metodo <b>getAltitude()</b>
+    della classe <i>MountainHut</i> restituisce un <a
+      href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html"><i>Optional</i></a> che &egrave; vuoto
+    (<i>empty</i>) se l'altitudine del rifugio non &egrave; stata specificata.</p>
+
+  <p>&Egrave; possibile ottenere le collezioni dei comuni e rifugi disponibili utilizzando i metodi
+    <b>getMunicipalities()</b> e <b>getMountainHuts()</b>.</p>
+
+  <h4>Suggerimenti</h4>
+  <ul class="hint">
+    <li>La classe <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html"><i>Optional</i></a>
+      viene utilizzata per segnalare esplicitamente che un valore pu&ograve; essere <i>null</i>.
+      Il metodo <i>isPresent()</i> indica se &egrave; presente un valore nell'optional.<p>
+
+        Per creare un <i>Optional</i> a partire da una variable che potrebbe essere <i>null</i>
+        si pu&ograve; usare <i>Optional.ofNullable()</i> che restituisce un <i>Optional</i> contenente
+        la variabile oppure un <i>Optional</i> vuoto se la variabile &egrave; <i>null</i>.
+  </ul>
+
+  <h2>R3 - Lettura da CSV</h2>
+
+  <p>&Egrave; possibile, tramite il metodo statico <b>fromFile()</b>, creare un oggetto <i>Region</i> a partire
+    dal nome e dalle informazioni contenute in un file, passati come parametri. Le informazioni sono relative alle
+    classi illustrate sopra. Il metodo deve popolare la classe regione creando gli oggetti comune e rifugio descritti
+    nel file.</p>
+
+  <p>Le informazioni relative ai rifugi della regione sono memorizzati in un file con codifica <a
+      href="https://it.wikipedia.org/wiki/Comma-separated_values">CSV</a> che &egrave; strutturato in base alle seguenti
+    colonne che contengono informazioni relative a comuni e rifugi di montagna:</p>
+
+  <style>
+    td {
+      text-align: center;
+    }
+
+    th {
+      text-align: left;
+    }
+  </style>
+  <table style="float:none;font-family:sans-serif;">
+    <tr>
+      <th>#</th>
+      <th>Colonna</th>
+      <th colspan="4">Informazioni relative alle classi</th>
+    <tr>
+      <th></th>
+      <th></th>
+      <th><b>Municipality</b></th>
+      <th><b>MountainHut</b></th>
+    </tr>
+    <tr>
+      <td>0</td>
+      <th><i>Province</i></th>
+      <td>&#10003;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <th><i>Municipality</i></th>
+      <td>&#10003;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <th><i>MunicipalityAltitude</i></th>
+      <td>&#10003;</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <th><i>Name</i></th>
+      <td></td>
+      <td>&#10003;</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <th><i>Altitude</i></th>
+      <td></td>
+      <td>&#10003;</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <th><i>Category</i></th>
+      <td></td>
+      <td>&#10003;</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <th><i>BedsNumber</i></th>
+      <td></td>
+      <td>&#10003;</td>
+    </tr>
+  </table>
+
+  <p><strong>Attenzione</strong>: il file contiene una riga per ogni rifugio, quindi le informazioni relative ai comuni
+    possono essere replicate pi&ugrave; volte.</p>
+
+  <p>I campi del file CSV sono separati da un punto e virgola (<i>;</i>). La colonna relativa all'altitudine del rifugio
+    pu&ograve; essere vuota se tale informazione non &egrave; disponibile.</p>
+
+  <p>I dati relativi ai rifugi della regione Piemonte sono disponibili nel file:
+    <i>mountain_huts.csv</i> <sup>(<a href="#note"> * </a>)</sup>.</p>
+
+  <h4>Suggerimenti</h4>
+  <ul class="hint">
+    <li>Per la lettura da file, si parta dal frammento di codice gi&agrave; presente nel metodo <b>readData()</b> che
+      legge le righe di un file e le inserisce in una lista. La prima riga del file contiene le intestazioni, mentre
+      quelle successive contengono i dati veri e propri.</li>
+  </ul>
+
+  <h2>R4 - Interrogazioni</h2>
+  <p>Il metodo <b>countMunicipalitiesPerProvince()</b> restituisce una mappa
+    contenente come chiave il nome di una provincia e come valore il numero dei comuni in tale provincia.</p>
+
+  <p>Il metodo <b>countMountainHutsPerMunicipalityPerProvince()</b> restituisce una mappa
+    contenente come chiave il nome di una provincia e come valore un'altra mappa che fa corrispondere al nome di un
+    comune il numero dei rifugi in esso presenti.</p>
+
+  <p>Il metodo <b>countMountainHutsPerAltitudeRange()</b> restituisce una mappa contenente come chiave gli intervalli di
+    altitudine definiti dal metodo <i>setAltitudeRanges()</i> e come valore il numero dei rifugi con un'altitudine
+    inclusa in tale intervallo. Se l'altitudine del rifugio non &egrave; disponibile, si consideri l'altitudine del
+    comune corrispondente.</p>
+
+  <p>Il metodo <b>totalBedsNumberPerProvince()</b> restituisce una mappa contenente come chiave il nome di una provincia
+    e come valore il numero totale dei posti letto disponibili nei rifugi situati in tale provincia.</p>
+
+  <p>Il metodo <b>maximumBedsNumberPerAltitudeRange()</b> restituisce una mappa contenente come chiave gli intervalli di
+    altitudine definiti dal metodo <i>setAltitudeRanges()</i> e come valore il numero massimo dei posti letto
+    disponibili nei rifugi con un'altitudine inclusa in tale intervallo. Se l'altitudine del rifugio non &egrave;
+    disponibile, si consideri l'altitudine del comune corrispondente.</p>
+
+  <p>Il metodo <b>municipalityNamesPerCountOfMountainHuts()</b> restituisce una mappa contenente come chiave il numero
+    dei rifugi per comune e come valore una lista contenente i nomi dei comuni aventi tale numero di rifugi ordinata
+    alfabeticamente.</p>
+    
+  <ul class="hint">
+  	<li>Per svolgere le interrogazioni si consiglia di utilizzare
+  		gli Stream API che permettono di scrivere codice più
+  		compatto e più comprensibile, rispetto ad esplicite
+  		iterazioni su collezioni e mappe.</li>
+  </ul>
+
+  <footer id="note">
+    <sup>(*)</sup>: il file contiene una versione semplificata dei dati
+    disponibili sul portale open data della regione, in particolare
+    <a href="http://www.dati.piemonte.it/catalogodati/dato/101135-.html"
+      style="display:inline-block;">http://www.dati.piemonte.it/catalogodati/dato/101135-.html</a>
+  </footer>
+</body>
+
+</html>
