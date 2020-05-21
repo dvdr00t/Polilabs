@@ -1,4 +1,7 @@
 package diet;
+import java.util.HashMap;
+import java.util.Map;
+
 import diet.Order.OrderStatus;
 
 /**
@@ -6,6 +9,36 @@ import diet.Order.OrderStatus;
  *
  */
 public class Restaurant {
+	
+	/**
+	 * ADT used to define an array of schedules window.
+	 * Each position of the array contains two string: one is the opening hour
+	 * and one is the closing hour of the restaurant.
+	 */
+	private class ScheduleWindow {
+		private String openingHour;
+		private String closingHour;
+		
+		public ScheduleWindow (String openingHour, String closingHour) {
+			this.openingHour = openingHour;
+			this.closingHour = closingHour;
+		}
+		public String getOpeningHour() {
+			return openingHour;
+		}
+		public String getClosingHour() {
+			return closingHour;
+		}
+	}
+	
+	/*
+	 * Attributes
+	 */
+	private String nameRestaurant;
+	private Food foodRestaurant;
+	private ScheduleWindow[] schedule;
+	
+
 	
 	/**
 	 * Constructor for a new restaurant.
@@ -17,7 +50,8 @@ public class Restaurant {
 	 * @param food	reference food object
 	 */
 	public Restaurant(String name, Food food) {
-		// TODO: implement constructor
+		this.nameRestaurant = name;
+		this.foodRestaurant = food;
 	}
 	
 	/**
@@ -26,7 +60,7 @@ public class Restaurant {
 	 * @return name
 	 */
 	public String getName() {
-		return null;
+		return this.nameRestaurant;
 	}
 	
 	/**
@@ -42,6 +76,19 @@ public class Restaurant {
 	 * @param hm a list of opening hours
 	 */
 	public void setHours(String ... hm) {
+		
+		//Creating the schedule windows
+		this.schedule = new ScheduleWindow[hm.length/2];
+		
+		//Adding the schedule hours
+		int firstIndex = 0;
+		int secondIndex = 1;
+		for (int count = 0; count < hm.length/2; count++) {
+			this.schedule[count] = new ScheduleWindow(hm[firstIndex], hm[secondIndex]);
+			
+			firstIndex += 2;
+			secondIndex += 2;
+		}
 	}
 	
 	public Menu getMenu(String name) {
@@ -56,7 +103,11 @@ public class Restaurant {
 	 * @return the newly created menu
 	 */
 	public Menu createMenu(String name) {
-		return null;
+		
+		//Creating the menu object
+		Menu menu = new Menu(name, this.foodRestaurant.collection);
+		
+		return menu;
 	}
 
 	/**

@@ -1,6 +1,12 @@
 package diet;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents the main class in the
@@ -10,6 +16,22 @@ import java.util.Collection;
  *
  */
 public class Takeaway {
+	
+	/*
+	 * Attributes
+	 */
+	private List<Restaurant> listRestaurants;
+	private List<User> listUsers;
+	
+	/**
+	 * Constructor of the class
+	 * 
+	 * @param void
+	 */
+	public Takeaway () {
+		this.listRestaurants = new LinkedList<Restaurant>();
+		this.listUsers = new LinkedList<User>();
+	}
 
 	/**
 	 * Adds a new restaurant to the take-away system
@@ -17,6 +39,13 @@ public class Takeaway {
 	 * @param r the restaurant to be added
 	 */
 	public void addRestaurant(Restaurant r) {
+		
+		//Checking if the Restaurant already exists
+		if (this.listRestaurants.contains(r))
+			return;
+		
+		//Adding the new Restaurant
+		this.listRestaurants.add(r);
 	}
 	
 	/**
@@ -25,7 +54,15 @@ public class Takeaway {
 	 * @return collection of added restaurants
 	 */
 	public Collection<String> restaurants() {
-		return null;
+		
+		//Creating a new collection to be returned to the user
+		Collection<String> toBeReturned = new LinkedList<String>();
+		
+		//Adding the string to the collection
+		for (Restaurant r: this.listRestaurants)
+			toBeReturned.add(r.getName());
+		
+		return toBeReturned;
 	}
 	
 	/**
@@ -38,7 +75,14 @@ public class Takeaway {
 	 * @return
 	 */
 	public User registerUser(String firstName, String lastName, String email, String phoneNumber) {
-		return null;
+		
+		//Creating the new user to be returned
+		User newUser = new User(firstName, lastName, email, phoneNumber);
+		
+		//Adding the user to the list of users
+		this.listUsers.add(newUser);
+		
+		return newUser;
 	}
 	
 	/**
@@ -47,7 +91,22 @@ public class Takeaway {
 	 * @return the collection of users
 	 */
 	public Collection<User> users(){
-		return null;
+		
+		//Creating a new array of users to sort it
+		User[] toBeSorted = new User[this.listUsers.size()];
+		this.listUsers.toArray(toBeSorted);
+		
+		//Sorting array;
+		Arrays.sort(toBeSorted);
+		
+		//Creating the collection to be returnd to the user
+		Collection<User> toBeReturned = new LinkedList<User>();
+		
+		//Adding elements to the collection
+		for (User u: toBeSorted)
+			toBeReturned.add(u);
+		
+		return toBeReturned;
 	}
 	
 	/**

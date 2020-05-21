@@ -34,7 +34,7 @@ public class ExampleTest_Ext {
         User u4 = takeaway.registerUser("Judi", "Dench", "j.dench@gmail.com", "9885422544");
         takeaway.registerUser("Adam", "McKellen", "a.mckellen@gmail.com", "124882578");
         
-        
+        takeaway.users();
         
         //Defining restaurants and their working hours
         Restaurant r1 = new Restaurant("Napoli",foods);
@@ -249,7 +249,7 @@ public class ExampleTest_Ext {
         
         Order o8 = takeaway.createOrder(u1, "Napoli", 9, 15);//r1
         o8.addMenus("M1", 1);
-        assertTrue(o8.getPaymentMethod() == PaymentMethod.PAID);
+        assertTrue(o8.getPaymentMethod() == PaymentMethod.CASH);
         
        
         assertTrue(o1.getStatus()==OrderStatus.ORDERED);
@@ -260,10 +260,9 @@ public class ExampleTest_Ext {
         o5.setStatus(OrderStatus.DELIVERED);
         
         
-
-        assertEquals(r1.ordersWithStatus(OrderStatus.DELIVERED).trim(),"Napoli, Judi Dench : (08:00):\n\tM6->1\nNapoli, Ralph Fiennes : (08:00):\n\tM1->2\n\tM6->1");    
+        assertEquals(r1.ordersWithStatus(OrderStatus.DELIVERED).trim(),"Napoli, Judi Dench : (19:00):\n\tM6->1\nNapoli, Ralph Fiennes : (19:00):\n\tM1->2\n\tM6->1");    
         assertEquals(r2.ordersWithStatus(OrderStatus.READY).trim(),"Roma, Maggie Smith : (08:45):\n\tM3->4\n\tM5->3");       
-        assertEquals(r3.ordersWithStatus(OrderStatus.ORDERED).trim(),"Venezia, Maggie Smith : (07:45):\n\tM1->1\n\tM4->2");
+        assertEquals(r3.ordersWithStatus(OrderStatus.ORDERED).trim(),"Venezia, Maggie Smith : (12:30):\n\tM1->1\n\tM4->2");
         assertEquals(r4.ordersWithStatus(OrderStatus.ORDERED).trim(),"Milano, Ian McKellen : (20:30):\n\tM2->1\n\tM4->2\n\tM5->1");
         
         

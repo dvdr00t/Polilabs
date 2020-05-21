@@ -18,7 +18,7 @@ public class Menu extends EdibleElement implements NutritionalElement {
 	private Map<String, NutritionalElement> collection;
 	
 	/*
-	 * CONSTRUCTOR
+	 * CONSTRUCTORS
 	 */
 	public Menu (String name, Map<String, NutritionalElement> collection) {
 		this.name = name;

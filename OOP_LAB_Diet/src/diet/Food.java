@@ -127,7 +127,7 @@ public class Food {
 		Collection<NutritionalElement> toBeReturned = new LinkedList<NutritionalElement>();
 		
 		for (NutritionalElement n: this.collection.values())
-			if (n instanceof RawMaterial)
+			if (n instanceof Product)
 				toBeReturned.add(n);
 		
 		//Returning the collection of elements
