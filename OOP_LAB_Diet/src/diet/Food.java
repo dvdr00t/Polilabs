@@ -230,5 +230,24 @@ public class Food {
 		
 		return menu;
 	}
+	
+	/**
+	 * Return the menu if exists
+	 * 
+	 * @param name	name of the menu
+	 * @return Menu the menu
+	 */
+	public Menu getMenu (String name) {
+		
+		//Checking if the element exist in the collection of food or not
+		if (this.collection.containsKey(name)) {
+			
+			//Returning a copy of the element
+			Menu toBeReturned = (Menu) this.collection.get(name);
+			return toBeReturned;
+		}
+		
+		return null;
+	}
 
 }

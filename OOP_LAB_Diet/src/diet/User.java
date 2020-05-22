@@ -90,4 +90,9 @@ public class User implements Comparable<User>{
 		return this.lastName.compareTo(o.getLastName());
 	}
 	
+	@Override
+	public String toString() {
+		return this.firstName + " " + this.lastName;
+	}
+	
 }

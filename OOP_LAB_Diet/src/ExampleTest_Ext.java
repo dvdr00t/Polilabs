@@ -217,11 +217,11 @@ public class ExampleTest_Ext {
         //Making new orders
         Order o1 = takeaway.createOrder(u1, "Napoli", 17, 47);//r1
         o1.addMenus("M6", 1).addMenus("M1", 2);
-        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (08:00):\n\tM1->2\n\tM6->1");
+        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (19:00):\n\tM1->2\n\tM6->1");
         o1.addMenus("M1", 3);
-        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (08:00):\n\tM1->3\n\tM6->1");
+        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (19:00):\n\tM1->3\n\tM6->1");
         o1.addMenus("M1", 2);
-        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (08:00):\n\tM1->2\n\tM6->1");
+        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (19:00):\n\tM1->2\n\tM6->1");
         
         
        

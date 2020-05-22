@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Represents the main class in the
@@ -55,12 +57,19 @@ public class Takeaway {
 	 */
 	public Collection<String> restaurants() {
 		
-		//Creating a new collection to be returned to the user
+		//Creating a new array of users to sort it
+		Restaurant[] toBeSorted = new Restaurant[this.listRestaurants.size()];
+		this.listRestaurants.toArray(toBeSorted);
+		
+		//Sorting array;
+		Arrays.sort(toBeSorted);
+		
+		//Creating the collection to be returned to the user
 		Collection<String> toBeReturned = new LinkedList<String>();
 		
-		//Adding the string to the collection
-		for (Restaurant r: this.listRestaurants)
-			toBeReturned.add(r.getName());
+		//Adding elements to the collection
+		for (Restaurant u: toBeSorted)
+			toBeReturned.add(u.getName());
 		
 		return toBeReturned;
 	}
@@ -122,7 +131,45 @@ public class Takeaway {
 	 * @return
 	 */
 	public Order createOrder(User user, String restaurantName, int h, int m) {
-		return null;
+		
+		//Searching the restaurant in the list
+		int index = 0;
+		for (Restaurant r: this.listRestaurants) {
+			if (r.getName().equals(restaurantName))
+				break;
+			index++;
+		}
+		
+		
+		//Checking the existence of the restaurant
+		if (index == this.listRestaurants.size()) 
+			return null;
+		Restaurant restaurant = this.listRestaurants.get(index);
+		
+		//Getting the right delivering time
+		String deliveringTime;
+		
+		//Fixing hours and minutes
+		if (h < 10)
+			deliveringTime = "0" + h + ":";
+		else
+			deliveringTime = h + ":";
+		
+		if (m < 10)
+			deliveringTime = deliveringTime + "0" + m;
+		else
+			deliveringTime = deliveringTime + m;
+			
+		//Calling the method that retrieve the right delivering time
+		String deliveringHour = restaurant.getOrderScheduleTime(deliveringTime);
+		
+		//Creating the new order
+		Order order = new Order(user, restaurant, deliveringHour);
+		
+		//Adding the new order to the restaurant
+		restaurant.addOrder(order);
+	
+		return order;
 	}
 	
 	/**
@@ -134,7 +181,17 @@ public class Takeaway {
 	 * @return collection of restaurants
 	 */
 	public Collection<Restaurant> openedRestaurants(String time){
-		return null;
+		
+		//Creating the new collection to be returned
+		Collection<Restaurant> toBeReturned = new TreeSet<Restaurant>();
+		
+		//Adding the valid elements
+		for (Restaurant r: this.listRestaurants)
+			if (r.itsOpened(time))
+				toBeReturned.add(r);
+		
+		return toBeReturned;
+		
 	}
 
 	

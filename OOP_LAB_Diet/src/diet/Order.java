@@ -1,9 +1,41 @@
 package diet;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  * Represents an order in the take-away system
  */
-public class Order {
+public class Order implements Comparable<Order>{
+	
+	/*
+	 * Attributes
+	 */
+	private User orderingUser;
+	private Restaurant orderingRestaurant;
+	private String delivererHour;
+	
+	private Map<Menu, Integer> contents;
+	private OrderStatus status;
+	private PaymentMethod method;
+	
+	
+	/**
+	 * Constructor for the order
+	 * 
+	 * @param user			User that made the order
+	 * @param restaurant	Restaurant to which the order is call
+	 * @param deliveringTime String containing the delivering time
+	 */
+	public Order(User user, Restaurant restaurant, String deliveringTime) {
+		this.orderingUser = user;
+		this.orderingRestaurant = restaurant;
+		this.delivererHour = deliveringTime;
+		
+		this.contents = new TreeMap<>();
+		this.status = OrderStatus.ORDERED;
+		this.method = PaymentMethod.CASH;
+	}
  
 	/**
 	 * Defines the possible order status
@@ -32,6 +64,7 @@ public class Order {
 	 * @param method payment method
 	 */
 	public void setPaymentMethod(PaymentMethod method) {
+		this.method = method;
 	}
 	
 	/**
@@ -40,7 +73,7 @@ public class Order {
 	 * @return payment method
 	 */
 	public PaymentMethod getPaymentMethod() {
-		return null;
+		return this.method;
 	}
 	
 	/**
@@ -48,6 +81,7 @@ public class Order {
 	 * @param newStatus order status
 	 */
 	public void setStatus(OrderStatus newStatus) {
+		this.status = newStatus;
 	}
 	
 	/**
@@ -55,7 +89,7 @@ public class Order {
 	 * @return order status
 	 */
 	public OrderStatus getStatus(){
-		return null;
+		return this.status;
 	}
 	
 	/**
@@ -68,6 +102,13 @@ public class Order {
 	 * @return this order to enable method chaining
 	 */
 	public Order addMenus(String menu, int quantity) {
+		
+		//Retrieving the menu
+		Menu toBeAdded = this.orderingRestaurant.getMenu(menu);
+		
+		//Adding the menu
+		if (toBeAdded != null)
+			this.contents.put(toBeAdded, (Integer) quantity);
 
 		return this;
 	}
@@ -83,7 +124,43 @@ public class Order {
 	 */
 	@Override
 	public String toString() {
-		return null;
+		
+		String toBeReturned = this.orderingRestaurant.getName() + ", "
+				+ this.orderingUser.getFirstName() + " " + this.orderingUser.getLastName() + " : "
+				+ "(" + this.delivererHour + "):\n";
+		
+		for (Menu m: this.contents.keySet())
+			toBeReturned = toBeReturned + "\t" + m.getName() + "->" + this.contents.get(m) + "\n";
+	
+		return toBeReturned;
+	}
+
+	@Override
+	public int compareTo(Order o) {
+		
+		//If the restaurant names are equal:
+		if (this.orderingRestaurant.getName().equals(o.orderingRestaurant.getName())) {
+			
+			//If the user first names are equal:
+			if (this.orderingUser.getFirstName().equals(o.orderingUser.getFirstName())) {
+				
+				//If the user last names are equal:
+				if (this.orderingUser.getLastName().equals(o.orderingUser.getLastName())) {
+					
+					//Comparing hours
+					return this.delivererHour.compareTo(o.delivererHour);
+				}
+				
+				//Comparing last names
+				return this.orderingUser.getLastName().compareTo(o.orderingUser.getLastName());
+			}
+			
+			//Comparing first names
+			return this.orderingUser.getFirstName().compareTo(o.orderingUser.getFirstName());
+		}
+		
+		//Comparing restaurant names
+		return this.orderingRestaurant.getName().compareTo(o.orderingRestaurant.getName());
 	}
 	
 }

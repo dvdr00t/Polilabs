@@ -9,7 +9,7 @@ import java.util.Map;
  * It can be made up of both packaged products and servings of given recipes.
  *
  */
-public class Menu extends EdibleElement implements NutritionalElement {
+public class Menu extends EdibleElement implements NutritionalElement, Comparable<Menu> {
 	
 	/*
 	 * ATTRIBUTES
@@ -160,5 +160,10 @@ public class Menu extends EdibleElement implements NutritionalElement {
 	public boolean per100g() {
 		// nutritional values are provided for the whole menu.
 		return false;
+	}
+
+	@Override
+	public int compareTo(Menu o) {
+		return this.getName().compareTo(o.getName());
 	}
 }
