@@ -1,6 +1,7 @@
 package diet;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -25,7 +26,7 @@ public class Recipe extends EdibleElement implements NutritionalElement {
 	 */
 	public Recipe (String name, Map<String, NutritionalElement> collection) {
 		this.name = name;
-		this.ingredients = new HashMap<>();
+		this.ingredients = new LinkedHashMap<>();
 		this.collection = collection;	//Creating a link
 	}
     
