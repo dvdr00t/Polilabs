@@ -19,6 +19,11 @@ import java.util.Optional;
  *
  */
 public class Region {
+	
+	/*
+	 * ATTRIBUTES
+	 */
+	private String regionName;
 
 	/**
 	 * Create a region with the given name.
@@ -27,7 +32,7 @@ public class Region {
 	 *            the name of the region
 	 */
 	public Region(String name) {
-
+		this.regionName = name;
 	}
 
 	/**
@@ -36,7 +41,7 @@ public class Region {
 	 * @return the name of the region
 	 */
 	public String getName() {
-		return null;
+		return this.regionName;
 	}
 
 	/**
@@ -137,7 +142,7 @@ public class Region {
 	}
 
 	/**
-	 * Factory methods that creates a new region by loadomg its data from a file.
+	 * Factory methods that creates a new region by loading its data from a file.
 	 * 
 	 * The file must be a CSV file and it must contain the following fields:
 	 * <ul>
