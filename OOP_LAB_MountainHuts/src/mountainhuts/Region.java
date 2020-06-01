@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public class Region {
 	 * ATTRIBUTES
 	 */
 	private String regionName;
+	private List<AltitudeRange> list;
 
 	/**
 	 * Create a region with the given name.
@@ -33,6 +35,7 @@ public class Region {
 	 */
 	public Region(String name) {
 		this.regionName = name;
+		this.list = new LinkedList<AltitudeRange>();
 	}
 
 	/**
@@ -52,6 +55,9 @@ public class Region {
 	 *            an array of textual ranges
 	 */
 	public void setAltitudeRanges(String... ranges) {
+		for (String s: ranges) {
+			this.list.add(new AltitudeRange(s));
+		}
 
 	}
 
@@ -64,7 +70,12 @@ public class Region {
 	 * @return a string representing the range
 	 */
 	public String getAltitudeRange(Integer altitude) {
-		return null;
+		
+		for (AltitudeRange ar: this.list)
+			if (altitude >= ar.getMinValue() && altitude < ar.getMaxValue())
+				return ar.getMinValue() + "-" + ar.getMaxValue();
+				
+		return "0-INF";
 	}
 
 	/**
