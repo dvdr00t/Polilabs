@@ -37,5 +37,9 @@ public class AltitudeRange {
 	}
 	
 	
+	@Override
+	public String toString() {
+		return this.minValue + "-" + this.maxValue;
+	}
 
 }
