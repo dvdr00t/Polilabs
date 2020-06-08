@@ -191,8 +191,7 @@ public class Clinic {
 	 * @return the collection of doctors' ids
 	 */
 	public Collection<Integer> idleDoctors(){
-		// TODO Complete method
-		return null;
+
 	}
 
 	/**
