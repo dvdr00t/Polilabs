@@ -3,12 +3,30 @@ package clinic;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a clinic with patients and doctors.
  * 
  */
 public class Clinic {
+	
+	/*
+	 * ATTRIBUTES
+	 */
+	private List<Patient> patients;
+	private List<Doctor> doctors;
+	private Map<Patient, Doctor> assignement;
+	
+	
+	public Clinic () {
+		this.patients = new LinkedList<Patient>();
+		this.doctors = new LinkedList<Doctor>();
+		this.assignement = new LinkedHashMap<Patient, Doctor>();
+	}
 
 	/**
 	 * Add a new clinic patient.
@@ -18,8 +36,7 @@ public class Clinic {
 	 * @param ssn SSN number of the patient
 	 */
 	public void addPatient(String first, String last, String ssn) {
-		// TODO Complete method
-
+		this.patients.add(new Patient(first, last, ssn));
 	}
 
 
@@ -31,8 +48,13 @@ public class Clinic {
 	 * @throws NoSuchPatient in case of no patient with matching SSN
 	 */
 	public String getPatient(String ssn) throws NoSuchPatient {
-		// TODO Complete method
-		return null;
+		
+		Patient p = this.patients.stream()
+				.filter(x -> (x.getSSN().equals(ssn)))
+				.findFirst()
+				.orElseThrow(() -> new NoSuchPatient());
+		
+		return p.getLastName() + " " + p.getFirstName() + " (" + p.getSSN() + ")";
 	}
 
 	/**
@@ -45,8 +67,7 @@ public class Clinic {
 	 * @param specialization doctor's specialization
 	 */
 	public void addDoctor(String first, String last, String ssn, int docID, String specialization) {
-		// TODO Complete method
-
+		this.doctors.add(new Doctor(first, last, ssn, docID, specialization));
 	}
 
 	/**
@@ -57,8 +78,13 @@ public class Clinic {
 	 * @throws NoSuchDoctor in case no doctor exists with a matching ID
 	 */
 	public String getDoctor(int docID) throws NoSuchDoctor {
-		// TODO Complete method
-		return null;
+		
+		Doctor d = this.doctors.stream()
+				.filter(x -> (x.getDocID() == docID))
+				.findFirst()
+				.orElseThrow(() -> new NoSuchDoctor());
+		
+		return d.getLastName() + " " + d.getFirstName() + " (" + d.getSSN() + ") (" + d.getDocID() + "): " + d.getSpecialization();
 	}
 	
 	/**
@@ -70,8 +96,22 @@ public class Clinic {
 	 * @throws NoSuchDoctor in case no doctor exists with a matching ID
 	 */
 	public void assignPatientToDoctor(String ssn, int docID) throws NoSuchPatient, NoSuchDoctor {
-		// TODO Complete method
-
+		
+		//Retrieving patient
+		Patient p = this.patients.stream()
+				.filter(x -> (x.getSSN().equals(ssn)))
+				.findFirst()
+				.orElseThrow(() -> new NoSuchPatient());
+		
+		//Retrieving doctor
+		Doctor d = this.doctors.stream()
+				.filter(x -> (x.getDocID() == docID))
+				.findFirst()
+				.orElseThrow(() -> new NoSuchDoctor());
+		
+		//Assign doctor to patient
+		this.assignement.put(p, d);
+		
 	}
 	
 	/**
@@ -83,8 +123,14 @@ public class Clinic {
 	 * @throws NoSuchDoctor in case no doctor has been assigned to the patient
 	 */
 	public int getAssignedDoctor(String ssn) throws NoSuchPatient, NoSuchDoctor {
-		// TODO Complete method
-		return -1;
+		
+		//Retrieving patient
+		Patient p = this.patients.stream()
+				.filter(x -> (x.getSSN().equals(ssn)))
+				.findFirst()
+				.orElseThrow(() -> new NoSuchPatient());
+			
+		return this.assignement.get(p).getDocID();
 	}
 	
 	/**
@@ -95,8 +141,21 @@ public class Clinic {
 	 * @throws NoSuchDoctor in case the {@code id} does not match any doctor 
 	 */
 	public Collection<String> getAssignedPatients(int id) throws NoSuchDoctor {
-		// TODO Complete method
-		return null;
+		
+		//Retrieving doctor
+		Doctor d = this.doctors.stream()
+				.filter(x -> (x.getDocID() == id))
+				.findFirst()
+				.orElseThrow(() -> new NoSuchDoctor());
+		
+		Collection<String> toBeReturned = new LinkedList<String>();
+		this.assignement.forEach((key, value) -> {
+			if (value.getDocID() == d.getDocID())
+				toBeReturned.add(key.getSSN() + "\n");
+		});
+		
+		return toBeReturned;
+		
 	}
 
 
