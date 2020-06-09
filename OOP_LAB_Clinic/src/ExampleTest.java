@@ -57,6 +57,15 @@ public class ExampleTest {
 		assertNotNull("Missing busy doctors",busy);
 		assertEquals("Too many busy doctors detected",1,busy.size());
 		assertTrue("Missing busy doctor",busy.contains(14));
+		
+		
+		/*
+		 * ADDED
+		 */
+		Collection<String> doc = hospital.doctorsByNumPatients();
+		assertNotNull("missing values", doc);
+		assertEquals("Too many doctors detected",2,doc.size());
+		assertEquals("");
 	}
 
 }

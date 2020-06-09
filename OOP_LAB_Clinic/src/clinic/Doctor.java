@@ -7,6 +7,7 @@ public class Doctor extends Person {
 	 */
 	private int docID;
 	private String specialization;
+	private Integer numberOfPatient;
 
 	/**
 	 * CONSTRUCTOR
@@ -21,6 +22,7 @@ public class Doctor extends Person {
 		super(firstName, lastName, SSN);
 		this.docID = docID;
 		this.specialization = specialization;
+		this.numberOfPatient = 0;
 	}
 
 	
@@ -32,6 +34,31 @@ public class Doctor extends Person {
 	}
 	public String getSpecialization() {
 		return specialization;
+	}
+	public Integer getNumberOfPatient() {
+		return this.numberOfPatient;
+	}
+	
+	/*
+	 * METHODS
+	 */
+	
+	/**
+	 * Increment the number of patients assigned to this doctors of a value number
+	 * 
+	 * @param value value of the increment
+	 */
+	public void incrementNumberOfPatient(Integer value) {
+		this.numberOfPatient = this.numberOfPatient + value;
+	}
+	
+	/**
+	 * Decrement the number of patients assigned to this doctors of a value number
+	 * 
+	 * @param value value of the decrement
+	 */
+	public void decrementNumberOfPatient(Integer value) {
+		this.numberOfPatient = this.numberOfPatient - value;
 	}
 	
 	

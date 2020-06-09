@@ -3,10 +3,14 @@ package clinic;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Represents a clinic with patients and doctors.
@@ -112,6 +116,9 @@ public class Clinic {
 		//Assign doctor to patient
 		this.assignement.put(p, d);
 		
+		//Increment the number of patient assigned
+		d.incrementNumberOfPatient(1);
+		
 	}
 	
 	/**
@@ -154,6 +161,7 @@ public class Clinic {
 				toBeReturned.add(key.getSSN() + "\n");
 		});
 		
+		
 		return toBeReturned;
 		
 	}
@@ -191,6 +199,33 @@ public class Clinic {
 	 * @return the collection of doctors' ids
 	 */
 	public Collection<Integer> idleDoctors(){
+		
+		/*
+		
+		//Creating a copy of the collection containing the doctors
+		Collection<Doctor> idleDoctors = new LinkedList<Doctor>(this.doctors);
+		
+		//Removing from the copy all the doctors that are assigned
+		idleDoctors.removeAll(this.assignement.values());
+		
+		//Getting for each of this doctor, the codID and add it to the collection
+		Collection<Integer> toBeReturned = new LinkedList<Integer>();
+		idleDoctors.forEach(d -> {
+			toBeReturned.add(d.getDocID());
+		});
+		
+		return toBeReturned;
+		
+		*/
+		
+		//Creating a copy of the collection containing the doctors
+		Collection<Integer> idleDoctors = this.doctors
+				.stream()
+				.filter(d -> d.getNumberOfPatient() == 0)
+				.flatMap(m -> m.getDocID())
+				.collect(Collectors.toList());
+				
+		
 
 	}
 
@@ -200,8 +235,40 @@ public class Clinic {
 	 * @return  the collection of doctors' ids
 	 */
 	public Collection<Integer> busyDoctors(){
-		// TODO Complete method
-		return null;
+		
+		/*
+		 * Given the map of patient associate with their doctors, we want to create a new map 
+		 * that has:
+		 * 
+		 *  KEYS: every doctor
+		 *  VALUE: the number of patients he/She has
+		 */
+		Map<Doctor, Long> bIndex = this.assignement
+				.values()
+				.stream()
+				.collect(Collectors.groupingBy(d -> d, Collectors.counting()));
+		
+		//Adding the doctors that are not present in the map (they have zero patients assigned) 
+		this.doctors.forEach(d -> {
+			if (!this.assignement.containsValue(d))
+				bIndex.put(d, (long) 0);
+		});
+		
+		//Computing the average value from the new map created (average number of patients for doctors)
+		double avg = bIndex.values()
+				.stream()
+				.mapToDouble(Long::doubleValue)
+				.average()
+				.orElse(0);
+				
+		//Retrieving all the doctors that has a number of patients lower than the avg
+		Collection<Integer> busyDoctors = new LinkedList<Integer>();
+		bIndex.forEach((key, value) -> {
+			if (value > avg)
+				busyDoctors.add(key.getDocID());
+		});
+		
+		return busyDoctors;
 	}
 
 	/**
@@ -215,8 +282,33 @@ public class Clinic {
 	 * @return the collection of strings with information about doctors and patients count
 	 */
 	public Collection<String> doctorsByNumPatients(){
-		// TODO Complete method
-		return null;
+		
+		/*
+		 * Given the map of patient associate with their doctors, we want to create a new map 
+		 * that has:
+		 * 
+		 *  KEYS: every doctor
+		 *  VALUE: the number of patients he/She has
+		 */
+		Map<Doctor, Long> bIndex = this.assignement
+				.values()
+				.stream()
+				.collect(Collectors.groupingBy(d -> d, Collectors.counting()));
+		
+		//Adding the doctors that are not present in the map (they have zero patients assigned) 
+		this.doctors.forEach(d -> {
+			if (!this.assignement.containsValue(d))
+				bIndex.put(d, (long) 0);
+		});
+
+		//Creating the collection storing the strings
+		Collection<String> doctorsByNumPatients = new LinkedList<String>();
+		bIndex.forEach((key, value) -> {
+			doctorsByNumPatients.add(Long.toString(value) + " : " + key.getDocID() + " " + key.getLastName() + " " + key.getFirstName() + "\n");
+		});
+		
+		
+		return doctorsByNumPatients;
 	}
 	
 	/**
