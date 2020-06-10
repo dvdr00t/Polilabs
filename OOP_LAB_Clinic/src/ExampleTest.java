@@ -19,6 +19,9 @@ public class ExampleTest {
 		hospital.addPatient("Robert", "Smith", "RBTSMT");
 		hospital.addPatient("Steve", "Moore", "STVMRE");
 		hospital.addPatient("Susan", "Madison", "SSNMDS");
+		hospital.addPatient("Alex", "Karev", "ALXKRV");
+		hospital.addPatient("Meredith", "Grey", "MRDGRY");
+		hospital.addPatient("Cristina", "Yang", "CRSYNG");
 		
 		String alice = hospital.getPatient("ALCGRN");
 		Pattern p = Pattern.compile("green\\s+alice\\s+\\(\\s*ALCGRN\\s*\\)",Pattern.CASE_INSENSITIVE);
@@ -27,6 +30,9 @@ public class ExampleTest {
 
 		hospital.addDoctor("George", "Sun","SNUGRG", 14,"Physician");
 		hospital.addDoctor("Kate", "Love", "LVOKTA",86,"Physician");
+		hospital.addDoctor("Derek", "Sherpard", "DRKSHP",15,"Neuro");
+		hospital.addDoctor("Mark", "Sloan", "MRKSLN",10,"Plastic");
+		hospital.addDoctor("Preston", "Burke", "PRSBRK",11,"Cardio");
 		
 		String kate = hospital.getDoctor(86);
 		assertNotNull("Missing doctor",kate);
@@ -37,6 +43,10 @@ public class ExampleTest {
 		hospital.assignPatientToDoctor("ALCGRN", 14);
 		hospital.assignPatientToDoctor("RBTSMT", 14);
 		hospital.assignPatientToDoctor("STVMRE", 14);
+		hospital.assignPatientToDoctor("ALXKRV", 10);
+		hospital.assignPatientToDoctor("MRDGRY", 15);
+		hospital.assignPatientToDoctor("CRSYNG", 15);
+		
 
 		int susanDoc = hospital.getAssignedDoctor("SSNMDS");
 		assertEquals("Wrong doctor for Susan",86,susanDoc);
@@ -53,9 +63,14 @@ public class ExampleTest {
 		}
 		
 		Collection<Integer> busy = hospital.busyDoctors();
+		Collection<Integer> idle = hospital.idleDoctors();
+		
+		assertNotNull("Missing idle doctors",idle);
+		assertEquals("Too many idle doctors detected",1,idle.size());
+		assertTrue("Missing idle doctor",idle.contains(11));
 		
 		assertNotNull("Missing busy doctors",busy);
-		assertEquals("Too many busy doctors detected",1,busy.size());
+		assertEquals("Too many busy doctors detected",2,busy.size());
 		assertTrue("Missing busy doctor",busy.contains(14));
 		
 		
@@ -64,8 +79,7 @@ public class ExampleTest {
 		 */
 		Collection<String> doc = hospital.doctorsByNumPatients();
 		assertNotNull("missing values", doc);
-		assertEquals("Too many doctors detected",2,doc.size());
-		assertEquals("");
+		assertEquals("Too many doctors detected",5,doc.size());
 	}
 
 }

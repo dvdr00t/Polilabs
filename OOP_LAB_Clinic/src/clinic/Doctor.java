@@ -1,6 +1,6 @@
 package clinic;
 
-public class Doctor extends Person {
+public class Doctor extends Person{
 	
 	/*
 	 * ATTRIBUTES
@@ -60,8 +60,7 @@ public class Doctor extends Person {
 	public void decrementNumberOfPatient(Integer value) {
 		this.numberOfPatient = this.numberOfPatient - value;
 	}
-	
-	
+
 	
 	
 
