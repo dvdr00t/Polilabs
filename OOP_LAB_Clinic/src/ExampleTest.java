@@ -41,17 +41,18 @@ public class ExampleTest {
 
 		hospital.assignPatientToDoctor("SSNMDS", 86);
 		hospital.assignPatientToDoctor("ALCGRN", 14);
-		hospital.assignPatientToDoctor("RBTSMT", 14);
+		hospital.assignPatientToDoctor("RBTSMT", 10);
 		hospital.assignPatientToDoctor("STVMRE", 14);
 		hospital.assignPatientToDoctor("ALXKRV", 10);
-		hospital.assignPatientToDoctor("MRDGRY", 15);
+		hospital.assignPatientToDoctor("MRDGRY", 10);
 		hospital.assignPatientToDoctor("CRSYNG", 15);
 		
 
 		int susanDoc = hospital.getAssignedDoctor("SSNMDS");
 		assertEquals("Wrong doctor for Susan",86,susanDoc);
 
-		Collection<String> patients = hospital.getAssignedPatients(14);
+		Collection<String> patients = hospital.getAssignedPatients(15);
+		System.out.println(patients);
 
 		assertNotNull("Missing George's patients",patients);
 		
@@ -80,6 +81,11 @@ public class ExampleTest {
 		Collection<String> doc = hospital.doctorsByNumPatients();
 		assertNotNull("missing values", doc);
 		assertEquals("Too many doctors detected",5,doc.size());
+		
+		
+		Collection<String> spec = hospital.countPatientsPerSpecialization();
+		System.out.println(spec);
+		
 	}
 
 }
