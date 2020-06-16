@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Book</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href=".css.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Libro di testo</h1>
+</div>
+<!--
+> To generate html and pdf use
+> ```bash
+> $ pandoc -s -f markdown+Smart requirements.md -c .css.css -o requirements.html
+> $ pandoc -s -f markdown+Smart requirements.md -o requirements.pdf
+> ```
+-->
+<p>Sviluppare una sistema che assista i professori nel costruire i propri libri di test, aggiungendo capitoli contenenti teoria o esercizi e verificando la coerenza del risultato finale.</p>
+<p>Tutte le classi devono essere nel package <code>it.polito.oop.book</code>. La classe <em>facade</em> attraverso cui tutte le operazioni sono eseguite è <code>Book</code>.</p>
+<p>La classe <code>TestApp</code> nel default package contiene alcuni esempi che permettono di verificare l’applicazione.</p>
+<p>La documentazione JDK è accessibile all’URL <a href="http://softeng.polito.it/courses/docs/api/index.html" class="uri">http://softeng.polito.it/courses/docs/api/index.html</a>.</p>
+
+<h2 id="r1-argomenti">R1: Argomenti</h2>
+<p>Un argomento (<code>Topic</code>) può essere uno degli argomenti di un capitolo di teoria o il focus di una domanda. Un argomento è definito dalla parola chiave, che è unica. <!-- That is, the methods `hashCode` and `equals` should consider **only** the keyword. --></p>
+<p>Il factory method <code>getTopic(String)</code> in <code>Book</code> restituisce il <code>Topic</code> associato ad una data parola chiave. Esso crea un nuovo argomento, se non esiste, oppure recupera l’argomento esistente, se è già stato creato. Il metodo accetta come unico parametro la parola chiave e lancia un’eccezione <code>BookException</code> se la parola chiave è vuota oppure <code>null</code>. Il metodo <code>getKeyword()</code> restituisce la parola chiave come pure il metodo <code>toString()</code>.</p>
+<p>Un argomento può avere altri argomenti come sotto-argomenti. Il metodo <code>addSubTopic(Topic)</code> accetta un <em>Topic</em> e lo aggiunge come sotto-argomento; restituisce <code>true</code> se il sotto-argomento è stato aggiunto o <code>false</code> se il sotto-argomento non è stato aggiunto perchè già presente. Il metodo <code>getSubTopics()</code> restituisce una <code>List&lt;Topic&gt;</code> con tutti i sotto-argomenti, ordinati alfabeticamente. N.B. Il metodo <strong>non</strong> restituisce ricorsivamente i sotto-argomenti di ogni sotto-argomento del topic.</p>
+
+<h2 id="r2-domande">R2: Domande</h2>
+<p>Per i diversi argomenti è possibile definire degli esercizi.</p>
+<p>Una domanda (<code>Question</code>) rappresenta una domanda a risposta multipla. Può essere creata tramite il metodo <code>createQuestion(String,Topic)</code> che accetta il testo della domanda ed il suo argomento principale. Sono disponibili i metodi getter per i due campi: <code>getQuestion()</code>, <code>getMainTopic()</code>.</p>
+<p>Il metodo <code>toString()</code> restituice la domanda seguita dall’argomento principale tra parentesi tonde, ad es. <code>“Cosa è una interfaccia funzionale? (Interfacce)&quot;</code>.</p>
+<p>Il metodo <code>addAnswer(String, boolean)</code> della classe <em>Question</em> accetta una risposta ed un booleano che indica se la risposta è corretta per la domanda. Il metodo <code>numAnswers()</code> restituisce il numero totale di risposte aggiunte alla domanda. I metodi <code>getCorrectAnswers()</code> e <code>getIncorrectAnswers()</code> restituiscono gli insiemi delle risposte (<code>Set&lt;String&gt;</code>) che sono rispettivamente corrette e non corrette per la domanda.</p>
+
+<h2 id="r3-capitoli">R3: Capitoli</h2>
+<p>Ci sono due tipi di capitoli: <em>teoria</em> e <em>esercizi</em>.</p>
+<p>Un capitolo di teoria può essere costruito con il metodo <code>createTheoryChapter(String title, int numPages, String text)</code> che accetta il titolo del capitolo, il numero di pagine e una stringa con tutto il testo del capitolo. Il metodo restituisce un oggetto <code>TheoryChapter</code>. E’ possibile aggiungere degli argomenti ad un capitolo usando il metodo <code>addTopic(Topic)</code>; il metodo aggiunge un dato argomento al capitolo e, ricorsivamente, tutti i sotto-argomenti.</p>
+<blockquote>
+<p>Per esempio, se <em>Class</em> è un sotto-argomento di <em>Java</em>, e <em>Abstract Class</em> è un sotto-argomento di <em>Class</em>, aggiungere l’argomento <em>Java</em> significa aggiungere anche <em>Class</em> e <em>Abstract Class</em>.</p>
+</blockquote>
+<p>La classe fornisce i metodi getter e setter per il testo. Il metodo <code>getTopics()</code> restituisce tutti gli argomenti inseriti con <em>addTopic()</em>, senza ripetizioni e ordinati alfabeticamente.</p>
+<p>Un capitolo di esercizi può essere aggiunto al libro con il metodo <code>createExerciseChapter(String title, int numPages)</code> che accetta il titolo del capitolo ed il numero di pagine. Il metodo restituisce un oggetto <code>ExerciseChapter</code>. Si possono aggiungere domande al capitolo tramite il metodo <code>addQuestion(Question)</code> che riceve un oggetto di tipo <em>Question</em>. Il metodo <code>getTopics()</code> restituisce tutti gli argomenti definiti per le domande, senza ripetizioni ed ordinati alfabeticamente.</p>
+<p>Entrambe le classi forniscono i metodi getter e setter per entrambi gli attributi, titolo e pagine: <code>getTitle()</code>, <code>setTitle(String)</code>, <code>getNumPages()</code> and <code>setNumPages(int)</code>.</p>
+<h2 id="r4-statistiche-e-controlli">R4: Statistiche e controlli</h2>
+<p>Il metodo <code>getAllTopics()</code> in <em>Book</em> restituisce una lista <code>List&lt;Topic&gt;</code> di tutti gli argomenti specificati nei capitoli del libro (sia di teoria che di esercizi) senza ripetizioni e ordinati alfabeticamente.</p>
+<p>Il metodo <code>checkTopics</code> restituisce <code>true</code> se tutti gli argomenti specificati in tutti i capitoli di esercizi sono contenuti in almeno un capitolo di teoria.</p>
+<p>Il metodo <code>questionOptions()</code> in <em>Book</em> restituisce una mappa avente come chiave il numero di risposte e come valore la lista di domande che hanno quel numero di risposte.</p>
+<!--
+Il metodo `topicPopularity()` in `Book` restituisce la lista delle stringhe formattate come `"<Topic> : <num>"` dove  `<Topic>` è la parola chiave dell'argomento e `<num>` è il numero di capitoli di teoria che trattano quell'argomento. La lista è ordinata per numero di capitoli decrescente, e in caso di parità, alfabeticamente per parola chiave.
+-->
+<h2 id="r5-compiti">R5: Compiti</h2>
+<p>Un compito (<code>Assignment</code>) rappresenta le risposte fornite per una domanda da uno studente.</p>
+<p>Il metodo <code>newAssignment(String, ExerciseChapter)</code> crea un nuovo compito per lo studente la cui matricola è passata come parametro assieme al capitolo di esercizi. Restituisce un oggetto <code>Assignment</code> che fornisce i metodi getter per le due informazioni menzionate.</p>
+<p>Il metodo <code>addResponse(Question, List&lt;String&gt;)</code> aggiunge le risposte dello studente alla domanda data: la lista contiene le risposte che lo studente considera corrette. Il metodo restistuisce il punteggio raggiunto dallo studente per le risposte a quella domanda; il punteggio è calcolato come <code>(N - FP - FN)/N</code> dove:</p>
+<ul>
+<li><code>N</code> è il numero di risposte totali per la domande,</li>
+<li><code>FP</code> è il numero di risposte fornite dallo studente che non sono corrette per la domanda,</li>
+<li><code>FN</code> è il numero di risposte corrette per la domanda che non sono state fornite dallo studente.</li>
+</ul>
+<blockquote>
+<p>Per esempio, se consideriamo una domanda con le risposte <code>A</code> (errata), <code>B</code> (errata), <code>C</code> (corretta) e <code>D</code> (corretta); e una risposta dello studente che include le risposte <code>B</code> e <code>C</code>, abbiamo:<code>N=4</code>, <code>FP=1</code> (dato che <code>B</code> è nella risposta dello studente ma non è corretta), <code>FN=1</code> (dato che <code>D</code> è corretta ma non presente nelle risposte dello studente), allora il punteggio sarà <code>0.5</code>.</p>
+</blockquote>
+<p>Il metodo <code>totalScore()</code> restituisce la somma dei punteggi per le risposte alle singole domande.</p>
+</body>
+</html>
