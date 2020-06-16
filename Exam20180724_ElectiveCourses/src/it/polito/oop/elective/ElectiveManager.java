@@ -54,9 +54,12 @@ public class ElectiveManager {
     public SortedSet<String> getCourses(){
     	
     	/*
-    	 * Converting a STREAM to a COLLECTION undefined by a default function in Eclipse
+    	 * Converting a STREAM to a COLLECTION UNDEFINED by a DEFAULT function in Eclipse
+    	 * using .toCollection(provider)
     	 * 
-    	 * 
+    	 * .stream() transform a collection to a stream
+    	 * .collect(Collectors.toCollection(Supplier<> collectionFactory)) back-transform the stream into a new
+    	 * 		collection defined by the collectionFactory supplier as the creation of a new collection.
     	 * 
     	 */
         return this.courses.values()
@@ -165,6 +168,10 @@ public class ElectiveManager {
      */
     public long makeClasses() {
         
+    	
+    	/*
+    	 * Sort a COLLECTION and execute operation for each of the element of the collection
+    	 */
     	this.students.values()
     		.stream()
     		.sorted(new Comparator<Student>() {
@@ -200,6 +207,17 @@ public class ElectiveManager {
      * @return the map course name vs. student id list.
      */
     public Map<String,List<String>> getAssignments(){
+    	
+    	/*
+    	 * Given a COLLECTION, create a new MAP that has COLLECTIONS as values
+    	 * using the Collectors.toMap(keyMapper, valueMapper) that uses a Collectors.toList()
+    	 * as a valueMapper
+    	 * 
+    	 * .stream() transform the given collection in a stream
+    	 * .collect(Collectors.toMap(keyMapper, valueMapper)) back-transform the stream in a new map
+    	 * 		valueMapper is a LAMBDA function the ends with Collectors.toList in order to create
+    	 * 		a new COLLECTION as value for each key
+    	 */
         return this.courses.values()
         		.stream()
         		.collect(Collectors.toMap(c -> c.getName(), c -> c.getEnrolled()
@@ -227,6 +245,14 @@ public class ElectiveManager {
      * @return the success rate (number between 0.0 and 1.0)
      */
     public double successRate(int choice){
+    	
+    	/*
+    	 * Count the number of elements in a COLLECTION that satisfy a certain condition
+    	 * using:
+    	 * .stream() transform the given collection in a stream
+    	 * .filter() filter the elements that satisfies the condition
+    	 * .count() count those elements
+    	 */
         return this.students.values()
         		.stream()
         		.filter(s -> s.isEnrolled(choice))
