@@ -125,6 +125,7 @@ public class ElectiveManager {
     	if (courses.size() < 1 || courses.size() > 3)
     		throw new ElectiveException();
     	
+    	//!this.courses.keySet().containsAll(courses)
     	if (!courses.stream().allMatch(this.courses::containsKey))
     		throw new ElectiveException();
     	
