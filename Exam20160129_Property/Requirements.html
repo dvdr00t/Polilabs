@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Requirements</title>
+	<meta charset="utf-8">
+	<link href=".css.css" rel="stylesheet" type="text/css"><style type="text/css">
+	<style>
+@media print {  /* adjusted to print the html to a single-page pdf */
+body {
+	font-size: 8pt;
+}
+h2 {
+	font-size: 120%;
+	margin-bottom: 5pt;
+	line-height: 110%;
+}
+.noprint {
+	display: none;
+}
+}
+.en {
+	display: none;
+	}
+</style>
+	
+</head>
+
+<body lang=IT >
+
+<h1>Property Management</h1>
+
+A property manager receives requests for intervention from the owners and dispatches them to suitable professional workers.
+<p>The main class is <b>PropertyManager</b>; all the classes are contained in the package <b>managingProperties</b>.
+The class <b>Example</b> provides usage examples for the main methods.
+<p> 
+
+<p>The <a href="https://oop.polito.it/api" target="api" target="_blank">JDK documentation</a> can be found on a local server.</p>
+
+<h2>R1: Buildings, apartments and owners</h2>
+
+The following methods allow the registration of the buildings in the system, 
+together with the number of apartments and users.
+<br>
+The method <b>addBuilding()</b> accepts the (unique) id of the building (e.g. <i>"b1"</i>) 
+and the number of its apartments, and records them.
+It throws an exception if the id has already been used or if the number is not in the range 1 to 100.
+<br>The method <b>addOwner()</b> accepts the (unique) id of the owner and the list of her apartments and record them.
+An apartment is identified by means of a string containing the id of the building and the number of the apartment, separated by ":"
+(e.g. <i>"b1:10"</i>).
+It throws an exception if the id of the owner has already been defined, the id of the building does not exist, the
+number does not correspond to an apartment, or the apartment already has an owner.
+<br>
+The method <b>getBuildings()</b> returns a sorted map that groups by number of apartments the lists of buildings sorted alphabetically. 
+
+
+<h2>R2: Professionals</h2>
+
+The method <b>addProfessionals()</b> accepts the name of the profession (type of work) and the list of the ids of the
+relative professional workers.
+The professions used in the examples are electrician, plumber, mason 
+(elettricista, idraulico, muratore).
+It throws an exception if the same profession has already been used in a previous invocation 
+or if a worker's id has already been used: a worker can exercise a single profession only.
+<p>
+The method <b>getProfessions()</b> returns an ordered map of the professions 
+(sorted alphabetically) and the corresponding number of workers.
+
+
+<h2>R3: Maintenance requests</h2>
+The method <b>addRequest()</b> accepts the id of the owner, the id of the apartment 
+(e.g. <i>"b1:10"</i>), and the name of the profession; it generates a new request in 
+the <i>pending</i> state and returns the number of the request.
+The requests are assigned a progressive number starting at 1.
+The method throws an exception if the owner, the apartment, or the profession do not exist, 
+or if the owner does not own the apartment.
+<p>
+The method <b>assign()</b> assigns the request (whose number is provided as an argument) 
+to the given professional worker and changes its status to <i>assigned</i>.
+It throws and exception if the worker does not exercise the profession required by the request, 
+the request does not exits, or it is not in the pending state anymore.
+<p>
+The method <b>getAssignedRequests()</b> returns the list of the request numbers in ascending order.
+
+
+<h2>R4: Charges</h2>
+To charge the expenses of a maintenance activity, the method <b>charge()</b> is used, 
+it accepts the request number and the expenses sum (an integer number) and turns the 
+request state into <i>completed</i>.
+It throws an exception if the requests does not exits, it is not in the assigned state, 
+the sum is not in the 0 to 1000 range.
+<p>
+The method <b>getCompletedRequests()</b> returns the list of completed request numbers 
+(i.e. in the completed state) in ascending order.
+
+
+<h2>R5: Statistics</h2>
+
+The methods <b>getCharges()</b> returns for each owner the sum of the relative completed requests.
+Only the owner with non null expenses are considered.
+<p>
+The method <b>getChargesOfBuildings()</b> returns, grouped by building, 
+the sum of expenses by professional. 
+Both buildings and  professionals are reported in alphabetic order. 
+Only buildings and professionals with non null expenses are considered
+
+
+</body>
+
+</html>
