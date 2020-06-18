@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+
+
+<style>
+<!--
+body {
+	margin: 0.5cm;
+	/*
+	font-size: 13px;
+	*/
+	}
+p   {
+    margin-top: 0.1em;
+    margin-bottom: 0.5em;
+    }
+b   {
+	font-family: "Courier New";
+	color: MidnightBlue;
+	background: #f8f8f8;
+	border-radius: 2pt;
+	padding: 1pt;
+/*
+    font-size=85%;
+	border: 1pt dotted silver;
+*/
+	}
+	
+i   {
+	color: Navy;
+	font-family: "Courier New";
+	}
+	
+h1  {
+	font-family: sans-serif;
+	text-align: center;
+    line-height: 1.1em;
+	}
+	
+h2  {
+	color: RoyalBlue;
+	font-family: sans-serif;
+	border-top: 1px dotted gray;
+	}
+.hint {
+    color:LightSlateGray;
+    margin-left:10ch;
+    margin-right:10ch;
+    text-indent:-5ch;
+    }
+.hint b {
+	font-family: inherit;
+	color: MidnightBlue;
+	background: inherit;
+	border-radius: inherit;
+	padding: inherit;
+    }
+.hint i {
+	color: gray;
+    }
+
+@media print {
+body {
+	font-size: 10pt;
+	}
+
+  h2 {
+  	float:left;
+    margin-top: 0;
+    padding: 5px 15px 5px 0px;
+    line-height: 0.8em;
+  	}
+}
+table {
+	float: right;
+	margin: 20px;
+	border-collapse:collapse;
+	border-bottom: 1px solid Navy;
+	border-top: 1px solid Navy;
+	}
+td, th  {
+	padding: 1px 5px 1px 5px;
+	}
+tr:nth-child(even) {
+    background-color: PowderBlue;
+    margin: 1pt solid PowderBlue;
+}
+-->
+</style>
+
+<title>Approvvigionamento Merci</title>
+</head>
+
+<body>
+
+<h1>Approvvigionamento Merci</h1>
+<p>
+
+Sviluppare l'applicazione che consente di gestire un magazzino.<br>
+Tutte le classi devono essere nel package <b>warehouse</b>.<br>
+<!-- 
+Si scriva un programma per la gestione di esami. Le classi si trovano nel package <b>exams</b>; 
+la classe principale è <b>ExamHandling</b>. La classe <b>Example</b> nel package <b>main</b> presenta esempi di uso dei metodi principali 
+ed esempi dei controlli richiesti.
+Le eccezioni sono di tipo <b>ExamException</b>.<br>
+-->
+<p>
+La <a href="http://softeng.polito.it/courses/docs/api/index.html" target="api" target="_blank">JDK documentation</a>  
+si trova sul server locale.
+</p>
+
+<h2>R1 - Definizione Prodotti</h2>
+
+Il sistema interagisce tramite la classe principale <b>Warehouse</b>.
+<br>
+Il metodo <b>newProduct() </b>che accetta come parametro il codice e la descrizione della merce, crea un
+oggetto <b>Product</b> e lo registra nel magazzino. La classe <b>Product</b> offre
+il metodo <b>getCode()</b> per leggere il codice e <b>getDescription()</b> per leggere la descrizione.
+<br>
+Per definire la quantit&agrave; di merci presenti in magazzino si utilizza il metodo <b>setQuantity()</b>
+che riceve come parametro un intero; inoltre c'&egrave; a disposizione il metodo <b>decreaseQuantity()</b>
+che decrementa la quantit&agrave; di 1 unit&agrave;. Il metodo <b>getQuantity()</b> permette di sapere la quantit&agrave; corrente.
+<br>
+Per ottenere l'elenco dei prodotti si usa il metodo <b>products()</b> che restituisce una collezione di oggetti <i>Prodotto</i>. 
+Per ottenere uno specifico prodotto si usa il metodo <b>findProduct()</b> che riceve
+come parametro il codice e restituisce l'oggetto <i>Product</i> corrispondente.
+<br>
+
+
+
+<h2>R2 - Definizione Fornitori</h2>
+
+Le merci vengono fornite da dei fornitori. Per definire un fornitore si
+utilizza il metodo <b>newSupplier()</b> della classe <i>Warehouse</i> che riceve come parametri il codice ed il nome
+del fornitore; tale metodo restituisce un oggetto di tipo <b>Supplier</b>.
+La classe <i>Supplier</i> offre il metodo <b>getCode()</b> per ottenere il codice e <b>getName()</b> per ottenere il nome.
+<br>
+Per ottenere uno specifico fornitore &egrave; possibile utilizzare il metodod <b>findSupplier()</b> delle
+classe <i>Warehouse</i> che riceve il codice del fornitore.<br>
+Per inserire quali merci vengono fornite da un dato fornitore si usa il metodo <b>newSupply()</b> della 
+classe <i>Supplier</i> che
+riceve come parametro un oggetto di tipo <i>Product</i>.<br>
+&Egrave; possibile sapere quali merci sono fornite da un fornitore tramite il metodo <b>supplies()</b> della classe <i>Supplier</i>
+che restituisce una list di oggetti <i>Product</i> ordinati alfabeticamente per descrizione.<br>
+Viceversa, per sapere quali fornitori forniscono una data merce si utilizza il metodo <b>suppliers()</b>
+della classe <i>Product</i> che restituisce una collezione di oggetti <i>Supplier</i> ordinati per nome.
+<br>
+
+
+
+<h2>R3 - Ordinazione</h2>
+
+Quando necessario, un  addetto pu&ograve; emetter un ordine. 
+Gli ordini vengono emessi tramite il metodo <b>issueOrder()</b> della  classe <i>Warehouse</i>, 
+che riceve come parametri la merce, il fornitore e la quantit&agrave; da ordinare e restituisce un oggetto di classe <b>Order</b>.
+<br>
+Se il fornitore non &egrave; tra quelli che forniscono la merce specificata viene generata un'eccezione di <b>InvalidSupplier</b>.
+<br>
+Il magazzino genera un codice alfanumerico univoco nella forma <i>"ORD<span style="font-style: italic;">n</span>"</i> 
+dove <span style="font-style: italic;">n</span> &egrave; un numero intero progressivo che parte da 1.
+Il codice dell'ordine pu&ograve; essere recuperato tramite il metodo <b>getCode()</b> della classe <i>Order</i>.
+<br>
+Per ottenere un ordine specifico si utilizza il metodo <b>findOrder()</b> della classe <i>Warehouse</i> 
+che riceve il codice e restituisce l'oggetto <i>Order</i> corrispondente.
+<br>
+Ogni ordine pu&ograve; essere convertito in stringa con il metodo <b>toString()</b> che restituisce una stringa della forma: 
+<br>
+<p style="text-align: center;">
+<i>Order &lt;codice ordine&gt; for &lt;quantit&agrave;&gt; of &lt;codice prodotto&gt; :
+ &lt;descrizione prodotto&gt; from &lt;nome fornitore&gt;</i>
+<br>
+
+</p>
+Ad esempio:
+
+<i>"Order ORD2 for 100 of BNN : Banane from Del Monte"</i>
+
+
+
+
+<h2>R4 - Ordini in corso</h2>
+
+Gli ordini, quando vengono creati sono inizialmente nello stato non consegnato. 
+Per verificare lo stato di consegna si utilizza il metodo <b>delivered()</b> che restituisce un valore booleano. 
+Alla ricezione della merce si pu&ograve; invocare il metodo <b>setDelivered()</b> che imposta lo stato di consegna a <i>true</i> 
+ed incrementa la quantit&agrave; della merce della quantit&agrave; dell'ordine.
+<br>
+Se l'ordine era gi&agrave; stato consegnato, viene generata un'eccezione di <b>MultipleDelivery</b>.
+<br>
+La classe <i>Warehouse</i> offre il metodo <b>pendingOrders()</b> che restituisce una collezione di ordini non ancora consegnati,
+ordinati alfabeticamente per codice di prodotto.
+<br>
+Anche la classe <i>Product</i> offre un metodo <b>pendingOrders()</b> che resituisce la collezione degli ordini 
+non ancora consegnati per quello specifico prodotto, ordinati per quantità decrescente.
+<br>
+<!-- 
+Inoltre il metodo <b>deliveryRate()</b> della classe <i>Supplier</i> restituisce la frazione di ordini 
+per il fornitore che sono stati consegnati.
+<br>
+ -->
+
+
+<h2>R5 - Statistiche</h2>
+
+Devono essere fornite alcune statistiche sul funzionamento del magazzino, in particolare:
+<ul>
+
+<li>il metodo <b>ordersByProduct()</b> restituisce una mappa che raggruppa tutti gli ordini
+(sia in sospeso che consegnati) in base al codice del prodotto;
+
+<li>il metodo <b>orderNBySupplier()</b> restituisce il conteggio degli ordini completati per
+ciascuno dei fornitori (riportati per nome ed ordinati alfabeticamente).
+
+<li>il metodo <b>countDeliveredByProduct()</b> restituisce una lista di stringhe, ciascuna costituita
+dal codice del prodotto ed il conteggio degli ordini consegnati separati da <i>" - "</i>
+(es. <i>"BNN - 10"</i>)
+ordinati in base al numero decrescente di ordini.
+
+</ul>
+
+
+</body>
+</html>
