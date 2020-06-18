@@ -65,4 +65,12 @@ public class Profession {
 		return false;
 	}
 
+	/**
+	 * Get the whole list of workers
+	 * 
+	 * @return the list of workers
+	 */
+	public List<String> getWorkers() {
+		return new LinkedList<String>(this.workersID);
+	}
 }

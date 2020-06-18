@@ -1,6 +1,9 @@
 package managingProperties;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -144,9 +147,24 @@ public class PropertyManager {
 		if (this.professions.containsKey(profession))
 			throw new PropertyException();
 		
+		//Checking if the new worker has not already been inserted
+		for (Profession p: this.professions.values())
+			for (String s: professionals)
+				if (p.hasWorker(s))
+					throw new PropertyException();
+		
+//		//Using ANYMATCH
+//		boolean found = this.professions.values().stream()
+//								 .map(p -> p.getWorkers())
+//								 .anyMatch(p -> new LinkedList<String>(Arrays.asList(professionals))
+//										 											.stream()
+//										 											.anyMatch(p::contains));
+//		if (found)
+//			throw new PropertyException();
+		
 		//Adding the new profession to the list of profession
 		this.professions.put(profession, new Profession(profession));
-		
+				
 		//Adding the whole list of workers to this profession
 		for (String s: professionals)
 			this.professions.get(profession).addWorker(s);
