@@ -8,17 +8,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Book {
-	
+
 	/*
 	 * ATTRIBUTES
 	 */
 	private Map<String, Topic> topics;
 	private List<Question> questions;
 	private List<Chapter> chapters;
-	
+
 	/**
 	 * CONSTRUCTOR
-	 * 
+	 *
 	 * @param void
 	 * @return Book
 	 */
@@ -28,33 +28,33 @@ public class Book {
 		this.chapters = new LinkedList<Chapter>();
 	}
 
-	
+
     /**
 	 * Creates a new topic, if it does not exist yet, or returns a reference to the
 	 * corresponding topic.
-	 * 
+	 *
 	 * @param keyword the unique keyword of the topic
 	 * @return the {@link Topic} associated to the keyword
 	 * @throws BookException
 	 */
 	public Topic getTopic(String keyword) throws BookException {
-	   
+
 		//Throwing an exception is the keyrod is either null or empty
 		if (keyword == null || keyword.equals(""))
 			throw new BookException();
-		
+
 		if(this.topics.containsKey(keyword))
 			return this.topics.get(keyword);
-		
+
 		Topic newTopic = new Topic(keyword);
 		this.topics.put(keyword, newTopic);
-		
+
 		return newTopic;
 	}
 
 	/**
 	 * Create a new question.
-	 * 
+	 *
 	 * @param question
 	 * @param mainTopic
 	 * @return Question the instance of the new question created
@@ -67,7 +67,7 @@ public class Book {
 
 	/**
 	 * Create a new Theory Chapter
-	 * 
+	 *
 	 * @param title
 	 * @param numPages
 	 * @param text
@@ -78,10 +78,10 @@ public class Book {
         this.chapters.add(tc);
         return tc;
 	}
-	
+
 	/**
 	 * Create a new Exercise Chapter
-	 * 
+	 *
 	 * @param title
 	 * @param numPages
 	 * @return ExerciseChapter the new exercise chapter
@@ -92,11 +92,11 @@ public class Book {
         return ec;
 	}
 
-	
+
 	/**
-	 * Get all the topics, both in exercise and theory chapter, sorted in 
+	 * Get all the topics, both in exercise and theory chapter, sorted in
 	 * alphabetical order and with no repetition.
-	 * 
+	 *
 	 * @return List of topics
 	 */
 	public List<Topic> getAllTopics() {
@@ -108,17 +108,29 @@ public class Book {
 	}
 
 	/**
-	 * return true if all the topics specified in all exercise chapters 
+	 * return true if all the topics specified in all exercise chapters
 	 * are contained in at least one theory chapter.
-	 * 
+	 *
 	 * @return Boolean
 	 */
 	public boolean checkTopics() {
+
+		List<Topic> exerciseTopics = new LinkedList<Topic>();
+		List<Topic> theoryTopics = new LinkedList<Topic>();
+		for (Chapter c: this.chapters) {
+			if (c instanceof ExerciseChapter)
+				exerciseTopics.addAll(c.getTopics());
+			else
+				theoryTopics.addAll(c.getTopics());
+		}
+
+		if (!theoryTopics.containsAll(exerciseTopics))
+			return false;
 		return true;
 	}
-	
+
     /**
-     * builds a map having as key the number of answers and 
+     * builds a map having as key the number of answers and
      * as values the list of questions having that number of answers.
      * @return
      */
@@ -126,10 +138,10 @@ public class Book {
     	return this.questions.stream()
     			.collect(Collectors.groupingBy(q -> q.numAnswers(), Collectors.toList()));
     }
-    
+
     /**
      * Create a new assignment.
-     * 
+     *
      * @param ID
      * @param chapter
      * @return Assignment the new assignment
