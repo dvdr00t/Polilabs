@@ -1,5 +1,7 @@
 package it.polito.oop.books;
 
+import java.util.List;
+
 public abstract class Chapter {
 	
 	/*
@@ -21,6 +23,6 @@ public abstract class Chapter {
 		this.numPages = numPages;
 	}
 	
-	
+	public abstract List<Topic> getTopics();
 
 }
