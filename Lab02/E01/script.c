@@ -5,7 +5,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-void tree_visit (char *path);   //Recursive function used to visit the tree
+int tree_visit (char *path);   //Recursive function used to visit the tree
 int main (int args, char *argv[]) {
 
     /*
@@ -37,12 +37,13 @@ int main (int args, char *argv[]) {
     /*
     * Visit the tree.
     */ 
-    tree_visit(target_path);
-
-
+    if (tree_visit(target_path) == 0) {
+        exit(EXIT_SUCCESS);
+    }
+    exit(EXIT_FAILURE);
 }
 
-void tree_visit (char *path) {
+int tree_visit (char *path) {
 
     /*
     * Variables used
@@ -60,7 +61,7 @@ void tree_visit (char *path) {
     dp = opendir(path);
     if (dp == NULL) {
        fprintf(stderr, "Opening the directory: %s failed during execution.\n", path);
-       exit(EXIT_FAILURE);
+       return 1;
     }
     fprintf(stdout, "----- Listing content of %s:\n", path);
 
@@ -79,14 +80,14 @@ void tree_visit (char *path) {
         new_path = (char*) malloc(sizeof(path) + sizeof(dirp->d_name) + 1);
         if (new_path == NULL) {
             fprintf(stderr, "Allocating memory space failed during execution.\n");
-            exit(EXIT_FAILURE);
+            return 1;
         }
         sprintf(new_path, "%s/%s", path, dirp->d_name);
 
         /* Acquiring information about the current path */
         if (lstat(new_path, &buf) < 0) {
             fprintf(stderr, "Reading the directory: %s failed during execution.\n", new_path);
-            exit(EXIT_FAILURE);
+            return 1;
         }
 
         /*
@@ -104,13 +105,13 @@ void tree_visit (char *path) {
 
     if (closedir(dp) < 0) {
         fprintf(stderr, "Closing the directory: %s failed during execution.\n", path);
-        exit(EXIT_FAILURE);
+        return 1;
     }
     fprintf(stdout, "\n");
     dp = opendir(path);
     if (dp == NULL) {
         fprintf(stderr, "Opening the directory: %s failed during execution.\n", path);
-        exit(EXIT_FAILURE);
+        return 1;
     }
   
     /*
@@ -127,14 +128,14 @@ void tree_visit (char *path) {
         new_path = (char*) malloc(sizeof(path) + sizeof(dirp->d_name) + 1);
         if (new_path == NULL) {
             fprintf(stderr, "Allocating memory space failed during execution.\n");
-            exit(EXIT_FAILURE);
+            return 1;
         }
         sprintf(new_path, "%s/%s", path, dirp->d_name);
 
         /* Acquiring information about the current */
         if (lstat(new_path, &buf) < 0) {
             fprintf(stderr, "Reading the directory: %s failed during execution.\n", new_path);
-            exit(EXIT_FAILURE);
+            return 1;
         }
 
         /*
@@ -153,6 +154,8 @@ void tree_visit (char *path) {
     */
     if (closedir(dp) < 0) {
       fprintf(stderr, "Closing the directory: %s failed during execution.\n", path);
-      exit(EXIT_FAILURE);
+      return 1;
     }
+
+    return 0;
 }
