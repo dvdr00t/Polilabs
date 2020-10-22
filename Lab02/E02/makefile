@@ -10,8 +10,8 @@ script.o: script.c
 	$(CC) $(FLAGS) -c script.c
 
 install: 
-	mkdir ../bin;
-	mv myListFunction ../bin;
+	mkdir ../bin
+	mv myListFunction ../bin
 
 clean:
 	rm *.o
