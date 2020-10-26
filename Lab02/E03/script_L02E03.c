@@ -22,7 +22,7 @@ int main (int args, char *argv[]) {
    }
 
     /*
-    * Recurve copy of the direction in the target path
+    * Recursive copy of the direction in the target path
     */ 
    fprintf(stdout, "\n----- Copying content of %s in %s:\n", argv[1], argv[2]);
    if (recurvise_copy(argv[1], argv[2]) != 0) {
