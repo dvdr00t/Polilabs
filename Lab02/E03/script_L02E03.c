@@ -22,7 +22,7 @@ int main (int args, char *argv[]) {
    }
 
     /*
-    * Recursive copy of the direction in the target path
+    * Recurve copy of the direction in the target path
     */ 
    fprintf(stdout, "\n----- Copying content of %s in %s:\n", argv[1], argv[2]);
    if (recurvise_copy(argv[1], argv[2]) != 0) {
@@ -73,7 +73,7 @@ int recurvise_copy(char *path_SRC, char *path_DST) {
         * Checking that the allocation has been succesfully completed and then storing the argument 
         * passed by the user.
         */
-        path_SRC_TMP = (char*) malloc(sizeof(path_SRC) + sizeof(dirp->d_name) + 1);
+        path_SRC_TMP = (char*) malloc((strlen(path_SRC) + strlen(dirp->d_name) + 1) * sizeof(char));
         if (path_SRC_TMP == NULL) {
             fprintf(stderr, "Allocating memory space failed during execution.\n");
             return 1;
@@ -107,7 +107,7 @@ int recurvise_copy(char *path_SRC, char *path_DST) {
                 * Checking that the allocation has been succesfully completed and then storing the argument 
                 * passed by the user.
                 */
-                path_DST_TMP = (char*) malloc(sizeof(path_DST) + sizeof(dirp->d_name) + 1);
+                path_DST_TMP = (char*) malloc((strlen(path_DST) + strlen(dirp->d_name) + 1) * sizeof(char));
                 if (path_DST_TMP == NULL) {
                     fprintf(stderr, "Allocating memory space failed during execution.\n");
                     return 1;
@@ -118,7 +118,10 @@ int recurvise_copy(char *path_SRC, char *path_DST) {
                 mkdir(path_DST_TMP, buf.st_mode);
 
                 //Calling recursive copy
-                recurvise_copy(path_SRC_TMP, path_DST_TMP);
+                if (recurvise_copy(path_SRC_TMP, path_DST_TMP) != 0) {
+                    fprintf(stderr, "\n\n --- Process killed due to some error... ---\n\n");
+                    exit(EXIT_FAILURE);
+                }
 
                 /* Freeing memory */
                 free(path_DST_TMP);
@@ -154,7 +157,7 @@ int file_copy(char *path_IN, char *path_OUT, char *filename) {
     * Checking that the allocation has been succesfully completed and then storing the argument 
     * passed by the user.
     */
-    path_complete_OUT = (char*) malloc(sizeof(path_OUT) + sizeof(filename) + 1);
+    path_complete_OUT = (char*) malloc((strlen(path_OUT) + strlen(filename) + 1) * sizeof(char));
     if (path_complete_OUT == NULL) {
         fprintf(stderr, "Some errors occurred while trying to open %s file line 157.\n", path_OUT);
         return 1;
