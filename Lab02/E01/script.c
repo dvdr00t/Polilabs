@@ -27,7 +27,7 @@ int main (int args, char *argv[]) {
     * Checking that the allocation has been succesfully completed and then storing the argument 
     * passed by the user.
     */
-    target_path = (char*) malloc(sizeof(argv[1]));
+    target_path = (char*) malloc(strlen(argv[1]) * sizeof(char));
     if (target_path == NULL) {
         fprintf(stderr, "Allocating memory space failed during execution.\n");
         exit(EXIT_FAILURE);
@@ -77,7 +77,7 @@ int tree_visit (char *path) {
         * Checking that the allocation has been succesfully completed and then storing the argument 
         * passed by the user.
         */
-        new_path = (char*) malloc(sizeof(path) + sizeof(dirp->d_name) + 1);
+        new_path = (char*) malloc((strlen(path) + strlen(dirp->d_name) + 1) * sizeof(char));
         if (new_path == NULL) {
             fprintf(stderr, "Allocating memory space failed during execution.\n");
             return 1;
@@ -125,7 +125,7 @@ int tree_visit (char *path) {
         * Checking that the allocation has been succesfully completed and then storing the argument 
         * passed by the user.
         */
-        new_path = (char*) malloc(sizeof(path) + sizeof(dirp->d_name) + 1);
+        new_path = (char*) malloc((strlen(path) + strlen(dirp->d_name) + 1) * sizeof(char));
         if (new_path == NULL) {
             fprintf(stderr, "Allocating memory space failed during execution.\n");
             return 1;
