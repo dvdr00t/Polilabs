@@ -1,0 +1,5 @@
+touch mioFile.c end
+ls -laR end
+cat mioFile.c end
+mkdir -p tmpDir end
+cp -f mioFile.c tmpDir end
