@@ -116,8 +116,8 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
 CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 					
-				AREA	mySpaceArea, DATA, READWRITE
-mySpace			SPACE	8		                             ; mySpace size = 8 bytes					
+		AREA	mySpaceArea, DATA, READWRITE
+mySpace		SPACE	8		                             ; mySpace size = 8 bytes					
 
 
                 AREA    |.text|, CODE, READONLY
@@ -127,41 +127,41 @@ mySpace			SPACE	8		                             ; mySpace size = 8 bytes
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 					
-				; +------------------------------------
-				; |	  	      MAIN ROUTINE            |  
-				; +------------------------------------
-				MOV r0, #0x34									
-				MOV r1, #0xA3				
-				LDR r3, =mySpace                            ; r3 points to a specific DATA AREA previously created
-				STMIA r3, {r0, r1}                          
-				; r3 holds address for parameters
-				BL  sub2									; The main routine passes to the subroutine2 the address of 
-															; the first value stored in mySpace (and not all the values)
-															; since it would be to expensive. Instead, it is necessary 
-															; to pass only the address and then move on.
-				; r3 holds address of results
-				LDR r2, [r3]								; Loading results in r2
-stop			B 		stop	
-				ENDP
-				; +------------------------------------
-				; |		      SUBROUTINE 2            |  
-				; +------------------------------------
-sub2			PROC
-				PUSH  {r2, r4, r5, LR}                      ; SP <- 0x10000200 - 4 bytes = 0x100001FC (FULL DESCENDING)
-															; Subroutine will modify also r2, r4 and r5, so it preserves
-															; their previous value before modifying the content.
+		; +------------------------------------
+		; |	      MAIN ROUTINE            |  
+		; +------------------------------------
+		MOV r0, #0x34									
+		MOV r1, #0xA3				
+		LDR r3, =mySpace                            ; r3 points to a specific DATA AREA previously created
+		STMIA r3, {r0, r1}                          
+		; r3 holds address for parameters
+		BL  sub2				    ; The main routine passes to the subroutine2 the address of 
+							    ; the first value stored in mySpace (and not all the values)
+						            ; since it would be to expensive. Instead, it is necessary 
+							    ; to pass only the address and then move on.
+		; r3 holds address of results
+		LDR r2, [r3]		                    ; Loading results in r2
+stop		B 		stop	
+		ENDP
+		; +------------------------------------
+		; |	      SUBROUTINE 2            |  
+		; +------------------------------------
+sub2		PROC
+		PUSH  {r2, r4, r5, LR}                      ; SP <- 0x10000200 - 4 bytes = 0x100001FC (FULL DESCENDING)
+					 		    ; Subroutine will modify also r2, r4 and r5, so it preserves
+				    			    ; their previous value before modifying the content.
 															
-				LDMIA r3, {r4, r5}							; First paramter is stored in r4, second in r5
+		LDMIA r3, {r4, r5}			    ; First paramter is stored in r4, second in r5
+		
+		CMP   r4, r5                                ; 0x34 - 0xA3 is performed: results is negative -> r5 > r4
+		ITE   HS                                    ; if(r4>r5) - then(r2=r4-r5)-else(r2=r5-r4)
+		SUBHS r2, r4, r5
+		SUBLO r2, r5, r4
 				
-				CMP   r4, r5                                ; 0x34 - 0xA3 is performed: results is negative -> r5 > r4
-				ITE   HS                                    ; if(r4>r5) - then(r2=r4-r5)-else(r2=r5-r4)
-				SUBHS r2, r4, r5
-				SUBLO r2, r5, r4
-				
-				STR r2, [r3]
-				POP   {r2, r4, r5, PC}						; PC loads back the address of the instruction that called
-															; the subroutine.
-				ENDP
+		STR r2, [r3]
+		POP   {r2, r4, r5, PC}			    ; PC loads back the address of the instruction that called
+					   		    ; the subroutine.
+		ENDP
 
 
 ; Dummy Exception Handlers (infinite loops which can be modified)
