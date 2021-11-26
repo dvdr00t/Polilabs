@@ -117,10 +117,10 @@ CRP_Key         DCD     0xFFFFFFFF
                 ENDIF
 					
 				; +---------------------------------------------------------------------------+
-				; |			                    FULL DESCENDING STACK                         |
-				; |			  	                     DATA AREA                                |  
-				; |									  		                                  |	
-				; |	                  +------------+	Note that myBaseAddress points at     |
+				; |			        FULL DESCENDING STACK                         |
+				; |		                     DATA AREA                                |  
+				; |							                      |	
+				; |	              +------------+	Note that myBaseAddress points at     |
 				; | myBaseAddress ->  |    BOS     |    the Bottom Of the Stack (BOS).        |
 				; |                   +------------+                                          |
 				; |                   |            |    Instead, myStackPointer points at the |
@@ -132,7 +132,7 @@ CRP_Key         DCD     0xFFFFFFFF
 				; | myStackPointer -> |    TOS     |    Suppose that myBaseAddress starts at  |
 				; |                   +------------+    address 0x00001000, then              |
 				; |                          ^          myStackPointer has value 0x000010C8   |
-                ; |                          |          and decreases at every PUSH operat.	  |			
+             		        ; |                          |          and decreases at every PUSH operat.	  |			
 				; |                          |                                                |
 				; |                          +-------- PUSH operations                        |
 				; |                                                                           |
@@ -150,34 +150,34 @@ Reset_Handler   PROC
 				EXPORT  Reset_Handler             [WEAK]
 				
 				; +-----------------------------------+
-				; |	  r5 stores the Stack Pointer     |  
+				; |   r5 stores the Stack Pointer     |  
 				; +-----------------------------------+
 				LDR r0, =myBaseAddress						; r0 <- 0x10000000
 				LDR r5, =myStackPointer						; r5 <- 0x100000C8
-															; Note that, since the stack is FULL DESCENDING, the
-															; first value inserted in the stack will be at the 
-															; address 0x100000C7
+												; Note that, since the stack is FULL DESCENDING, the
+												; first value inserted in the stack will be at the 
+												; address 0x100000C7
 				; +------------------------------------
-				; |		      PUSH 3 VALUES           |  
+				; |	      PUSH 3 VALUES           |  
 				; +------------------------------------
 				MOV r1, #5
 				MOV r6, #2
 				MOV r3, #9
-				STMFD r5!, {r1, r6, r3}						; The first value stored in the stack will be r6 (i.e. #2).
-														    ; Since #2 in 32 bits is 0x00000002 and the architecture is 
-															; little endian (lowest byte first!):
-															; 0x100000C7 <- 00
-															; 0x100000C6 <- 00
-															; 0x100000C5 <- 00
-															; 0x100000C4 <- 02
+				STMFD r5!, {r1, r6, r3}				            ; The first value stored in the stack will be r6 (i.e. #2).
+											    ; Since #2 in 32 bits is 0x00000002 and the architecture is 
+						      					    ; little endian (lowest byte first!):
+											    ; 0x100000C7 <- 00
+								       			    ; 0x100000C6 <- 00
+											    ; 0x100000C5 <- 00
+											    ; 0x100000C4 <- 02
 				
 				; -------------------------------------
-				; |		      POP 2 VALUES            |  
+				; |	      POP 2 VALUES            |  
 				; -------------------------------------
 				LDMFD r5!, {r8, r2}                         ; Since the stack is FULL DESCENDING, when a POP operation
-															; is performed the address increases. 
-															; Note that the first value extracted from the stack is 
-															; loaded back in r2 (i.e. r2 <- #5 while r8 <- #9)
+									    ; is performed the address increases. 
+									    ; Note that the first value extracted from the stack is 
+									    ; loaded back in r2 (i.e. r2 <- #5 while r8 <- #9)
 
 stop			B stop
                 ENDP
