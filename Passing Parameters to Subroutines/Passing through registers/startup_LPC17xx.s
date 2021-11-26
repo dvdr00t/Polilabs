@@ -125,29 +125,29 @@ CRP_Key         DCD     0xFFFFFFFF
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 					
-				; +------------------------------------
-				; |	  	      MAIN ROUTINE            |  
-				; +------------------------------------
-				MOV r0, #0x34									; There is an agreement between the main routine
-				MOV r1, #0xA3									; and the subroutine1: parameters are passed through
-																; registers r0 and r1. Results is stored in r2.
-				BL  sub1	
-stop			B 		stop	
-				ENDP
+		; +------------------------------------
+		; |	       MAIN ROUTINE            |  
+		; +------------------------------------
+		MOV r0, #0x34				; There is an agreement between the main routine
+		MOV r1, #0xA3				; and the subroutine1: parameters are passed through
+							; registers r0 and r1. Results is stored in r2.
+		BL  sub1	
+stop		B   stop	
+		ENDP
 				
 
-				; +------------------------------------
-				; |		      SUBROUTINE 1            |  
-				; +------------------------------------
-sub1			PROC
-				PUSH  {LR}                                  ; SP <- 0x10000200 - 4 bytes = 0x100001FC (FULL DESCENDING)
-				CMP   r0, r1                                ; 0x34 - 0xA3 is performed: results is negative -> r1 > r0
-				ITE   HS                                    ; if(r0>r1) - then(r2=r0-r1)-else(r2=r1-r0)
-				SUBHS r2, r0, r1
-				SUBLO r2, r1, r0
-				POP   {PC}									; PC loads back the address of the instruction that called
-															; the subroutine.
-				ENDP
+		; +------------------------------------
+		; |	      SUBROUTINE 1            |  
+		; +------------------------------------
+sub1		PROC
+		PUSH  {LR}                                  ; SP <- 0x10000200 - 4 bytes = 0x100001FC (FULL DESCENDING)
+		CMP   r0, r1                                ; 0x34 - 0xA3 is performed: results is negative -> r1 > r0
+		ITE   HS                                    ; if(r0>r1) - then(r2=r0-r1)-else(r2=r1-r0)
+		SUBHS r2, r0, r1
+		SUBLO r2, r1, r0
+		POP   {PC}				    ; PC loads back the address of the instruction that called
+							    ; the subroutine.
+		ENDP
 				
                 
 
