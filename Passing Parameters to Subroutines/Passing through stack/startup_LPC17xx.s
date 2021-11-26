@@ -125,49 +125,49 @@ CRP_Key         DCD     0xFFFFFFFF
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 					
-				; +------------------------------------
-				; |	  	      MAIN ROUTINE            |  
-				; +------------------------------------
-				MOV r0, #0x34									
-				MOV r1, #0xA3				
-				PUSH {r0, r1, r2}							; PUSH operation in the stack, storing now the first
-															; parameter (r0), the second parameter (r1) and the result
-															; of the subroutine (r2). Note that, since this is a FULL
-															; DESCENDING stack, r2 is saved first and _stackpointer points
-															; to the last element saved (i.e. r0)
-				BL  sub3									
-				POP  {r0, r1, r2}							; Retrieving the result
-				; r2 stores the result
-stop			B 		stop	
-				ENDP
+		; +------------------------------------
+		; |	      MAIN ROUTINE            |  
+		; +------------------------------------
+		MOV r0, #0x34									
+		MOV r1, #0xA3				
+		PUSH {r0, r1, r2}			; PUSH operation in the stack, storing now the first
+							; parameter (r0), the second parameter (r1) and the result
+							; of the subroutine (r2). Note that, since this is a FULL
+							; DESCENDING stack, r2 is saved first and _stackpointer points
+							; to the last element saved (i.e. r0)
+		BL  sub3									
+		POP  {r0, r1, r2}			; Retrieving the result
+		; r2 stores the result
+stop		B stop	
+		ENDP
 					
-				; +------------------------------------
-				; |		      SUBROUTINE 3            |  
-				; +------------------------------------
-sub3			PROC
-				PUSH  {r6, r4, r5, LR}                      ; Subroutine will modify also r6, r4 and r5, so it preserves
-															; their previous value before modifying the content.
+		; +------------------------------------
+		; |	      SUBROUTINE 3            |  
+		; +------------------------------------
+sub3		PROC
+		PUSH  {r6, r4, r5, LR}                  ; Subroutine will modify also r6, r4 and r5, so it preserves
+							; their previous value before modifying the content.
 				
-				LDR r4, [SP, #16]							; Assess the stack with an offset in order to retrieve the       					
-				LDR r5, [SP, #20]							; parameters. Offset #16 is computed because:
-															; SP points to r4 in the stack;
-															; stack is -> [r4, r5, r6, LR, r0, r1, r2]
-															; In order to move SP from r4 to the first parameter (r1), 4
-															; positions of 4 bytes each (16 bytes) has to be addressed.
-															; To access second parameter (r2): 5 position (20 bytes).
+		LDR r4, [SP, #16]			; Assess the stack with an offset in order to retrieve the       					
+		LDR r5, [SP, #20]			; parameters. Offset #16 is computed because:
+							; SP points to r4 in the stack;
+							; stack is -> [r4, r5, r6, LR, r0, r1, r2]
+							; In order to move SP from r4 to the first parameter (r1), 4
+							; positions of 4 bytes each (16 bytes) has to be addressed.
+							; To access second parameter (r2): 5 position (20 bytes).
 				
-				CMP   r4, r5                                ; 0x34 - 0xA3 is performed: results is negative -> r5 > r4
-				ITE   HS                                    ; if(r4>r5) - then(r6=r4-r5)-else(r6=r5-r4)
-				SUBHS r6, r4, r5
-				SUBLO r6, r5, r4
+		CMP   r4, r5                            ; 0x34 - 0xA3 is performed: results is negative -> r5 > r4
+		ITE   HS                                ; if(r4>r5) - then(r6=r4-r5)-else(r6=r5-r4)
+		SUBHS r6, r4, r5
+		SUBLO r6, r5, r4
 				
-				STR   r6, [SP, #24]							; Storing the result again in the stack (offset is #24 since
-															; we need to access result register (r6) which is 6 positions)
-															; next to SP, i.e. 24 bytes in total)
+		STR   r6, [SP, #24]			; Storing the result again in the stack (offset is #24 since
+							; we need to access result register (r6) which is 6 positions)
+							; next to SP, i.e. 24 bytes in total)
 															
-				POP  {r6, r4, r5, PC}						; PC loads back the address of the instruction that called
-															; the subroutine. Registers are represtined.
-				ENDP
+		POP  {r6, r4, r5, PC}			; PC loads back the address of the instruction that called
+							; the subroutine. Registers are represtined.
+		ENDP
 
 
 ; Dummy Exception Handlers (infinite loops which can be modified)
