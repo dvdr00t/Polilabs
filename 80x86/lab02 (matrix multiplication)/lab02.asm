@@ -124,9 +124,8 @@ P EQU 2
 overflow_happened:
     ; Checking if the result is positive or negative
     ; ----------------------------------------------
-    SHL AX, 1
-    JNC negative       ; if MSB (shifted into Carry Flag) is 0, result is positive
-                       ; so we need to set AX to the smallest signed 16 bits integer
+    JNS negative       ; Checking the MSB of the result (if it is 0, the result is positive and we need
+                       ; we need to store the smallest signed 16-bits integer in the matrix)
        
     MOV AX, 7FFFh      ; Maximum signed integer representable in a word (32767)
     JMP continue       ; loopK can be ended prematurely
