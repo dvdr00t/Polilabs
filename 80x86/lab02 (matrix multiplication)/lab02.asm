@@ -7,7 +7,7 @@
 ;   Matric C (result matrix) with size NxP
 ; ----------------------------------------------------------------------------
 N EQU 2  
-M EQU 2
+M EQU 3
 P EQU 2
 
 
@@ -32,23 +32,29 @@ P EQU 2
     ; In this example, the operation performed is the following:
     ; 
     ; [DECIMAL]
-    ; 
-    ;  /255 255\     /255 255\     / OF OF \ 
-    ; (         ) x (         ) = (         )
-    ;  \ 1   2 /     \ 1   2 /     \257 259/
+    ;                        /127  1\
+    ;  /-128 -128 -128\     /        \      /-OF -384\     /-32768 -384\ 
+    ; (                ) x (  127  1  )  = (          ) = (             )
+    ;  \ 127  127  127/     \        /      \+OF  381/     \+32767  381/   
+    ;                        \127  1/
+    ;
     ;
     ; [HEXADECIAML]
     ; 
-    ;  /FFh FFh\     /FFh FFh\     /  OF   OF  \ 
-    ; (         ) x (         ) = (             )
-    ;  \01h 02h/     \01h 02h/     \0101h 0103h/ 
+    ;                        /7Fh  1\
+    ;  / 80h  80h  80h\     /        \      /-OF FE80h\     /8000h FE80h\ 
+    ; (                ) x (  7Fh  1  )  = (           ) = (             )
+    ;  \ 7Fh  7Fh  7Fh/     \        /      \+OF 017Dh/     \7FFFh 017Dh/   
+    ;                        \7Fh  1/ 
     ; 
     ; where OF is replaced by the largest signed integer that can be
-    ; represented in a word data type, i.e. 7FFFh (32767)
+    ; represented in a word data type, i.e. 7FFFh (32767) while -OF is
+    ; replaced by the smallest signed integer that can be represented with
+    ; 16 bits, i.e. 8000h (-32768).
     ; 
     ; ------------------------------------------------------------------------
-    matA DB 0FFh, 1, 0FFh, 2          ; First matrix  NxM (bytes) 
-    matB DB 0FFh, 0FFh, 1, 2          ; Second matrix MxP (bytes)
+    matA DB 080h, 07Fh, 080h, 07Fh, 080h, 07Fh     ; First matrix  NxM (bytes) 
+    matB DB 07Fh, 1, 07Fh, 1, 07Fh, 1              ; Second matrix MxP (bytes)
          
     matC DW N*P DUP(?) ; Result matrix NxP (words)
     
@@ -92,19 +98,11 @@ P EQU 2
                                   ; value M-CX is the index k)
             XOR  AX, AX           ; AX (parsum) = 0
             loopM:
-                CALL atomic_mul   ; DX = A[i][k] * B[k][j]
-                
-                ; Checking for overflow after the MUL
-                ; We need to check the OF flag before 
-                ; performing an ADD operation (which
-                ; may overwritten the flag itself)
-                ; -----------------------------------
-                JO overflow_happened
-                
+                CALL atomic_mul   ; DX = A[i][k] * B[k][j]               
                 ADD  AX, DX       ; parsum = parsum + DX
                 
-                ; Checking for overflow after the ADD
-                ; -----------------------------------
+                ; Checking for overflow
+                ; ---------------------
                 JO overflow_happened
                 
                 INC  BP           ; k++
@@ -124,8 +122,18 @@ P EQU 2
     JMP show_result
 
 overflow_happened:
+    ; Checking if the result is positive or negative
+    ; ----------------------------------------------
+    SHL AX, 1
+    JNC negative       ; if MSB (shifted into Carry Flag) is 0, result is positive
+                       ; so we need to set AX to the smallest signed 16 bits integer
+       
     MOV AX, 7FFFh      ; Maximum signed integer representable in a word (32767)
     JMP continue       ; loopK can be ended prematurely
+
+negative:
+    MOV AX, 8000h
+    JMP continue
 
 show_result:
     ; Print formatted message
@@ -246,7 +254,7 @@ atomic_mul:
     
     ; Multiplication
     ; ---------------
-    MUL  DL                ; AX = DL * AL
+    IMUL DL                ; AX = DL * AL
     MOV  DX, AX            ; Result is stored in DX
     POP  AX                ; beacuse AX needs to be restored              
     
