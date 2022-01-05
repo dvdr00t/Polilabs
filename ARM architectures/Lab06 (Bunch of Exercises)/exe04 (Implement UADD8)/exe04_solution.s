@@ -1,9 +1,9 @@
 exe04_solution   PROC
 				
-; +------------------------+
+                ; +------------------------+
 		; | MY UADD8 DOCUMENTATION |
 		; +------------------------+
-; Cortex-M4 instruction set contains the following instruction:
+                ; Cortex-M4 instruction set contains the following instruction:
 		;      UADD8 <Rd>, <Rn>, <Rm>
 		; UADD8 sums corresponding bytes of Rn and Rm, storing the result in Rd.
 		; 
