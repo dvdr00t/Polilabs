@@ -65,7 +65,7 @@ SMUAD_routine	PROC
 		ENDP
 			
 		; +----------------------+
-		; |	SMUSD IMPLEMENTATION |
+		; | SMUSD IMPLEMENTATION |
 		; +----------------------+
 		; Parameters are passed with registers. In particular:
 		; r0: first parameter
@@ -86,7 +86,7 @@ SMUSD_routine	PROC
 		ENDP
 		
 		; +---------------------+
-		; |	PREPARATION ROUTINE |
+		; | PREPARATION ROUTINE |
 		; +---------------------+
 		; Parameters are passed with registers. In particular:
 		; r0: first parameter
