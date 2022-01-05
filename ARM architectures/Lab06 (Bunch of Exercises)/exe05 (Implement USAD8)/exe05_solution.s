@@ -44,77 +44,77 @@ stop		B stop
 		; r4: stores the subtrahend
 		; r5: result
 USAD8_routine	PROC
-				PUSH {LR}
-				
-				; Initialization
-				MOV r2, #0
-				
-				; r4 = r3 - r4
-				MOV r3, r0
-				AND r3, #0xFF000000
-				LSR r3, 24
-				MOV r4, r1
-				AND r4, #0xFF000000
-				LSR r4, 24
-				SUB r4, r3, r4                 
-				
-				; Module: |r4|
-				ASR r6, r4, #31 
-				ADD r4, r4, r6 
-				EOR r4, r4, r6
-				
-				; Accumulation
-				ADD r2, r2, r4
-				
-				; r4 = r3 - r4
-				MOV r3, r0
-				AND r3, #0x00FF0000
-				LSR r3, 16
-				MOV r4, r1
-				AND r4, #0x00FF0000
-				LSR r4, 16
-				SUB r4, r3, r4                 
-				
-				; Module: |r4|
-				ASR r6, r4, #31 
-				ADD r4, r4, r6 
-				EOR r4, r4, r6
-				
-				; Accumulation
-				ADD r2, r2, r4
-				
-				; r4 = r3 - r4
-				MOV r3, r0
-				AND r3, #0x0000FF00
-				LSR r3, 8
-				MOV r4, r1
-				AND r4, #0x0000FF00
-				LSR r4, 8
-				SUB r4, r3, r4                 
-				
-				; Module: |r4|
-				ASR r6, r4, #31 
-				ADD r4, r4, r6 
-				EOR r4, r4, r6
-				
-				; Accumulation
-				ADD r2, r2, r4
-				
-				; r4 = r3 - r4
-				MOV r3, r0
-				AND r3, #0x000000FF
-				MOV r4, r1
-				AND r4, #0x000000FF
-				SUB r4, r3, r4                 
-				
-				; Module: |r4|
-				ASR r6, r4, #31 
-				ADD r4, r4, r6 
-				EOR r4, r4, r6
-				
-				; Accumulation
-				ADD r2, r2, r4
-				
-				MOV r5, r2
-				POP  {PC}
-				ENDP
+		PUSH {LR}
+		
+		; Initialization
+		MOV r2, #0
+		
+		; r4 = r3 - r4
+		MOV r3, r0
+		AND r3, #0xFF000000
+		LSR r3, 24
+		MOV r4, r1
+		AND r4, #0xFF000000
+		LSR r4, 24
+		SUB r4, r3, r4                 
+		
+		; Module: |r4|
+		ASR r6, r4, #31 
+		ADD r4, r4, r6 
+		EOR r4, r4, r6
+		
+		; Accumulation
+		ADD r2, r2, r4
+		
+		; r4 = r3 - r4
+		MOV r3, r0
+		AND r3, #0x00FF0000
+		LSR r3, 16
+		MOV r4, r1
+		AND r4, #0x00FF0000
+		LSR r4, 16
+		SUB r4, r3, r4                 
+		
+		; Module: |r4|
+		ASR r6, r4, #31 
+		ADD r4, r4, r6 
+		EOR r4, r4, r6
+		
+		; Accumulation
+		ADD r2, r2, r4
+		
+		; r4 = r3 - r4
+		MOV r3, r0
+		AND r3, #0x0000FF00
+		LSR r3, 8
+		MOV r4, r1
+		AND r4, #0x0000FF00
+		LSR r4, 8
+		SUB r4, r3, r4                 
+		
+		; Module: |r4|
+		ASR r6, r4, #31 
+		ADD r4, r4, r6 
+		EOR r4, r4, r6
+		
+		; Accumulation
+		ADD r2, r2, r4
+		
+		; r4 = r3 - r4
+		MOV r3, r0
+		AND r3, #0x000000FF
+		MOV r4, r1
+		AND r4, #0x000000FF
+		SUB r4, r3, r4                 
+		
+		; Module: |r4|
+		ASR r6, r4, #31 
+		ADD r4, r4, r6 
+		EOR r4, r4, r6
+		
+		; Accumulation
+		ADD r2, r2, r4
+		
+		MOV r5, r2
+		POP  {PC}
+		ENDP
