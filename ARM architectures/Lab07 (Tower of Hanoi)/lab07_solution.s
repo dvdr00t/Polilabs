@@ -124,7 +124,7 @@ CRP_Key         DCD     0xFFFFFFFF
 ; position (TOS) to the base position (BOS).
 ; -------------------------------------------------------------------------------------
 
-				AREA	stacks_area, DATA, READWRITE
+		AREA	stacks_area, DATA, READWRITE
 base_pointer_A	SPACE	40
 stack_pointer_A	
 base_pointer_B	SPACE	40
@@ -140,7 +140,7 @@ stack_pointer_C
 ; 	- the constant to be inserted is greater than the last element on the stack.
 ; -------------------------------------------------------------------------------------
 
-				AREA	initial_config, DATA, READONLY
+		AREA	initial_config, DATA, READONLY
 initial_data	DCD	9, 6, 3, 2, 1, 8, 7, 0, 5, 4, 0
 
                 AREA    |.text|, CODE, READONLY
