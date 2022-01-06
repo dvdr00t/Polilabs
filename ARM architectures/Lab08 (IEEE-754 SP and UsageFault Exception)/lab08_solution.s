@@ -173,31 +173,31 @@ Reset_Handler   PROC
 ;    the next instruction. Update the value of PC saved in the stack (with offset 24) with the 
 ;    new value PC + 4.
 ; -----------------------------------------------------------------------------
-				; Loading the System Handler Control and State Register
-				LDR r0, =SystemHandlerControlandStateRegister
-				LDR r1, [r0]
-				
-				; Enabling the usage fault by setting bit[18] to 1
-				; bin: 0000 0000 0000 0100 0000 0000 0000 0000
-				; 0x :    0    0    0    4    0    0    0    0
-				ORR r1, r1, #0x00040000
-				
-				; Storing back the result in the System Handler Control and State Register
-				; Check in the NVIC when debugging!
-				STR r1, [r0] 
+		; Loading the System Handler Control and State Register
+		LDR r0, =SystemHandlerControlandStateRegister
+		LDR r1, [r0]
+		
+		; Enabling the usage fault by setting bit[18] to 1
+		; bin: 0000 0000 0000 0100 0000 0000 0000 0000
+		; 0x :    0    0    0    4    0    0    0    0
+		ORR r1, r1, #0x00040000
+		
+		; Storing back the result in the System Handler Control and State Register
+		; Check in the NVIC when debugging!
+		STR r1, [r0] 
 
-				; RAISING THE EXCEPTION
-				; Values are passed in the registers c0 (r4) and c1 (r5), while the result is 
-				; obtained in the register c7 (r11)
-				; ---------------------------------------------------------------------------------
+		; RAISING THE EXCEPTION
+		; Values are passed in the registers c0 (r4) and c1 (r5), while the result is 
+		; obtained in the register c7 (r11)
+		; ---------------------------------------------------------------------------------
 integer_part	RN r4
 fractional_part RN r5
-				LDR integer_part,    =0x000007CE		; 0x000007CE = 1998 
-				LDR fractional_part, =0x087F91CD		; 0x087F91CD = 142578125
-				
-				CDP p0, #1, c7, c0, c1, #0
-				
-stop			B	stop
+		LDR integer_part,    =0x000007CE		; 0x000007CE = 1998 
+		LDR fractional_part, =0x087F91CD		; 0x087F91CD = 142578125
+		
+		CDP p0, #1, c7, c0, c1, #0
+		
+stop		B	stop
                 ENDP
 
 
@@ -230,58 +230,58 @@ UsageFault_Handler\
                 PROC
                 EXPORT  UsageFault_Handler        [WEAK]
 					
-				; +---------------------+
-				; | 1) Check proper bit |
-				; +---------------------+
-					
-				; Loading the Usage Fault Status Register
-				; NOTE THAT: this register is a HALF-WORD register, therefore LDRH is required to
-				; load a half-word value.
-				LDR  r2, =UsageFaultStatusRegister
-				LDRH r3, [r2]
-				
-				; Testing if the bit[3] of the register has been set to 1 (meaning that it has been
-				; attempted to execute a coprocessor instruction
-				TST r3, #0x00000008 ; bin: 0000 0000 0000 0000 0000 0000 0000 1000
-				BNE raisedCoprocessor
-				B   handleEverythingElse
-					
-				; All other faults end in an infinite loop
+		; +---------------------+
+		; | 1) Check proper bit |
+		; +---------------------+
+			
+		; Loading the Usage Fault Status Register
+		; NOTE THAT: this register is a HALF-WORD register, therefore LDRH is required to
+		; load a half-word value.
+		LDR  r2, =UsageFaultStatusRegister
+		LDRH r3, [r2]
+		
+		; Testing if the bit[3] of the register has been set to 1 (meaning that it has been
+		; attempted to execute a coprocessor instruction
+		TST r3, #0x00000008 ; bin: 0000 0000 0000 0000 0000 0000 0000 1000
+		BNE raisedCoprocessor
+		B   handleEverythingElse
+			
+		; All other faults end in an infinite loop
 
 raisedCoprocessor
                 ; +--------------------------------------+
-				; | 2) Recognizing offending instruction |
-				; +--------------------------------------+
-				; Load 4 bytes (1 word) from the address of PC. Due to little endianness, the 
-				; two halfwords must be switched (e.g., by rotating 16 positions).
-				; ---------------------------------------------------------------------------------
-				; It is necessary to understand in which stack (MSP or PSP?) the PSR was stored.
-				; Checking if the EXEC_RETURN address has bit[2] set to 0 or 1:
-				; 	- bit[2] == 1 then PSP was being used before the call
-				; 	- bit[2] == 0 then MSP was being used before the call
-				TST LR, #0x00000004 	; bin: 0000 0000 0000 0000 0000 0000 0000 0100 
-				ITE EQ					; if (bit[2] == 1) {
-				MRSEQ r0, MSP			; 		r0 = [MSP]
-				MRSNE r0, PSP			; } else {r0 = [PSP]}
+		; | 2) Recognizing offending instruction |
+		; +--------------------------------------+
+		; Load 4 bytes (1 word) from the address of PC. Due to little endianness, the 
+		; two halfwords must be switched (e.g., by rotating 16 positions).
+		; ---------------------------------------------------------------------------------
+		; It is necessary to understand in which stack (MSP or PSP?) the PSR was stored.
+		; Checking if the EXEC_RETURN address has bit[2] set to 0 or 1:
+		; 	- bit[2] == 1 then PSP was being used before the call
+		; 	- bit[2] == 0 then MSP was being used before the call
+		TST LR, #0x00000004 	; bin: 0000 0000 0000 0000 0000 0000 0000 0100 
+		ITE EQ					; if (bit[2] == 1) {
+		MRSEQ r0, MSP			; 		r0 = [MSP]
+		MRSNE r0, PSP			; } else {r0 = [PSP]}
+		
+		LDR r1, [r0, #24]       ; Restoring PC before the exception was raised
+		LDR r1, [r1]            ; Retrieving the OPCODE of the instruction pointed by PC
+		ROR r1, r1, #16         ; (Little endian! switching halfwords)
+		PUSH {r1}               ; We will need r1 later to extract source registers
+		AND r1, #0x00100000     ; If the instruction is CDP p0, #1, ... 
+		                        ; execute code for IEEE-754 SP conversion.
+								; bits are [xxxx 1110 0001 xxxx xxxx 0000 xxxx xxxx]
+		CMP r1, #0x00100000
+		BEQ handleConversion
 				
-				LDR r1, [r0, #24]       ; Restoring PC before the exception was raised
-				LDR r1, [r1]            ; Retrieving the OPCODE of the instruction pointed by PC
-				ROR r1, r1, #16         ; (Little endian! switching halfwords)
-				PUSH {r1}               ; We will need r1 later to extract source registers
-				AND r1, #0x00100000     ; If the instruction is CDP p0, #1, ... 
-				                        ; execute code for IEEE-754 SP conversion.
-										; bits are [xxxx 1110 0001 xxxx xxxx 0000 xxxx xxxx]
-				CMP r1, #0x00100000
-				BEQ handleConversion
-				
-				; else
-				; +----------------------------+
-				; | 3) Changing return address |
-				; +----------------------------+
+		; else
+		; +----------------------------+
+		; | 3) Changing return address |
+		; +----------------------------+
 chg_ret_addr	LDR r7, [r0, #24]
-				ADD r7, r7, #4
-				MOV PC, r7
-				BX LR
+		ADD r7, r7, #4
+		MOV PC, r7
+		BX LR
 
 handleConversion			
 
@@ -301,177 +301,177 @@ handleConversion
 exponent        RN r2
 mantissa        RN r3
 
-				; +----------------------------------+
-				; | RESTORING VALUES TO BE CONVERTED |
-				; +----------------------------------+
-				POP {r1}
-				PUSH {r4, r5, r6, r7, r8, r9, r10, r11}
-				PUSH {r1}
-				PUSH {r1}
-				PUSH {r1}
-				MOV r2, #4                  ; Offset for retrieving the values indexed
-				AND r1, #0x000F0000         ; Masking-out source index
-				LSR r1, r1, #16             ; Address of the first operand (integer_part)
-				MUL r1, r1, r2              ; index*4 points to the value
-				ADD r1, r1, #12             ; actually it is (index*4)+12 due to the pushes{r1}
-				LDR r4, [SP, r1]            ; r4 = value[Source_0]
-				POP {r1}                    ; Restoring r1
-				AND r1, #0x0000000F         ; Address of the second operand (fractional_part)
-				MUL r1, r1, r2              ; index*4 points to the value
-				ADD r1, r1, #8              ; actually it is (index*4)+4 due to the pushes{r1}
-				LDR r5, [SP, r1]            ; r1 = value[Source_1]
-				POP {r1}                    ; Restoring r1
-				AND r1, #0x00000020         ; Bit[5] indicates the sign
-				ROR r10, r1, #6
+		; +----------------------------------+
+		; | RESTORING VALUES TO BE CONVERTED |
+		; +----------------------------------+
+		POP {r1}
+		PUSH {r4, r5, r6, r7, r8, r9, r10, r11}
+		PUSH {r1}
+		PUSH {r1}
+		PUSH {r1}
+		MOV r2, #4                  ; Offset for retrieving the values indexed
+		AND r1, #0x000F0000         ; Masking-out source index
+		LSR r1, r1, #16             ; Address of the first operand (integer_part)
+		MUL r1, r1, r2              ; index*4 points to the value
+		ADD r1, r1, #12             ; actually it is (index*4)+12 due to the pushes{r1}
+		LDR r4, [SP, r1]            ; r4 = value[Source_0]
+		POP {r1}                    ; Restoring r1
+		AND r1, #0x0000000F         ; Address of the second operand (fractional_part)
+		MUL r1, r1, r2              ; index*4 points to the value
+		ADD r1, r1, #8              ; actually it is (index*4)+4 due to the pushes{r1}
+		LDR r5, [SP, r1]            ; r1 = value[Source_1]
+		POP {r1}                    ; Restoring r1
+		AND r1, #0x00000020         ; Bit[5] indicates the sign
+		ROR r10, r1, #6
 				
 				
-				; +------------------+
-				; | COMPUTE EXPONENT |
-				; +------------------+
-				; The exponent is equal to the position of the first bit set to 1 in the binary 
-				; representation of the integer part.
-				; As an example, 1998 = 2_11111001110, where the position of the first bit is 10.
-				; After adding the 127 bias, the exponent becomes 10 + 127 = 137 = 2_10001001
-				; --------------------------------------------------------------------------------
-				; The computation is implemented by exploiting the Carry Flag in the Logical Shift
-				; Left (LSL). When the carry flag is set to 1, it means that the first bit of the 
-				; integer part has been reached. A counter keeps track of the position in a loop.
-				MOV r2, #31
-				PUSH {integer_part}		; Preserving value
+		; +------------------+
+		; | COMPUTE EXPONENT |
+		; +------------------+
+		; The exponent is equal to the position of the first bit set to 1 in the binary 
+		; representation of the integer part.
+		; As an example, 1998 = 2_11111001110, where the position of the first bit is 10.
+		; After adding the 127 bias, the exponent becomes 10 + 127 = 137 = 2_10001001
+		; --------------------------------------------------------------------------------
+		; The computation is implemented by exploiting the Carry Flag in the Logical Shift
+		; Left (LSL). When the carry flag is set to 1, it means that the first bit of the 
+		; integer part has been reached. A counter keeps track of the position in a loop.
+		MOV r2, #31
+		PUSH {integer_part}		; Preserving value
 				
-				; DO...WHILE Loop
+		; DO...WHILE Loop
 exponentLoop	LSLS integer_part, integer_part, #1		; Logical Shift Left 
-				MRS r3, APSR							; Accessing APSR ...
-				AND r3, r3, #0x20000000					; ... in order to access Carry Flag (PSR[29])
-				CMP r3, #0x20000000						; ALternatively, use BC (Branch with Carry)
-				BEQ firstBit
+		MRS r3, APSR					; Accessing APSR ...
+		AND r3, r3, #0x20000000				; ... in order to access Carry Flag (PSR[29])
+		CMP r3, #0x20000000				; ALternatively, use BC (Branch with Carry)
+		BEQ firstBit
+		
+		; Decreasing counter
+		SUB r2, r2, #1
+		
+		; Test condition
+		CMP r2, #0
+		BNE exponentLoop
 				
-				; Decreasing counter
-				SUB r2, r2, #1
-				
-				; Test condition
-				CMP r2, #0
-				BNE exponentLoop
-				
-				; Position of first bit is stored in r2
-firstBit		MOV mantissa, integer_part
-				POP{integer_part}
-				ADD exponent, exponent, #127					; Adding BIAS = 127
-				
-				; +------------------+
-				; | COMPUTE MANTISSA |
-				; +------------------+
-				; The first bits of the mantissa are taken from the binary representation of the 
-				; integer part, after removing the initial '1'.
-				; As an example, 1998 = 2_11111001110, where the first 10 bits of the mantissa are 
-				;      1111001110
-				; ---------------------------------------------------------------------------------
-				; The remaining N bits of the mantissa are obtained by converting the fractional 
-				; part. In the conversion, the fractional part is interpreted as an integer number.
-				; The algorithm is the following:
-				; 
-				; LET X = 142578125
-				; LET P = 1000000000 (the lowest power of 10 which is higher than X)
-				; 
-				; REPEAT N TIMES:                       // N: remaining bits of the mantissa
-				;     X = 2*X (X is doubled)
-				;     if (X > P) {
-				;         the next bit of the mantissa is 1
-				;         the new value of X is X = X – P
-				;     } else {
-				;         the next bit of the mantissa is 0
-				;     }
-				; ---------------------------------------------------------------------------------
-N				RN r6
+		; Position of first bit is stored in r2
+firstBit	MOV mantissa, integer_part
+		POP{integer_part}
+		ADD exponent, exponent, #127					; Adding BIAS = 127
+		
+		; +------------------+
+		; | COMPUTE MANTISSA |
+		; +------------------+
+		; The first bits of the mantissa are taken from the binary representation of the 
+		; integer part, after removing the initial '1'.
+		; As an example, 1998 = 2_11111001110, where the first 10 bits of the mantissa are 
+		;      1111001110
+		; ---------------------------------------------------------------------------------
+		; The remaining N bits of the mantissa are obtained by converting the fractional 
+		; part. In the conversion, the fractional part is interpreted as an integer number.
+		; The algorithm is the following:
+		; 
+		; LET X = 142578125
+		; LET P = 1000000000 (the lowest power of 10 which is higher than X)
+		; 
+		; REPEAT N TIMES:                       // N: remaining bits of the mantissa
+		;     X = 2*X (X is doubled)
+		;     if (X > P) {
+		;         the next bit of the mantissa is 1
+		;         the new value of X is X = X – P
+		;     } else {
+		;         the next bit of the mantissa is 0
+		;     }
+		; ---------------------------------------------------------------------------------
+N		RN r6
 P               RN r7
-remaining_mant  RN r9               ; Remaining mantissa is filled at every iteration from the right
+remaining_mant  RN r9          ; Remaining mantissa is filled at every iteration from the right
 				
-				; COMPUTING N
-				; From the exponent, it is possible to know how many bits left in the mantissa we 
-				; had, doing:
-				;                 N = 23 - (exponent - 127)
-				; ---------------------------------------------------------------------------------
-				MOV N, #0x17                       ; 0x17 = 23
-				SUB r8, exponent, #0x7F            ; 0x7F = 127
-				SUB N, N, r8
-				
-				; COMPUTING P
-				; Let P start from 1 and be multiplied by a factor 10 every iteration of the loop
-				; until P is greater than X (fractional_part).
-				; ---------------------------------------------------------------------------------
-				MOV P, #0x01                       
-				MOV r8, #0xA                       ; factor of mutiplication
+		; COMPUTING N
+		; From the exponent, it is possible to know how many bits left in the mantissa we 
+		; had, doing:
+		;                 N = 23 - (exponent - 127)
+		; ---------------------------------------------------------------------------------
+		MOV N, #0x17                       ; 0x17 = 23
+		SUB r8, exponent, #0x7F            ; 0x7F = 127
+		SUB N, N, r8
+		
+		; COMPUTING P
+		; Let P start from 1 and be multiplied by a factor 10 every iteration of the loop
+		; until P is greater than X (fractional_part).
+		; ---------------------------------------------------------------------------------
+		MOV P, #0x01                       
+		MOV r8, #0xA                       ; factor of mutiplication
 computeP        MUL P, P, r8
-				CMP P, fractional_part
-				BLE computeP 
-				
-				; MANTISSA LOOP
-				; ---------------------------------------------------------------------------------
-				PUSH {fractional_part}             ; Preserving fractional_part
-				MOV r8, #0x02                      ; Multiplication factor stored in r6
-				MOV remaining_mant, #0x00    
+		CMP P, fractional_part
+		BLE computeP 
+		
+		; MANTISSA LOOP
+		; ---------------------------------------------------------------------------------
+		PUSH {fractional_part}             ; Preserving fractional_part
+		MOV r8, #0x02                      ; Multiplication factor stored in r6
+		MOV remaining_mant, #0x00    
 				
 mantissaLoop    MUL fractional_part, fractional_part, r8
-				CMP fractional_part, P
-				BLT set_zero
+		CMP fractional_part, P
+		BLT set_zero
+		
+		; ELSE: set_one
+		; 
+		;  +---+---+-...-+---+---+
+		;  |   |   |     |   | 1 |
+		;  +---+---+-...-+---+---+
+		;                      ^_____ insert a 1 with a ORR operation
+		;
+		;  +---+---+-...-+---+---+
+		;  |   |   |     | 1 |   | <- shift left to free the position
+		;  +---+---+-...-+---+---+
+		; ---------------------------------------------------------------------------------
+		ORR remaining_mant, remaining_mant, #0x00000001 
+		LSL remaining_mant, remaining_mant, #1
+		SUB fractional_part, fractional_part, P
 				
-				; ELSE: set_one
-				; 
-				;  +---+---+-...-+---+---+
-				;  |   |   |     |   | 1 |
-				;  +---+---+-...-+---+---+
-				;                      ^_____ insert a 1 with a ORR operation
-				;
-				;  +---+---+-...-+---+---+
-				;  |   |   |     | 1 |   | <- shift left to free the position
-				;  +---+---+-...-+---+---+
-				; ---------------------------------------------------------------------------------
-				ORR remaining_mant, remaining_mant, #0x00000001 
-				LSL remaining_mant, remaining_mant, #1
-				SUB fractional_part, fractional_part, P
-				
-				; Decreasing counter and test condition
-				; -------------------------------------
-				SUB N, N, #1
-				CMP N, #0
-				BNE mantissaLoop
-				B   done
+		; Decreasing counter and test condition
+		; -------------------------------------
+		SUB N, N, #1
+		CMP N, #0
+		BNE mantissaLoop
+		B   done
 
 set_zero        ORR remaining_mant, remaining_mant, #0x00000000 
-				LSL remaining_mant, remaining_mant, #1
-				
-				; Decreasing counter and test condition
-				; -------------------------------------
-				SUB N, N, #1
-				CMP N, #0
-				BNE mantissaLoop
+		LSL remaining_mant, remaining_mant, #1
+		
+		; Decreasing counter and test condition
+		; -------------------------------------
+		SUB N, N, #1
+		CMP N, #0
+		BNE mantissaLoop
 
-				; Aligning the mantissa (which was previously stored in the 
-				; left-most bits of the register).
+		; Aligning the mantissa (which was previously stored in the 
+		; left-most bits of the register).
 done            LSR remaining_mant, remaining_mant, #1
-				LSR mantissa, mantissa, #9         		
-				ADD mantissa, mantissa, remaining_mant
-				ADD r10, r10, mantissa
-				LSL exponent, exponent, #23
-				ADD r10, r10, exponent
-				
-				; Restoring fractional_part
-				POP {fractional_part}
-				
-				; STORING BACK THE RESULT
-				; The destination register will contains the IEEE-754 SP representation, 
-				; since the corresponding entry in the stack was updated before.
-				; ----------------------------------------------------------------------------
-				POP {r1}
-				MOV r2, #4                  ; Offset for retrieving the values indexed
-				AND r1, #0x0000F000         ; Masking-out source index
-				LSR r1, r1, #12             ; Address of the first operand (integer_part)
-				MUL r1, r1, r2              ; index*4 points to the value
-				STR r10, [SP, r1]
-				
-				; Returning to main routine
-				POP {r4, r5, r6, r7, r8, r9, r10, r11}
-				B chg_ret_addr
+		LSR mantissa, mantissa, #9         		
+		ADD mantissa, mantissa, remaining_mant
+		ADD r10, r10, mantissa
+		LSL exponent, exponent, #23
+		ADD r10, r10, exponent
+		
+		; Restoring fractional_part
+		POP {fractional_part}
+		
+		; STORING BACK THE RESULT
+		; The destination register will contains the IEEE-754 SP representation, 
+		; since the corresponding entry in the stack was updated before.
+		; ----------------------------------------------------------------------------
+		POP {r1}
+		MOV r2, #4                  ; Offset for retrieving the values indexed
+		AND r1, #0x0000F000         ; Masking-out source index
+		LSR r1, r1, #12             ; Address of the first operand (integer_part)
+		MUL r1, r1, r2              ; index*4 points to the value
+		STR r10, [SP, r1]
+		
+		; Returning to main routine
+		POP {r4, r5, r6, r7, r8, r9, r10, r11}
+		B chg_ret_addr
 				
 handleEverythingElse			
                 B       .
