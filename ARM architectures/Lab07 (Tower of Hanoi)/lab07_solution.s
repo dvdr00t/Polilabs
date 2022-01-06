@@ -277,10 +277,10 @@ fill_stack	PROC
 		;     DO...WHILE LOOP
 		; -----------------------
 		; do {
-		; 		old_value = initial_data[in_data_ptr]
-		;		stack_X[stack_X_ptr] = old_value
-		;		in_data_ptr++		
-		;		new_value = initial_data[in_data_ptr]
+		; 	old_value = initial_data[in_data_ptr]
+		;	stack_X[stack_X_ptr] = old_value
+		;	in_data_ptr++		
+		;	new_value = initial_data[in_data_ptr]
 		;
 		; } while (old_value > new_value || new_value != 0)
 		;
