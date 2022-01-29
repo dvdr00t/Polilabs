@@ -2,7 +2,7 @@
 #include "LPC17xx.h"
 
 /*
-   BUTTON_init(): it perform two operations.
+   BUTTON_init(): it perform four operations.
  
    o Setting pins to work with the function one (01) through the PINSEL4 register
      in the PIN CONNECTED BLOCK (PCB). The function one allows the PINs to work as
