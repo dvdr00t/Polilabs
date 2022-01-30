@@ -80,7 +80,7 @@ void BUTTON_init(void) {
 	
 	/* Enabling the interrupts */
 	
-	NVIC_EnableIRQ(EINT2_IRQn);              /* enable irq in NVIC                 */
+  NVIC_EnableIRQ(EINT2_IRQn);              /* enable irq in NVIC                 */
   NVIC_EnableIRQ(EINT1_IRQn);              /* enable irq in NVIC                 */
 }
 
