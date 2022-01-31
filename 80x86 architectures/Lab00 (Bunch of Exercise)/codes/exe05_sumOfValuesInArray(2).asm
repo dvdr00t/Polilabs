@@ -8,7 +8,7 @@ DIM EQU 15
 .STARTUP
     XOR AX, AX          ; Zeroing AX 
     MOV CX, DIM         ; Array size is now stores in CX 
-    XOR DI, DI           ; Zeroing DI 
+    XOR DI, DI          ; Zeroing DI 
 sum:
     ADD AX, VETT[DI]    ; Add to AX the i-th element of VETT
     ADD DI, 2           ; Incrementing the pointer
