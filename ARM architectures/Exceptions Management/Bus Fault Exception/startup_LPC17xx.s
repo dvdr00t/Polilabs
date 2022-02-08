@@ -120,9 +120,9 @@ CRP_Key         DCD     0xFFFFFFFF
                 AREA    |.text|, CODE, READONLY
 
 ; +---------------------------------------+
-; |										  |
+; |					  |
 ; |        FAULT STATUS REGISTERS         |
-; |										  |
+; |					  |
 ; +---------------------------------------+
 ; The System Handler Control and State Register is a word register (R/W) specified 
 ; in the Nested Interrupt Vectored Controller (NVIC) at the address 0xE000ED24. It stores
@@ -160,37 +160,37 @@ BusFaultAddressRegister EQU 0xE000ED38
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 					
-				; Loading the System Handler Control and State Register
-				LDR r0, =SystemHandlerControlandStateRegister
-				LDR r1, [r0]
-				
-				; Enabling Bus faults by setting bit[17] to 1
-				; bin: 0000 0000 0000 0010 0000 0000 0000 0000
-				; 0x :    0    0    0    2    0    0    0    0
-				ORR r1, r1, #0x00020000
-				
-				; Storing back the result in the System Handler Control and State Register
-				; Check in the NVIC when debugging!
-				STR r1, [r0]   
+		; Loading the System Handler Control and State Register
+		LDR r0, =SystemHandlerControlandStateRegister
+		LDR r1, [r0]
+		
+		; Enabling Bus faults by setting bit[17] to 1
+		; bin: 0000 0000 0000 0010 0000 0000 0000 0000
+		; 0x :    0    0    0    2    0    0    0    0
+		ORR r1, r1, #0x00020000
+		
+		; Storing back the result in the System Handler Control and State Register
+		; Check in the NVIC when debugging!
+		STR r1, [r0]   
 
-				; +-------------------------------------+
-				; |	       BUS FAULT EXCEPTION          |
-				; +-------------------------------------+
-				; Suppose to raise the Bus Fault exception by generating a stacking error: stack pointer is 
-				; corrupted, or stack size became too large (reaching an undefined memory region), or PSP is used 
-				; but not initialized.
-				; In this case we want to raise the exception by using PSP without initializing it. 
-				
-				; First, we need to switch to PSP. In order to do so, we need to change CONTROL[1] to 1.
-				MRS r0, CONTROL
-				ORR r0, r0, #0x00000002	; bin: 0000 0000 0000 0000 0000 0000 0000 0010
-				MSR CONTROL, r0
-				
-				; Raising the exception: PSP is not initialized (SP = 0x00000000)
-				; However, by running the code in the simulation (remember: we are simulating the board since 
-				; the board is not connected), nothing happens and the instruction is skipped. In case the code 
-				; is run on the board, a Bus Fault Exception is raised.
-				PUSH {r1}
+		; +-------------------------------------+
+		; |	   BUS FAULT EXCEPTION          |
+		; +-------------------------------------+
+		; Suppose to raise the Bus Fault exception by generating a stacking error: stack pointer is 
+		; corrupted, or stack size became too large (reaching an undefined memory region), or PSP is used 
+		; but not initialized.
+		; In this case we want to raise the exception by using PSP without initializing it. 
+		
+		; First, we need to switch to PSP. In order to do so, we need to change CONTROL[1] to 1.
+		MRS r0, CONTROL
+		ORR r0, r0, #0x00000002	; bin: 0000 0000 0000 0000 0000 0000 0000 0010
+		MSR CONTROL, r0
+		
+		; Raising the exception: PSP is not initialized (SP = 0x00000000)
+		; However, by running the code in the simulation (remember: we are simulating the board since 
+		; the board is not connected), nothing happens and the instruction is skipped. In case the code 
+		; is run on the board, a Bus Fault Exception is raised.
+		PUSH {r1}
 				
                 BX      R0
                 ENDP
@@ -220,28 +220,28 @@ BusFault_Handler\
                 PROC
                 EXPORT  BusFault_Handler          [WEAK]
 					
-				; Loading the Bus Fault Status Register
-				; NOTE THAT: this register is a BYTE register, therefore LDRB is required to
-				; load a byte value.
-				LDR  r0, =BusFaultStatusRegister
-				LDRB r1, [r0]
-				
-				; NOTE THAT now, the register r1 contains the following value:
-				; 	r1 = 0x00000092
-				; which corresponds, in binary, to:
-				; 	r1 = 2_0000 0000 0000 0000 0000 0000 1001 0010
-				; The Bus Fault Status register is a byte register, therefore it contains the last byte of 
-				; the value stored in r1, where:
-				; 	- bit[7] is set to 1 -> valid bus fault is stored in BFAR noy
-				; 	- bit[4] is set to 1 -> stacking error;
-				; 	- bit[1] is set to 1 -> precise data access violation. 
-				
-				; Loading the Bus Fault Address Register
-				LDR  r2, =BusFaultAddressRegister
-				LDRB r3, [r2]
-				
-				; In r3 there is now the valid bus fault address
-				; 	r3 = 0x1FADE120
+		; Loading the Bus Fault Status Register
+		; NOTE THAT: this register is a BYTE register, therefore LDRB is required to
+		; load a byte value.
+		LDR  r0, =BusFaultStatusRegister
+		LDRB r1, [r0]
+		
+		; NOTE THAT now, the register r1 contains the following value:
+		; 	r1 = 0x00000092
+		; which corresponds, in binary, to:
+		; 	r1 = 2_0000 0000 0000 0000 0000 0000 1001 0010
+		; The Bus Fault Status register is a byte register, therefore it contains the last byte of 
+		; the value stored in r1, where:
+		; 	- bit[7] is set to 1 -> valid bus fault is stored in BFAR noy
+		; 	- bit[4] is set to 1 -> stacking error;
+		; 	- bit[1] is set to 1 -> precise data access violation. 
+		
+		; Loading the Bus Fault Address Register
+		LDR  r2, =BusFaultAddressRegister
+		LDRB r3, [r2]
+		
+		; In r3 there is now the valid bus fault address
+		; 	r3 = 0x1FADE120
 					
                 B       .
                 ENDP
