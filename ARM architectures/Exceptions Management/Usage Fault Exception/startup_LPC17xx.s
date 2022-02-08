@@ -174,90 +174,90 @@ ConfigurationControlRegister EQU 0xE000ED14
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 				
-				; Loading the System Handler Control and State Register
-				LDR r0, =SystemHandlerControlandStateRegister
-				LDR r1, [r0]
+		; Loading the System Handler Control and State Register
+		LDR r0, =SystemHandlerControlandStateRegister
+		LDR r1, [r0]
+		
+		; Enabling all faults by setting bit[16:18] to 1
+		; bin: 0000 0000 0000 0111 0000 0000 0000 0000
+		; 0x :    0    0    0    7    0    0    0    0
+		ORR r1, r1, #0x00070000
+		
+		; Storing back the result in the System Handler Control and State Register
+		; Check in the NVIC when debugging!
+		STR r1, [r0]             
+		
+		; +-------------------------------------+
+		; |	   CASE 1: wrong instruction set    |
+		; +-------------------------------------+
+		; Generating a Usage Fault Exception by jumping to a Thumb instruction
+		; with the ARM instruction set enabled. 
+		; Remember that, if the last bit of the address to jump to is 0, the instruction set 
+		; used aftet the jump is the ARM instruction set. If the code area where the code jump 
+		; to uses a Thumb instruction set, it generates a Usage Fault Exception (which leads to 
+		; a Hard Fault Exception if the Usage Fault Exception is not enabled).
+		ADRL r0, stop
+		BX   r0
 				
-				; Enabling all faults by setting bit[16:18] to 1
-				; bin: 0000 0000 0000 0111 0000 0000 0000 0000
-				; 0x :    0    0    0    7    0    0    0    0
-				ORR r1, r1, #0x00070000
+		; +-------------------------------------+
+		; |	     CASE 2: division by zero       |
+		; +-------------------------------------+
+		; Generating a Usage Fault Exception by performing a division by zero.
+		; NOTE THAT: before raising the exception it is necessary to enable the DIV_0_TRP in the 
+		; Configuration Control Register at bit[4]. If the DIV_0_TRP is not enabled, the result of
+		; division becomes zero. If this behavior is OK for the programmer, nothing has to be done; otherwise
+		; write the code in a dedicated subroutine.
+		
+		; Enabling the DIV_0_TRP by loading the Configuration Control Register and setting bit[4] = 1 
+		LDR r0, =ConfigurationControlRegister
+		LDR r1, [r0]
+		ORR r1, #0x00000010			; bin: 0100 0000 0000 0000 0000 0000 0001 0000
+		STR r1, [r0]
+		
+		; Raising the exception
+		MOV r0, #0x0
+		MOV r1, #0x11111111			; Even if this istruction is too long, it is supported by the MOV
+							; because it is of the type 0xaabbaabb where a = 1 and b = 1
+		UDIV r2, r1, r0
 				
-				; Storing back the result in the System Handler Control and State Register
-				; Check in the NVIC when debugging!
-				STR r1, [r0]             
-				
-				; +-------------------------------------+
-				; |	   CASE 1: wrong instruction set    |
-				; +-------------------------------------+
-				; Generating a Usage Fault Exception by jumping to a Thumb instruction
-				; with the ARM instruction set enabled. 
-				; Remember that, if the last bit of the address to jump to is 0, the instruction set 
-				; used aftet the jump is the ARM instruction set. If the code area where the code jump 
-				; to uses a Thumb instruction set, it generates a Usage Fault Exception (which leads to 
-				; a Hard Fault Exception if the Usage Fault Exception is not enabled).
-				ADRL r0, stop
-				BX   r0
-				
-				; +-------------------------------------+
-				; |	     CASE 2: division by zero       |
-				; +-------------------------------------+
-				; Generating a Usage Fault Exception by performing a division by zero.
-				; NOTE THAT: before raising the exception it is necessary to enable the DIV_0_TRP in the 
-				; Configuration Control Register at bit[4]. If the DIV_0_TRP is not enabled, the result of
-				; division becomes zero. If this behavior is OK for the programmer, nothing has to be done; otherwise
-				; write the code in a dedicated subroutine.
-				
-				; Enabling the DIV_0_TRP by loading the Configuration Control Register and setting bit[4] = 1 
-				LDR r0, =ConfigurationControlRegister
-				LDR r1, [r0]
-				ORR r1, #0x00000010			; bin: 0100 0000 0000 0000 0000 0000 0001 0000
-				STR r1, [r0]
-				
-				; Raising the exception
-				MOV r0, #0x0
-				MOV r1, #0x11111111			; Even if this istruction is too long, it is supported by the MOV
-											; because it is of the type 0xaabbaabb where a = 1 and b = 1
-				UDIV r2, r1, r0
-				
-				; +-------------------------------------+
-				; |	     CASE 3: unaligned access       |
-				; +-------------------------------------+
-				; When a 32 bit addres is loaded, it is better that the address is a multiple of 4 (in 
-				; order to exploit only one cycle for the load).
-				; NOTE THAT: before raising the exception it is necessary to enable the UNALIGN_TRP in the 
-				; Configuration Control Register at bit[8]. If the UNALIGN_TRP is not enabled, the result does not
-				; change but it takes two cycle to be completed.
-				
-				; Enabling the UNALIGN_TRP by loading the Configuration Control Register and setting bit[3] = 1 
-				LDR r0, =ConfigurationControlRegister
-				LDR r1, [r0]
-				ORR r1, #0x00000008		; bin: 0100 0000 0000 0000 0000 0000 0000 1000
-				STR r1, [r0]
-				
-				; Raising the exception
-				LDR r0, =var1
-				LDR r1, [r0]			; Is r0 a multiple of 4?
-				LDR r2, =var2          
-				LDR r3, [r2]            ; For sure this is an UNALIGNED ACCESS since var2 starts 1B after var1
-				
-				; +-------------------------------------+
-				; |	   CASE 4: undefined instruction    |
-				; +-------------------------------------+
-				; In case the compiler finds, at a certain point in the code, an OP Code which does not represent
-				; any given instruction, it raises a Usage Fault Exception. As an example, suppose that 0xE7F0DEF0
-				; does not correspond to any particular Thumb instruction. It is possible for the programmer to add 
-				; it to the memory by doing: DCD 0xE7F0DEF0. However, by running the code in the simulation (remember:
-				; we are simulating the board since the board is not connected), nothing happens and the instruction is
-				; skipped. In case the code is run on the board, a Usage Fault Exception is raised.
-				DCD 0xE7F0DEF0
+		; +-------------------------------------+
+		; |	     CASE 3: unaligned access       |
+		; +-------------------------------------+
+		; When a 32 bit addres is loaded, it is better that the address is a multiple of 4 (in 
+		; order to exploit only one cycle for the load).
+		; NOTE THAT: before raising the exception it is necessary to enable the UNALIGN_TRP in the 
+		; Configuration Control Register at bit[8]. If the UNALIGN_TRP is not enabled, the result does not
+		; change but it takes two cycle to be completed.
+		
+		; Enabling the UNALIGN_TRP by loading the Configuration Control Register and setting bit[3] = 1 
+		LDR r0, =ConfigurationControlRegister
+		LDR r1, [r0]
+		ORR r1, #0x00000008		; bin: 0100 0000 0000 0000 0000 0000 0000 1000
+		STR r1, [r0]
+		
+		; Raising the exception
+		LDR r0, =var1
+		LDR r1, [r0]			; Is r0 a multiple of 4?
+		LDR r2, =var2          
+		LDR r3, [r2]            	; For sure this is an UNALIGNED ACCESS since var2 starts 1B after var1
+		
+		; +-------------------------------------+
+		; |	   CASE 4: undefined instruction    |
+		; +-------------------------------------+
+		; In case the compiler finds, at a certain point in the code, an OP Code which does not represent
+		; any given instruction, it raises a Usage Fault Exception. As an example, suppose that 0xE7F0DEF0
+		; does not correspond to any particular Thumb instruction. It is possible for the programmer to add 
+		; it to the memory by doing: DCD 0xE7F0DEF0. However, by running the code in the simulation (remember:
+		; we are simulating the board since the board is not connected), nothing happens and the instruction is
+		; skipped. In case the code is run on the board, a Usage Fault Exception is raised.
+		DCD 0xE7F0DEF0
 				
 
 stop            B	 stop
 
 ; Declaring some variables
-var1			DCB 0x1					; For sure var1 starts at an even address
-var2			DCB 0x2					; For sure var2 is placed at an odd address (1 Byte after var1)
+var1			DCB 0x1				; For sure var1 starts at an even address
+var2			DCB 0x2				; For sure var2 is placed at an odd address (1 Byte after var1)
 var3			DCB 0x3, 0x4, 0x5
                 ENDP
 
@@ -272,21 +272,21 @@ HardFault_Handler\
                 PROC
                 EXPORT  HardFault_Handler         [WEAK]
 					
-				; Loading the Hard Fault Status Register
-				LDR  r0, =HardFaultStatusRegister
-				LDRH r1, [r0]
-				
-				; Testing if the bit[30] of the register has been set to 1 ( meaning that a bus 
-				; fault, memory management fault, or usage fault occurred, but the corresponding handler 
-				; is disabled)
-				TST r1, #0x40000000 ; bin: 0100 0000 0000 0000 0000 0000 0000 0010
-				BNE faultNotEnabled
-				; This section: hard fault exception due to other reasons
+		; Loading the Hard Fault Status Register
+		LDR  r0, =HardFaultStatusRegister
+		LDRH r1, [r0]
+		
+		; Testing if the bit[30] of the register has been set to 1 ( meaning that a bus 
+		; fault, memory management fault, or usage fault occurred, but the corresponding handler 
+		; is disabled)
+		TST r1, #0x40000000 ; bin: 0100 0000 0000 0000 0000 0000 0000 0010
+		BNE faultNotEnabled
+		; This section: hard fault exception due to other reasons
 
 faultNotEnabled
 				
-				; Checking Bus Fault Status Register, Memory Management Statu Register or Usage
-				; Fault Staus Register.
+		; Checking Bus Fault Status Register, Memory Management Statu Register or Usage
+		; Fault Staus Register.
 				
                 B       .
                 ENDP
@@ -308,83 +308,83 @@ UsageFault_Handler\
                 PROC
                 EXPORT  UsageFault_Handler        [WEAK]
 					
-				; Loading the Usage Fault Status Register
-				; NOTE THAT: this register is a HALF-WORD register, therefore LDRH is required to
-				; load a half-word value.
-				LDR  r0, =UsageFaultStatusRegister
-				LDRH r1, [r0]
-				
-				; +-------------------------------------+
-				; |	   CASE 1: wrong instruction set    |
-				; +-------------------------------------+
-				; Testing if the bit[1] of the register has been set to 1 (meaning that code branch target
-				; address to PC with LSB equals to 0)
-				TST r1, #0x00000002 ; bin: 0000 0000 0000 0000 0000 0000 0000 0010
-				BNE handleBranchWith_LSB_0
-				
-				; +-------------------------------------+
-				; |	     CASE 2: division by zero       |
-				; +-------------------------------------+
-				; Testing if the bit[9] of the register has been set to 1 (meaning that division by zero was 
-				; performed and DIV_0_TRP was enabled)
-				TST r1, #0x00000200 ; bin: 0000 0000 0000 0000 0000 0010 0000 0000
-				BNE handleDivisionByZero
-				
-				; +-------------------------------------+
-				; |	     CASE 3: unaligned access       |
-				; +-------------------------------------+
-				; Testing if the bit[8] of the register has been set to 1 (meaning that unaligned access was 
-				; performed and UNALIGN_TRP was enabled)
-				TST r1, #0x00000100 ; bin: 0000 0000 0000 0000 0000 0001 0000 0000
-				BNE handleUnalignedAccess
-				
-				; +-------------------------------------+
-				; |	   CASE 4: undefined instruction    |
-				; +-------------------------------------+
-				; Testing if the bit[0] of the register has been set to 1 (meaning that undefined instruction was 
-				; tried to be run)
-				TST r1, #0x00000001 ; bin: 0000 0000 0000 0000 0000 0000 0000 0001
-				BNE handleUndefinedInstruction
-				
-				
-				; This section: usage fault exception due to other reasons
+		; Loading the Usage Fault Status Register
+		; NOTE THAT: this register is a HALF-WORD register, therefore LDRH is required to
+		; load a half-word value.
+		LDR  r0, =UsageFaultStatusRegister
+		LDRH r1, [r0]
+		
+		; +-------------------------------------+
+		; |	   CASE 1: wrong instruction set    |
+		; +-------------------------------------+
+		; Testing if the bit[1] of the register has been set to 1 (meaning that code branch target
+		; address to PC with LSB equals to 0)
+		TST r1, #0x00000002 ; bin: 0000 0000 0000 0000 0000 0000 0000 0010
+		BNE handleBranchWith_LSB_0
+		
+		; +-------------------------------------+
+		; |	     CASE 2: division by zero       |
+		; +-------------------------------------+
+		; Testing if the bit[9] of the register has been set to 1 (meaning that division by zero was 
+		; performed and DIV_0_TRP was enabled)
+		TST r1, #0x00000200 ; bin: 0000 0000 0000 0000 0000 0010 0000 0000
+		BNE handleDivisionByZero
+		
+		; +-------------------------------------+
+		; |	     CASE 3: unaligned access       |
+		; +-------------------------------------+
+		; Testing if the bit[8] of the register has been set to 1 (meaning that unaligned access was 
+		; performed and UNALIGN_TRP was enabled)
+		TST r1, #0x00000100 ; bin: 0000 0000 0000 0000 0000 0001 0000 0000
+		BNE handleUnalignedAccess
+		
+		; +-------------------------------------+
+		; |	   CASE 4: undefined instruction    |
+		; +-------------------------------------+
+		; Testing if the bit[0] of the register has been set to 1 (meaning that undefined instruction was 
+		; tried to be run)
+		TST r1, #0x00000001 ; bin: 0000 0000 0000 0000 0000 0000 0000 0001
+		BNE handleUndefinedInstruction
+		
+		
+		; This section: usage fault exception due to other reasons
 
 
 ; Manage the Usage Fault Exception when a branch with a wrong instruction set happens
 handleBranchWith_LSB_0
-				; The proble was due to the LSB = 0. I would like to return where I left
-				; and act as nothing happened (with the right instruction set!)
-				; NOTE THAT: the code is not returning to the address stored in r14 (LR). The LR stores
-				; the address 0xFFFFFFF9 (EXEC_RETURN) return to thread mode with MSP. The correct address 
-				; has been stored by the processor in the MSP. However, in that specific case, the return 
-				; address stores in the MSP is 0x000000E0 (LSB is still 0) and again we return with ARM instruction 
-				; set enabled. In order to solve the problem, it is necessary to force the T (Thumb) bit of 
-				; the PSR to 1 before jumping back.
-				
-				; Before forcing the T bit to 1, it is necessary to understand in which stack (MSP or PSP?) the 
-				; PSR was stored.
-				; Checking if the EXEC_RETURN address has bit[2] set to 0 or 1:
-				; 	- bit[2] == 1 then PSP was being used before the call
-				; 	- bit[2] == 0 then MSP was being used before the call
-				TST LR, #0x00000004 	; bin: 0000 0000 0000 0000 0000 0000 0000 0100 
-				ITE EQ					; if (bit[2] == 1) {
-				MRSEQ r0, MSP			; 		r0 = [MSP]
-				MRSNE r0, PSP			; } else {r0 = [PSP]}
-				
-				; Now, remember that PSR is stored as the first value in the stack, followed by: 
-				; PC, LR, r12, r3, r2, r1 and r0. So an offset of 28 bytes is required.
-				; Loading the PSR in r1.
-				LDR r1, [r0, #28]
-				
-				; NOTE THAT: the T (Thumb) bit is at position 24 in the PSR
-				; Setting bit[24] = 1
-				ORR r1, #0x01000000 	; bin: 0000 0001 0000 0000 0000 0000 0000 0000
-				
-				; Store back the PSR
-				STR r1, [r0, #28]
-				
-				; Now I can return with Thumb instruction set
-				BX LR
+		; The proble was due to the LSB = 0. I would like to return where I left
+		; and act as nothing happened (with the right instruction set!)
+		; NOTE THAT: the code is not returning to the address stored in r14 (LR). The LR stores
+		; the address 0xFFFFFFF9 (EXEC_RETURN) return to thread mode with MSP. The correct address 
+		; has been stored by the processor in the MSP. However, in that specific case, the return 
+		; address stores in the MSP is 0x000000E0 (LSB is still 0) and again we return with ARM instruction 
+		; set enabled. In order to solve the problem, it is necessary to force the T (Thumb) bit of 
+		; the PSR to 1 before jumping back.
+		
+		; Before forcing the T bit to 1, it is necessary to understand in which stack (MSP or PSP?) the 
+		; PSR was stored.
+		; Checking if the EXEC_RETURN address has bit[2] set to 0 or 1:
+		; 	- bit[2] == 1 then PSP was being used before the call
+		; 	- bit[2] == 0 then MSP was being used before the call
+		TST LR, #0x00000004 	; bin: 0000 0000 0000 0000 0000 0000 0000 0100 
+		ITE EQ					; if (bit[2] == 1) {
+		MRSEQ r0, MSP			; 		r0 = [MSP]
+		MRSNE r0, PSP			; } else {r0 = [PSP]}
+		
+		; Now, remember that PSR is stored as the first value in the stack, followed by: 
+		; PC, LR, r12, r3, r2, r1 and r0. So an offset of 28 bytes is required.
+		; Loading the PSR in r1.
+		LDR r1, [r0, #28]
+		
+		; NOTE THAT: the T (Thumb) bit is at position 24 in the PSR
+		; Setting bit[24] = 1
+		ORR r1, #0x01000000 	; bin: 0000 0001 0000 0000 0000 0000 0000 0000
+		
+		; Store back the PSR
+		STR r1, [r0, #28]
+		
+		; Now I can return with Thumb instruction set
+		BX LR
 				
 ; Manage the Usage Fault Exception when a division by zero happens
 handleDivisionByZero
