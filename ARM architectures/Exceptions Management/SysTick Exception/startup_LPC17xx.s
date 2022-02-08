@@ -120,9 +120,9 @@ CRP_Key         DCD     0xFFFFFFFF
                 AREA    |.text|, CODE, READONLY
 
 ; +---------------------------------------+
-; |										  |
+; |					  |
 ; |           SYSTICK REGISTERS           |
-; |										  |
+; |					  |
 ; +---------------------------------------+
 ; The Control and Status Register is a word register (R/W) specified 
 ; in the Nested Interrupt Vectored Controller (NVIC) at the address 0xE000E010. It stores
@@ -146,10 +146,10 @@ ReloadValueRegister EQU 0xE000E014
 ; the current value of the timer.
 CurrentValueRegister EQU 0xE000E018
 	
-CSR					RN r0		; Control and Status Register
-RVR					RN r1		; Reload Value Register
-CVR					RN r2		; Current Value Register
-theVariable			RN r4		; Use to set the bits in the register
+CSR			RN r0		; Control and Status Register
+RVR			RN r1		; Reload Value Register
+CVR			RN r2		; Current Value Register
+theVariable		RN r4		; Use to set the bits in the register
 iteration_counter	RN r6
 
 ; Reset Handler
@@ -157,48 +157,48 @@ iteration_counter	RN r6
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 
-				; Suppose to need a loop that runs for 4 iterations in order to perform, in a given interval of time, some
-				; operation. The value of the iteration_counter of the loop is not updated by the code, but by the SysTick Timer.
-				; It can be implemented as:
-				MOV iteration_counter, #6						; Perform the operation 6 times
+		; Suppose to need a loop that runs for 4 iterations in order to perform, in a given interval of time, some
+		; operation. The value of the iteration_counter of the loop is not updated by the code, but by the SysTick Timer.
+		; It can be implemented as:
+		MOV iteration_counter, #6		; Perform the operation 6 times
+		
+		; +----------------------------+
+		; | SysTick Time configuration |
+		; +----------------------------+
+		; Loading the Control and Status Register, the Reload Value Register and the Current 
+		; Value Register
+		LDR CSR, =ControlAndStatusRegister
+		LDR RVR, =ReloadValueRegister
+		LDR CVR, =CurrentValueRegister
+		
+		; 1) Stop the timer (disable SysTick Timer by setting bit[0] = 0)
+		;    NOTE THAT: with the MOV #0 instruction, the whole register is cleared! Remember to configure it from
+		;    		    scratch later
+		MOV theVariable, #0
+		STR theVariable, [CSR]
+		
+		; 2) Set the fixed interval required
+		MOV theVariable, #1024
+		STR theVariable, [RVR]
 				
-				; +----------------------------+
-				; | SysTick Time configuration |
-				; +----------------------------+
-				; Loading the Control and Status Register, the Reload Value Register and the Current 
-				; Value Register
-				LDR CSR, =ControlAndStatusRegister
-				LDR RVR, =ReloadValueRegister
-				LDR CVR, =CurrentValueRegister
-				
-				; 1) Stop the timer (disable SysTick Timer by setting bit[0] = 0)
-				;    NOTE THAT: with the MOV #0 instruction, the whole register is cleared! Remember to configure it from
-				;    		    scratch later
-				MOV theVariable, #0
-				STR theVariable, [CSR]
-				
-				; 2) Set the fixed interval required
-				MOV theVariable, #1024
-				STR theVariable, [RVR]
-				
-				; 3) Resetting the Current Value Register (by writing any value in it, it restarts at the value stored
-				; in the Reload Value Register)
-				MOV theVariable, #0
-				STR theVariable, [CVR]
-				
-				; 4) Start the timer (enable SysTick Timer by setting bit[0] = 1). Moreover, set bit[1] = bit[2] = 1 in
-				; order to raise the exception when the timer is done and use the free running clock of the processor
-				MOV theVariable, #2_00000111
-				STR theVariable, [CSR]
-				
-				; Loop of iterations
-loop			CMP iteration_counter, #0						
-				; Do something every fixed interval and decread the value of r4
-				; Raising the exception of the SysTick Timer
-				
-				BNE loop
+		; 3) Resetting the Current Value Register (by writing any value in it, it restarts at the value stored
+		; in the Reload Value Register)
+		MOV theVariable, #0
+		STR theVariable, [CVR]
+		
+		; 4) Start the timer (enable SysTick Timer by setting bit[0] = 1). Moreover, set bit[1] = bit[2] = 1 in
+		; order to raise the exception when the timer is done and use the free running clock of the processor
+		MOV theVariable, #2_00000111
+		STR theVariable, [CSR]
+		
+		; Loop of iterations
+loop		CMP iteration_counter, #0						
+		; Do something every fixed interval and decread the value of r4
+		; Raising the exception of the SysTick Timer
+		
+		BNE loop
 
-stop			B	stop
+stop		B	stop
                 ENDP
 
 
@@ -246,7 +246,7 @@ PendSV_Handler  PROC
 SysTick_Handler PROC
                 EXPORT  SysTick_Handler           [WEAK]
                 SUB iteration_counter, iteration_counter, #1
-				BX LR
+		BX LR
                 ENDP
 
 Default_Handler PROC
