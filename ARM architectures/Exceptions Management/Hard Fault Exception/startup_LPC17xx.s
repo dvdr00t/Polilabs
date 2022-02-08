@@ -125,11 +125,14 @@ CRP_Key         DCD     0xFFFFFFFF
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 				
-				; Make the code raising a HardFault_Exception
-				ADR r0, stop
-				BX  r0
+		; Make the code raising a HardFault_Exception
+		; The Hard Fault Exception is raised because the Usage Fault Exception
+		; is not enabled and cannot be handled by the processor.
+		; --------------------------------------------------------------------
+		ADR r0, stop
+		BX  r0
 
-stop			B	stop
+stop		B	stop
                 ENDP
 
 
@@ -143,16 +146,16 @@ HardFault_Handler\
                 PROC
                 EXPORT  HardFault_Handler         [WEAK]
 				
-				; Loading the corresponding FSR address
-				LDR r0, =0xE000ED2C
-				LDR r1, [r0]
-				TEQ r1, #0x40000000 	; bit[30] = 1 corresponds to usage fault (which is not enabled) 
-										; bin: 0100 0000 0000 0000 0000 0000 0000 0000
-										;  0x:   4    0    0    0    0    0    0    0  
-				BEQ myHandler
-										
-				; Implement here other checks for other causes of
-				; HardFault exception
+		; Loading the corresponding FSR address
+		LDR r0, =0xE000ED2C
+		LDR r1, [r0]
+		TEQ r1, #0x40000000 	; bit[30] = 1 corresponds to usage fault (which is not enabled) 
+					; bin: 0100 0000 0000 0000 0000 0000 0000 0000
+					;  0x:   4    0    0    0    0    0    0    0  
+		BEQ myHandler
+								
+		; Implement here other checks for other causes of
+		; HardFault exception
                 B       .
                 ENDP
 MemManage_Handler\
