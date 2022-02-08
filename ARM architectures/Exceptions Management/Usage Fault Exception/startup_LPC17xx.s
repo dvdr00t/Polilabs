@@ -120,9 +120,9 @@ CRP_Key         DCD     0xFFFFFFFF
                 AREA    |.text|, CODE, READONLY
 
 ; +---------------------------------------+
-; |										  |
+; |					  |
 ; |        FAULT STATUS REGISTERS         |
-; |										  |
+; |					  |
 ; +---------------------------------------+
 
 ; The System Handler Control and State Register is a word register (R/W) specified 
@@ -188,7 +188,7 @@ Reset_Handler   PROC
 		STR r1, [r0]             
 		
 		; +-------------------------------------+
-		; |	   CASE 1: wrong instruction set    |
+		; |    CASE 1: wrong instruction set    |
 		; +-------------------------------------+
 		; Generating a Usage Fault Exception by jumping to a Thumb instruction
 		; with the ARM instruction set enabled. 
@@ -200,7 +200,7 @@ Reset_Handler   PROC
 		BX   r0
 				
 		; +-------------------------------------+
-		; |	     CASE 2: division by zero       |
+		; |	 CASE 2: division by zero       |
 		; +-------------------------------------+
 		; Generating a Usage Fault Exception by performing a division by zero.
 		; NOTE THAT: before raising the exception it is necessary to enable the DIV_0_TRP in the 
@@ -221,7 +221,7 @@ Reset_Handler   PROC
 		UDIV r2, r1, r0
 				
 		; +-------------------------------------+
-		; |	     CASE 3: unaligned access       |
+		; |	 CASE 3: unaligned access       |
 		; +-------------------------------------+
 		; When a 32 bit addres is loaded, it is better that the address is a multiple of 4 (in 
 		; order to exploit only one cycle for the load).
@@ -242,7 +242,7 @@ Reset_Handler   PROC
 		LDR r3, [r2]            	; For sure this is an UNALIGNED ACCESS since var2 starts 1B after var1
 		
 		; +-------------------------------------+
-		; |	   CASE 4: undefined instruction    |
+		; |    CASE 4: undefined instruction    |
 		; +-------------------------------------+
 		; In case the compiler finds, at a certain point in the code, an OP Code which does not represent
 		; any given instruction, it raises a Usage Fault Exception. As an example, suppose that 0xE7F0DEF0
@@ -315,7 +315,7 @@ UsageFault_Handler\
 		LDRH r1, [r0]
 		
 		; +-------------------------------------+
-		; |	   CASE 1: wrong instruction set    |
+		; |    CASE 1: wrong instruction set    |
 		; +-------------------------------------+
 		; Testing if the bit[1] of the register has been set to 1 (meaning that code branch target
 		; address to PC with LSB equals to 0)
@@ -323,7 +323,7 @@ UsageFault_Handler\
 		BNE handleBranchWith_LSB_0
 		
 		; +-------------------------------------+
-		; |	     CASE 2: division by zero       |
+		; |	 CASE 2: division by zero       |
 		; +-------------------------------------+
 		; Testing if the bit[9] of the register has been set to 1 (meaning that division by zero was 
 		; performed and DIV_0_TRP was enabled)
@@ -331,7 +331,7 @@ UsageFault_Handler\
 		BNE handleDivisionByZero
 		
 		; +-------------------------------------+
-		; |	     CASE 3: unaligned access       |
+		; |	 CASE 3: unaligned access       |
 		; +-------------------------------------+
 		; Testing if the bit[8] of the register has been set to 1 (meaning that unaligned access was 
 		; performed and UNALIGN_TRP was enabled)
@@ -339,7 +339,7 @@ UsageFault_Handler\
 		BNE handleUnalignedAccess
 		
 		; +-------------------------------------+
-		; |	   CASE 4: undefined instruction    |
+		; |    CASE 4: undefined instruction    |
 		; +-------------------------------------+
 		; Testing if the bit[0] of the register has been set to 1 (meaning that undefined instruction was 
 		; tried to be run)
