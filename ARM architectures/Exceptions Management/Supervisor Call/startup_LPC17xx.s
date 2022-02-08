@@ -125,21 +125,21 @@ CRP_Key         DCD     0xFFFFFFFF
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
 
-				; +---------------------+
-				; |   SUPERVISOR CALL   |
-				; +---------------------+
-				; Create a supervisor call to move from the user level to privileged level
-				
-				; At the beginning of the code we are in privileged mode. We switch to the user level by
-				; writing in the CONTROL register
-				MRS r0, CONTROL
-				ORR r0, r0, #0x00000001 ; bin: 0000 0000 0000 0000 0000 0000 0000 0001
-				MSR CONTROL, r0
-				
-				; Now we are at the user level: we CAN NOT go back to the privileged level
-				; In order to switch back, we need to implement a supervisor mode (that has the right, in 
-				; handler mode, to switch to privileged mode)
-				SVC #4			; Supervisor Call number 4 (arbitrary)
+		; +---------------------+
+		; |   SUPERVISOR CALL   |
+		; +---------------------+
+		; Create a supervisor call to move from the user level to privileged level
+		
+		; At the beginning of the code we are in privileged mode. We switch to the user level by
+		; writing in the CONTROL register
+		MRS r0, CONTROL
+		ORR r0, r0, #0x00000001 ; bin: 0000 0000 0000 0000 0000 0000 0000 0001
+		MSR CONTROL, r0
+		
+		; Now we are at the user level: we CAN NOT go back to the privileged level
+		; In order to switch back, we need to implement a supervisor mode (that has the right, in 
+		; handler mode, to switch to privileged mode)
+		SVC #4			; Supervisor Call number 4 (arbitrary)
 
                 BX      R0
                 ENDP
@@ -180,49 +180,49 @@ UsageFault_Handler\
 SVC_Handler     PROC
                 EXPORT  SVC_Handler               [WEAK]
 					
-				; +---------------------------------------------------+
-				; | Determining the stack used for stacking registers |
-				; +---------------------------------------------------+
-				; Checking if the EXEC_RETURN address has bit[2] set to 0 or 1:
-				; 	- bit[2] == 1 then PSP was being used before the call
-				; 	- bit[2] == 0 then MSP was being used before the call
-				TST LR, #0x00000004 	; bin: 0000 0000 0000 0000 0000 0000 0000 0100 
-				ITE EQ					; if (bit[2] == 1) {
-				MRSEQ r0, MSP			; 		r0 = [MSP]
-				MRSNE r0, PSP			; } else {r0 = [PSP]}
+		; +---------------------------------------------------+
+		; | Determining the stack used for stacking registers |
+		; +---------------------------------------------------+
+		; Checking if the EXEC_RETURN address has bit[2] set to 0 or 1:
+		; 	- bit[2] == 1 then PSP was being used before the call
+		; 	- bit[2] == 0 then MSP was being used before the call
+		TST LR, #0x00000004 	; bin: 0000 0000 0000 0000 0000 0000 0000 0100 
+		ITE EQ			; if (bit[2] == 1) {
+		MRSEQ r0, MSP		; 		r0 = [MSP]
+		MRSNE r0, PSP		; } else {r0 = [PSP]}
 				
-				; +------------------------+
-				; | Reading the stacked PC |
-				; +------------------------+
-				; Now, remember that PC is stored as the second value in the stack, followed by: 
-				; LR, r12, r3, r2, r1 and r0. So an offset of 24 bytes is required.
-				; Loading the PC in r1.
-				LDR r1, [r0, #24]
+		; +------------------------+
+		; | Reading the stacked PC |
+		; +------------------------+
+		; Now, remember that PC is stored as the second value in the stack, followed by: 
+		; LR, r12, r3, r2, r1 and r0. So an offset of 24 bytes is required.
+		; Loading the PC in r1.
+		LDR r1, [r0, #24]
 				
-				; +------------------------------------------------------------------+
-				; | Reading the instruction at the address pointed by the stacked PC |
-				; +------------------------------------------------------------------+
-				; We need to take the instruction before since PC points to the next instruction
-				; Note that the instruction of the supervisor call is a Thumb instruction (16 bits or 2 bytes)
-				; this is why we subtract 2 to reach the previous instruction.
-				LDRB r2, [r1, #-2]
+		; +------------------------------------------------------------------+
+		; | Reading the instruction at the address pointed by the stacked PC |
+		; +------------------------------------------------------------------+
+		; We need to take the instruction before since PC points to the next instruction
+		; Note that the instruction of the supervisor call is a Thumb instruction (16 bits or 2 bytes)
+		; this is why we subtract 2 to reach the previous instruction.
+		LDRB r2, [r1, #-2]
 				
-				; +------------------------------------------------+
-				; | Masking out the unneeded bits (operating code) |
-				; +------------------------------------------------+
-				; The SVC instruction is encoded in 16 bits, and the immediate value is stored
-				; in the least significant byte
-				CMP r2, #4
-				BEQ changePriority
+		; +------------------------------------------------+
+		; | Masking out the unneeded bits (operating code) |
+		; +------------------------------------------------+
+		; The SVC instruction is encoded in 16 bits, and the immediate value is stored
+		; in the least significant byte
+		CMP r2, #4
+		BEQ changePriority
 				
-				; This section: other SVCs implementation
+		; This section: other SVCs implementation
                 B       .
 				
 changePriority
-				; Now I can change to privileged mode
-				MRS r0, CONTROL
-				BIC r0, r0, #0x00000001 ; bin: 0000 0000 0000 0000 0000 0000 0000 0001
-				MSR CONTROL, r0
+		; Now I can change to privileged mode
+		MRS r0, CONTROL
+		BIC r0, r0, #0x00000001 ; bin: 0000 0000 0000 0000 0000 0000 0000 0001
+		MSR CONTROL, r0
                 ENDP
 DebugMon_Handler\
                 PROC
