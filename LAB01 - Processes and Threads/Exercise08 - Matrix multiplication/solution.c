@@ -5,20 +5,22 @@
 #include <pthread.h>
 
 typedef struct matrix {
-	int **A;
-	int **B;
-	int **C;
+	int **A;					/* INPUT MATRIX A 														*/
+	int **B;					/* INPUT MATRIX B 														*/
+	int result_value;			/* RESULT VALUE IS STORED HERE (ONE FOR EACH COMPUTATION) 				*/
+
 	int rows_A;
 	int rows_B;
 	int columns_A;
 	int columns_B;
-	int index;
+
+	int index;					/* CONTIGUOUS INDEX OF THE POSITION IN THE RESULT MATRIX				 */
 } matrix_t;
 
 void* routine(void* data);
 void print_matrix(int **mat, int rows, int columns);
 void mat_mul (int **A, int **B, int r, int x, int c, int **C);
-matrix_t matrix_INIT(int **A, int **B, int **C, int rows_A, int rows_B, int columns_A, int columns_B);
+matrix_t matrix_INIT(int **A, int **B, int rows_A, int rows_B, int columns_A, int columns_B);
 
 /* MAIN FUNCTION */
 int main(int args, char *argv[]) {
@@ -125,20 +127,6 @@ void print_matrix(int **mat, int rows, int columns) {
  */
 void mat_mul (int **A, int **B, int r, int x, int c, int **C) {
 
-	/* ALLOCATING SPACE FOR RESULT MATRIX */
-	C = (int**) malloc(r * sizeof(int*));
-	if (C == NULL) {
-		fprintf(stderr, "[ERROR] malloc() failed execution.\n\n");
-		exit(EXIT_FAILURE);
-	}
-	for (int i = 0; i < r; i++) {
-		C[i] = (int*) malloc(c * sizeof(int));
-		if (C[i] == NULL) {
-			fprintf(stderr, "[ERROR] malloc() failed execution.\n\n");
-			exit(EXIT_FAILURE);
-		}
-	}
-
 	/* ALLOCATING SPACE FOR THREADS_ID */
 	pthread_t* threads_ID = (pthread_t*) malloc((r*c) * sizeof(pthread_t));
 	if (threads_ID == NULL) {
@@ -155,7 +143,7 @@ void mat_mul (int **A, int **B, int r, int x, int c, int **C) {
 
 	/* GENERATING THREADS */
 	for (int index = 0; index < r*c; index++) {
-		matrix_info[index] = matrix_INIT(A, B, C, r, x, x, c);
+		matrix_info[index] = matrix_INIT(A, B, r, x, x, c);
 		matrix_info[index].index = index;
 		if (pthread_create(&threads_ID[index], NULL, routine, (void*) &matrix_info[index]) != 0) {				
 			fprintf(stderr, "[ERROR] pthread_create() failed execution.\n\n");
@@ -181,7 +169,7 @@ void mat_mul (int **A, int **B, int r, int x, int c, int **C) {
 	int counter = 0;
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
-			fprintf(fp_output, "%d ", matrix_info[counter].C[i][j]);
+			fprintf(fp_output, "%d ", matrix_info[counter].result_value);
 			counter++;
 		}
 		fprintf(fp_output, "\n");
@@ -191,7 +179,6 @@ void mat_mul (int **A, int **B, int r, int x, int c, int **C) {
 
 	/* TERMINATING EXECUTION */
 	free(threads_ID);
-	free(C);
 	fclose(fp_output);
 	return;
 }
@@ -208,18 +195,18 @@ void mat_mul (int **A, int **B, int r, int x, int c, int **C) {
  * @param columns_B 
  * @return matrix_t 
  */
-matrix_t matrix_INIT(int **A, int **B, int **C, int rows_A, int rows_B, int columns_A, int columns_B) {
+matrix_t matrix_INIT(int **A, int **B, int rows_A, int rows_B, int columns_A, int columns_B) {
 	matrix_t matrix;
 	
 	/* INITIALIZATION */
 	matrix.A = A;
 	matrix.B = B;
-	matrix.C = C;
 	matrix.rows_A = rows_A;
 	matrix.rows_B = rows_B;
 	matrix.columns_A = columns_A;
 	matrix.columns_B = columns_B;
 	matrix.index = 0;
+	matrix.result_value = 0;
 
 	return matrix;
 }
@@ -239,7 +226,7 @@ void* routine(void* data) {
 	int index_R = matrix_info->index / matrix_info->columns_A;
 	int index_C = matrix_info->index % matrix_info->rows_B;
 	for (int i = 0; i < matrix_info->columns_A; i++) {
-		matrix_info->C[index_R][index_C] += matrix_info->A[index_R][i] * matrix_info->B[i][index_C];
+		matrix_info->result_value += matrix_info->A[index_R][i] * matrix_info->B[i][index_C];
 	}
 
 	pthread_exit(NULL);
