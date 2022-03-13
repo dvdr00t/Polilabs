@@ -39,7 +39,7 @@ int main(int args, char *argv[]) {
 	int rows_A, columns_A, rows_B, columns_B;
 	fscanf(fp_input, "%d %d %d %d\n", &rows_A, &columns_A, &rows_B, &columns_B);
 
-	/* ALLOCATING SPACE FOR INPUT MATRICES */
+	/* ALLOCATING SPACE FOR THE FIRST INPUT MATRIX */
 	int **A = (int**) malloc(rows_A * sizeof(int *));
 	if (A == NULL) {
 		fprintf(stderr, "[ERROR] malloc() failed execution.\n\n");
@@ -53,6 +53,7 @@ int main(int args, char *argv[]) {
 		}
 	}
 
+	/* ALLOCATING SPACE FOR THE SECOND INPUT MATRIX */
 	int **B = (int**) malloc(rows_B * sizeof(int *));
 	if (B == NULL) {
 		fprintf(stderr, "[ERROR] malloc() failed execution.\n\n");
@@ -84,7 +85,6 @@ int main(int args, char *argv[]) {
 	/* COMPUTING RESULT MATRIX IN MULTITHREAD */
 	int **C;
 	mat_mul(A, B, rows_A, columns_A, columns_B, C);
-
 
 
 	/* TERMINATING EXECUTION */
@@ -146,11 +146,18 @@ void mat_mul (int **A, int **B, int r, int x, int c, int **C) {
 		exit(EXIT_FAILURE);
 	}
 
+	/* ALLOCATING SPACE FOR MATRIX INFO */
+	matrix_t* matrix_info = (matrix_t*) malloc((r*c) * sizeof(matrix_t));
+	if (matrix_info == NULL) {
+		fprintf(stderr, "[ERROR] malloc() failed execution.\n\n");
+		exit(EXIT_FAILURE);
+	}
+
 	/* GENERATING THREADS */
-	matrix_t matrix_info = matrix_INIT(A, B, C, r, x, x, c);
 	for (int index = 0; index < r*c; index++) {
-		matrix_info.index = index;
-		if (pthread_create(&threads_ID[index], NULL, routine, (void*) &matrix_info) != 0) {				
+		matrix_info[index] = matrix_INIT(A, B, C, r, x, x, c);
+		matrix_info[index].index = index;
+		if (pthread_create(&threads_ID[index], NULL, routine, (void*) &matrix_info[index]) != 0) {				
 			fprintf(stderr, "[ERROR] pthread_create() failed execution.\n\n");
 			exit(EXIT_FAILURE);
 		}
@@ -159,7 +166,7 @@ void mat_mul (int **A, int **B, int r, int x, int c, int **C) {
 	/* JOINING THREADS */
 	int exit_status;
 	for (int i = 0; i < r*c; i++) {
-		if (pthread_join(threads_ID[i], &exit_status) != 0) {
+		if (pthread_join(threads_ID[i], (void*) &exit_status) != 0) {
 			fprintf(stderr, "[ERROR] pthread_create() failed execution.\n\n");
 			exit(EXIT_FAILURE);
 		}
@@ -171,9 +178,11 @@ void mat_mul (int **A, int **B, int r, int x, int c, int **C) {
 		fprintf(stderr, "[ERROR] fopen() failed execution.\n\n");
 		exit(EXIT_FAILURE);
 	}
+	int counter = 0;
 	for (int i = 0; i < r; i++) {
 		for (int j = 0; j < c; j++) {
-			fprintf(fp_output, "%d ", matrix_info.C[i][j]);
+			fprintf(fp_output, "%d ", matrix_info[counter].C[i][j]);
+			counter++;
 		}
 		fprintf(fp_output, "\n");
 	}
@@ -227,11 +236,10 @@ void* routine(void* data) {
 	matrix_t* matrix_info = (matrix_t*) data;
 
 	/* COMPUTING VALUE */
-	int index_R = matrix_info->index / matrix_info->rows_A;
-	int index_C = matrix_info->index % matrix_info->columns_B;
+	int index_R = matrix_info->index / matrix_info->columns_A;
+	int index_C = matrix_info->index % matrix_info->rows_B;
 	for (int i = 0; i < matrix_info->columns_A; i++) {
 		matrix_info->C[index_R][index_C] += matrix_info->A[index_R][i] * matrix_info->B[i][index_C];
-		print_matrix(matrix_info->C, matrix_info->rows_A, matrix_info->columns_B);
 	}
 
 	pthread_exit(NULL);

@@ -4,5 +4,6 @@ target:
 	@gcc solution.c -o exe08 -lpthread
 	@chmod +x exe08
 	./exe08 file_input.txt
-	@sleep 1
+	@echo
+	@echo "[RESULT]"
 	@cat file_output.txt
