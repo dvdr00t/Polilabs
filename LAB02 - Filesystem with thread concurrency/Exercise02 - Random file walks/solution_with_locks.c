@@ -60,7 +60,17 @@ int read_from_file(int fd, int identifier);
  */
 int write_to_file(int fd, int identifier);
 
-
+/**
+ * @brief Lock/Unlock the specified region of a file
+ * 
+ * @param fd 
+ * @param cmd 
+ * @param type 
+ * @param offset 
+ * @param whence 
+ * @param len 
+ * @return int 
+ */
 int lock_region (int fd, int cmd, int type, off_t offset, int whence, off_t len); 
 
 /**
@@ -176,7 +186,7 @@ int read_from_file(int fd, int identifier) {
 
     /* UNLOCKING RECORD */
     lock_region(fd, F_SETLK, F_UNLCK, offset, SEEK_SET, sizeof(exam_outcome_t));
-    
+
     return 0;
 }
 
