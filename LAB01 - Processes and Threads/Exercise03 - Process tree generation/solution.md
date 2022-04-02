@@ -1,4 +1,4 @@
-# EXERCISE 02
+# EXERCISE 03
 ## Code analysis: fork, exec, system
 
 Given the following program, draw the process generation tree and indicate
