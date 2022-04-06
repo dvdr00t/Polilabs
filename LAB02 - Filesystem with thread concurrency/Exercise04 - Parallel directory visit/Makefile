@@ -7,10 +7,15 @@ target:
 	@clear
 	@echo "[USAGE] make <solution_X>"
 
+clean:
+	@clear
+	@rm -f exe04
+	@rm -f *_thread.txt
+	@echo "Look! It all shines..."
+
 
 solution_A: 
 	@clear
-	@rm -f exe04
 	@gcc solution_A.c -o exe04 -lpthread
 	@chmod +x exe04
 	@echo "... executing program ..."
@@ -21,9 +26,17 @@ solution_A:
 
 solution_B:
 	@clear
-	@rm -f exe04
-	@rm -f *_thread.txt
 	@gcc solution_B.c -o exe04 -lpthread
+	@chmod +x exe04
+	@echo "... executing program ..."
+	@echo 
+	@./exe04 ${PATH_1} ${PATH_2} ${PATH_3} ${PATH_4}
+	@sleep 2
+	@echo "Done!"
+
+solution_C:
+	@clear
+	@gcc solution_C.c -o exe04 -lpthread
 	@chmod +x exe04
 	@echo "... executing program ..."
 	@echo 
