@@ -39,7 +39,7 @@ A parent process P generates two children processes C1 and C2.
 C1 and P communicate through a pipe p1 and C2 and P communicate
 through a pipe p2.
 - Process C1:
-  every WAIT_TIME_1 seconds generates a string of STR_SIZE small alphabetic
+  every WAIT_TIME_1/ seconds generates a string of STR_SIZE small alphabetic
   letters at most (i.e., from 1 to STR_SIZE letters) and writes the string
   into pipe p1.
   Overall C1 generates and writes on pipe p1, STR_NUM strings of variable length.
