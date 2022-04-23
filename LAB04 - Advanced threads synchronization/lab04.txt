@@ -171,7 +171,7 @@ version) should be:
 
 
 
-Exercise 02
+Exercise 03
 Concurrent visit and comparison of directory trees
 --------------------------------------------------
 
