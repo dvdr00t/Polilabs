@@ -392,18 +392,14 @@ result = runprogram(progname);
 		```
 
 
-8. The program `testbin/palin` starts now the execution. Actually, who cares about what this program does... What really is important here is that `testbin/palin` happens to call `printf()`, which is nothing but a *fancy* wrapper of the `write()` function. This function will therefore call our previously defined system call `sys_write_LAB02()`. But let's take a step back...
+8. The program `testbin/palin` starts now the execution. Actually, who cares about what this program does... What really is important here is that `testbin/palin` happens to call `printf()`, which is nothing but a *fancy* wrapper of the `write()` function. This function itself is a wrapper to the **system call** `SYS_write` which is triggered by calling the `syscall(struct trapframe *tf)` function in `syscall.c` (*path*: `os161/src/kern/arch/mips/syscall/`).
+	\
+	In particular, the `write()` function creates a `trapframe *tf` which contains the arguments passed to the write function, along with the dispatcher value: 
 	```C
-	/* HERE SOMETHING HAPPENS BUT I HAVE NOT YET FIGURED IT WHAT AND HOW. */
-	/*
-	*	In particualr, printf() calls a print function which calls another print function 
-	* 	which calls another print function and so on... At some point, one of these functions
-	* 	calls write() [WHICH IS NOT REALLY IMPLEMENTED IN THE SYSTEM!!!]. 
-	*
-	*   Maybe this write() triggers a trapframe from which the kernel is able to understand that
-	*   it has to switch the context to the syscalls.c, which whill call the real (a.k.a. our) write.
-	*/
+	callno = tf->tf_v0;
 	```
+	which stores the number `55` corresponding to the `SYS_write`. Now, we are able to program `syscall.c` to call our `sys_write_LAB02()` when the `printf()` function is called from up above.
+
 
 ## EXIT System Call
 > NB: All the functions and files used in this laboratory have a post-fix `_LAB02` to differentiate them from the "*real*" system function. 
@@ -481,7 +477,12 @@ Initially, this function was completely empty, because no virtual memory managem
 
 1. **Define the bitmap**.
 The **bitmap** is a pair of arrays composed as follows: 
-- **`unsigned int *bitmap_freePages;`**: an `unsigned int *` variable storing a boolean value `0`/`1`, indicating if the $i$-page of memory is ready to be re-used or it is still being referred (`{0: 'not_free', 1: 'free'}`)
+- **`unsigned int *bitmap_freePages;`**: an `unsigned int *` variable storing a boolean value `0`/`1`, indicating if the $i$-page of memory is ready to be re-used or it is still being referred (`{0: 'not_free', 1: 'free'}`).
+
+> **NB (from Cabodi's lecture)**: here `not_free` has a double meaning: it can refers to an area of memory which **has never been allocated before** (e.g., the portion of memory storing the kernel, for which the `bitmap_freePages` has been set to zero but never reset to `1`, since the kernel never release it's memory area during execution) or also to an area of memory which is **currently used by some process**. \
+However, this is only one implementation possible. Another solution would have been to let the array `bitmap_freePages` starts mapping the memory after the kernel, so that no space in storing `0`s would have ever being wasted.\
+Also, the choice of `1` and `0` is up to you.
+
 - **`unsigned long *bitmap_sizePages;`**: an `unsigned long *` variable storing the allocation size required for the process granted the $i$-page. 
 ```C
 static unsigned int *bitmap_freePages = NULL;		/* BITMAP STORING THE POSITION OF THE FREE PAGES */
