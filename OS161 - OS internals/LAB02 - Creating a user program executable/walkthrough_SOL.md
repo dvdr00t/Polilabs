@@ -14,7 +14,7 @@
 5. [Conclusions](#conclusions)
 
 ## Getting started
-> **NB**: all over the file, `os161-base_2.0.3` is referred as `src`. This is to simplified paths as `os161/os161-base_2.0.3/...` to `os1617src`. Remind it!
+> **NB**: all over the file, `os161-base_2.0.3` is referred as `src`. This is to simplified paths as `os161/os161-base_2.0.3/...` to `os161/src`. Remind it!
 
 The *os161* user programs can be called using the `p program` command (e.g., running `p testbin/palin` or `p sbin/reboot`). However, these processes **can not** be executed correctly due to the lack of implementation of the majority of system calls. As it can be seen in the `syscall.c` file (*path*: `os161/src/kern/arch/mips/syscall/`), there is provided only the implementation of two system calls (`sys_reboot()` and `sys__time()`):
 ```C
