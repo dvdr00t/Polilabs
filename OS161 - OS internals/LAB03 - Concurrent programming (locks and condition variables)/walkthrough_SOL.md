@@ -11,6 +11,12 @@
     - [Lock create](#lock-creation)
     - [Lock acquire](#lock-acquire)
     - [Lock release](#lock-release)
+3. [Testing conditional variables](#testing-conditional-variables)
+    - [test1 (`sy3`)](#conditional-variables-test1)
+        - [`cv_wait()`](#waiting)
+        - [`cv_signal()`](#signaling)
+        - [`cv_broadcast()`](#broadcasting)
+    - [test2 (`sy4`)](#conditional-variables-test2)
 
 > **NB**: all over the file, `os161-base_2.0.3` is referred as `src`. This is to simplified paths as `os161/os161-base_2.0.3/...` to `os161/src`. Keep it in mind!
 
@@ -140,7 +146,7 @@ After the semaphore has been initialized, a quick test is run in order to check 
 3. **Creating the threads to run the test**
 Threads are generated with the `semtestthread` routine, which receives as argument an incremental number (based on the thread) from $0$ to $63$: 
     ```C
-    for (i=0; i<NTHREADS; i++) {
+    for (i = 0; i < NTHREADS; i++) {
 		result = thread_fork("semtest", NULL, semtestthread, NULL, i);
 		if (result) {
 			panic("semtest: thread_fork failed: %s\n", strerror(result));
@@ -149,7 +155,7 @@ Threads are generated with the `semtestthread` routine, which receives as argume
     ```
     Meanwhile, the main thread will call a `V()` to let the first of the new-generated threads start, and then waits for its finish (exploiting another semaphore, just like the `semtest`): 
     ```C
-    for (i=0; i<NTHREADS; i++) {
+    for (i = 0; i < NTHREADS; i++) {
 		V(testsem);
 		P(donesem);
 	}
@@ -483,7 +489,7 @@ The function is defined as follows:
 ```C
 void lock_release(struct lock *lock) {
     /* Call this (atomically) when the lock is released */
-//HANGMAN_RELEASE(&curthread->t_hangman, &lock->lk_hangman);
+    //HANGMAN_RELEASE(&curthread->t_hangman, &lock->lk_hangman);
 
 #if OPT_LAB03
     /* asserting lock to exist */
@@ -509,3 +515,224 @@ void lock_release(struct lock *lock) {
     (void)lock;  // suppress warning until code gets written
 }
 ``` 
+
+## Testing conditional variables
+Similar to locks, also **condition variables** must also be implemented. Before proceeding, let's take a step back and zoom out to understand the situation. 
+
+Our purpose is to implement some structure that accomplish concurrent programming. This far, we have seen two possible solutions:
+
+1. **Semaphores**
+2. **Wait channel + spinlocks**
+
+We now add a third possibility, exploiting conditional variables and locks:
+
+3. **Monitors (conditional variables + locks)** 
+
+From `wikipedia.com`: 
+*a **monitor** is a synchronization construct that allows threads to have both mutual exclusion and the ability to wait (block) for a certain condition to become false. Monitors also have a mechanism for signaling other threads that their condition has been met. A monitor consists of a mutex (**lock**) object and **condition variables**. A condition variable essentially is a container of threads that are waiting for a certain condition. Monitors provide a mechanism for threads to temporarily give up exclusive access in order to wait for some condition to be met, before regaining exclusive access and resuming their task.*
+
+In **os161**, we can run from the menu the commands `sy3` and `sy4` to test the conditional variable mechanism.
+
+### Conditional Variables - test1
+Let's start from running the command `sy3` and follow the execution of the test. We are redirected to the function `cvtest()`, which performs almost the same operations as the other tests, calling another thread routine (of course). In particualar:
+1. **Initialization of the conditional variable**
+    At the very beginning, as we are used to at this point, the function will call `inititems()` which will take care of the creations of all the structures used to run all the tests (in this case, we are interested in the part which will actually create the conditional variable).
+    ```C
+    if (testcv==NULL) {
+		testcv = cv_create("testlock");
+		if (testcv == NULL) {
+			panic("synchtest: cv_create failed\n");
+		}
+	}
+    ```
+    Two things to take into accounts:
+    1. `testcv` is a global conditional variable (`static struct cv *testcv`). A `cv` struct is defined in `synch.h` (*path*: `os161/src/kern/include/synch.h`) as:
+        ```C
+        struct cv {
+            char *cv_name;
+
+        #if OPT_LAB03
+            struct wchan *cv_wchan;
+            struct spinlock cv_lock;
+        #endif
+        };
+        ```
+    
+    2. `cv_create()` initializes the conditional variable as expected, creating the waiting channel and initializing the spinlock:
+    ```C
+    struct cv *cv_create(const char *name) {
+        struct cv *cv;
+
+        cv = kmalloc(sizeof(*cv));              /* CV initialization            */
+        if (cv == NULL) {
+            return NULL;
+        }
+
+        cv->cv_name = kstrdup(name);            /* CV name initialization       */
+        if (cv->cv_name==NULL) {
+            kfree(cv);
+            return NULL;
+        }
+
+    #if OPT_LAB03
+        /* initialization of the waiting channel */
+        cv->cv_wchan = wchan_create(cv->cv_name);
+        if (cv->cv_wchan == NULL) {
+            kfree(cv->cv_name);
+            kfree(cv);
+            return NULL;
+        }
+
+        /* iniitalization of the spinlock */
+        spinlock_init(&cv->cv_lock);
+
+    #endif
+
+        return cv;
+    }
+    ``` 
+
+    Before moving forward, it may be useful to implement also the `cv_destroy()` function, which will take care of the all the memory cleanin up:
+    ```C
+    void cv_destroy(struct cv *cv) {
+        KASSERT(cv != NULL);
+
+    #if OPT_LAB03
+        spinlock_cleanup(&cv->cv_lock);
+        wchan_destroy(cv->cv_wchan);
+    #endif
+
+        kfree(cv->cv_name);
+        kfree(cv);
+    }
+    ```
+
+2. **Creating the threads to run the test**
+Threads are generated with the `cvtestthread` routine, which receives as argument an incremental number (based on the thread) from $0$ to $63$: 
+    ```C
+    for (i = 0; i < NTHREADS; i++) {
+		result = thread_fork("synchtest", NULL, cvtestthread, NULL, i);
+		if (result) {
+			panic("cvtest: thread_fork failed: %s\n", strerror(result));
+		}
+	}
+    ```
+    Meanwhile, the main thread will call a `P()` to wait for the tests to finish (exploiting another semaphore, just like the `semtest`): 
+    ```C
+    for (i = 0; i < NTHREADS; i++) {
+		P(donesem);
+	}
+    ```
+
+4. **Thread routine**
+The thread routine `cvtestthread()` will performs a test based on the conditional variable `testcv`. In particular, each thread will acquire the lock to wait for their turn based on the condition variable in a wait channel. Only one thread at a time should print its identification number and then release the condition that hold the subsequent thread, then exit. It exploits three functions:
+- `cv_wait()` to wait until the value of the conditional variable change.
+- `cv_signal()` to wake up the first thread in the list.
+- `cv_broadcast()` to wake up all threads in the list.
+
+#### Waiting
+The function `cv_wait()` will make sure the current thread get to the waiting channel and sleep,performing the following operations: 
+
+- check whether the conditional variable and the test lock have been actually created
+- check whether the current thread is the owner of the lock (it should be!).
+- acquire the spinlock.
+- get to sleep in the waiting channel.
+- release the spinlock.
+
+The function is defined as follow: 
+```C
+void cv_wait(struct cv *cv, struct lock *lock) {
+#if OPT_LAB03
+    /* assert lock and cv to exist */
+    KASSERT(cv != NULL);
+    KASSERT(lock != NULL);
+
+    /* assert the current thread to be the owner of the lock */
+    KASSERT(lock_do_i_hold(lock));
+
+    /* acquiring the lock and get to sleep */
+    spinlock_acquire(&cv->cv_lock);
+	/* 
+        G.Cabodi - 2019: spinlock already owned as atomic lock_release+wchan_sleep needed 
+    */
+	lock_release(lock);
+	wchan_sleep(cv->cv_wchan,&cv->cv_lock);
+	spinlock_release(&cv->cv_lock);
+	/* 
+        G.Cabodi - 2019: spinlock already  released to avoid ownership while (possibly) going 
+        to wait state in lock_acquire. Atomicity wakeup+lock_acquire not guaranteed (but not 
+        necessary!) 
+    */
+	lock_acquire(lock);
+#endif
+    (void)cv;    // suppress warning until code gets written
+    (void)lock;  // suppress warning until code gets written
+}
+```
+
+#### Signaling
+The function `cv_signal()` will wake up the first thread in the waiting channel performing the following operations: 
+- check whether the conditional variable and the test lock have been actually created
+- check whether the current thread is the owner of the lock (it should be!).
+- acquire the spinlock.
+- wake up the first thread in the waiting channel.
+- release the spinlock.
+
+The function is defined as follow:
+```C
+void cv_signal(struct cv *cv, struct lock *lock) {
+#if OPT_LAB03
+    /* assert lock and cv to exist */
+    KASSERT(cv != NULL);
+    KASSERT(lock != NULL);
+
+    /* assert the current thread to be the owner of the lock */
+    KASSERT(lock_do_i_hold(lock));
+	/* 
+        G.Cabodi - 2019: here the spinlock is NOT required, as no atomic operation 
+        has to be done. The spinlock is just acquired because needed by wakeone 
+    */
+
+    /* acquiring the lock and wake the first thread up */
+	spinlock_acquire(&cv->cv_lock);
+	wchan_wakeone(cv->cv_wchan,&cv->cv_lock);
+	spinlock_release(&cv->cv_lock);
+#endif
+	(void)cv;    // suppress warning until code gets written
+	(void)lock;  // suppress warning until code gets written
+}
+```
+#### Broadcasting
+On the other hand, the function `cv_broadcast()` will wake all threads up: 
+```C
+void cv_signal(struct cv *cv, struct lock *lock) {
+#if OPT_LAB03
+    /* assert lock and cv to exist */
+    KASSERT(cv != NULL);
+    KASSERT(lock != NULL);
+
+    /* assert the current thread to be the owner of the lock */
+    KASSERT(lock_do_i_hold(lock));
+	/* 
+        G.Cabodi - 2019: here the spinlock is NOT required, as no atomic operation 
+        has to be done. The spinlock is just acquired because needed by wakeone 
+    */
+
+    /* acquiring the lock and wake the first thread up */
+	spinlock_acquire(&cv->cv_lock);
+	wchan_wakeall(cv->cv_wchan,&cv->cv_lock);
+	spinlock_release(&cv->cv_lock);
+#endif
+	(void)cv;    // suppress warning until code gets written
+	(void)lock;  // suppress warning until code gets written
+}
+```
+
+### Conditional Variables - test2
+Finally, run the command `sy4` and follow the execution of the test. We are redirected to the function `cvtest2()`, which will create `NCVS = 250` monitors (i.e. condition variables and locks) and generates two threads, running the following routines: 
+1. `sleepthread`: will wait for `NLOOPS * NCVS` times on the condition variable and after `NVCS` will print its identifier.
+2. `wakethread`: will signal for `NLOOPS * NCVS` times on the condition variable and after `NVCS` will print its identifier.
+
+Everything should work fine since we have already implemented it all. 
+
+**The End**.
