@@ -17,6 +17,7 @@
 5. [Implementing `getpid()` and `fork()`](#implementing-getpid-and-fork)
     - [`fork` system call](#fork-system-call)
     - [`getpid` system call](#getpid-system-call)
+6. [Notes](#notes)
 
 > **NB**: all over the file, `os161-base_2.0.3` is referred as `src`. This is to simplified paths as `os161/os161-base_2.0.3/...` to `os161/src`. Keep it in mind!
 
@@ -58,7 +59,7 @@ struct proc {
 where: 
 - `p_name` is a string representing the name of the process, useful for debugging.
 - `p_lock` is a **spinlock** (see: my [GitHub page](https://github.com/DavideArcolini/PoliTo_SDP.git), `OS161 - OS internals/LAB03` for more information) which is useful to **protect** the `p_addrspace`. This is due to `thread_switch`, which needs to be able to fetch the current address space without sleeping.
-- `p_numthreads` stores the number of threads for this process. Note that we only count the number of threads in each process and, unless we implement multithreaded user processes, this number will not exceed 1 except in `kproc`. If you want to know exactly which threads are in the process, e.g. for debugging, add an array and a sleeplock to protect it (you can't use a spinlock to protect an array because arrays need to be able to call `kmalloc`).
+- `p_numthreads` stores the number of threads for this process. Note that we only count the number of threads in each process and, unless we implement multithreaded user processes, this number will not exceed 1 except in `kproc`. If you want to know exactly which threads are in the process, e.g. for debugging, add an array and a sleeplock (see [notes](#notes)) to protect it (you can't use a spinlock to protect an array because arrays need to be able to call `kmalloc`).
 - `p_addrspace` is a pointer to the a structure containing all the information about the virtual address space in which the process is stored.
 - `p_cwd` is a pointer to the `vnode` storing the information about the current working directory.
 
@@ -1086,3 +1087,26 @@ void syscall(struct trapframe *tf) {
 ```
 
 Now we are able to run `p testbin/forktest`.
+
+## Notes
+Some notes added after carried out the laboratory.
+
+### What is a sleeplock
+> Referring to [Process data structure](#process-data-structure).
+
+A sleeplock is nothing more than a mutex.
+
+- `p_numthreads` stores the number of threads for this process. Note that we only count the number of threads in each process and, unless we implement multithreaded user processes, this number will not exceed 1 except in `kproc`. If you want to know exactly which threads are in the process, e.g. for debugging, add an array and a **sleeplock** to protect it (you can't use a spinlock to protect an array because arrays need to be able to call `kmalloc`).
+
+From [StackOverflow](https://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instead-of-mutex/5870415#5870415).
+
+**The Theory**
+In theory, when a thread tries to lock a mutex and it does not succeed, because the mutex is already locked, it will go to sleep, immediately allowing another thread to run. It will continue to sleep until being woken up, which will be the case once the mutex is being unlocked by whatever thread was holding the lock before. When a thread tries to lock a spinlock and it does not succeed, it will continuously re-try locking it, until it finally succeeds; thus it will not allow another thread to take its place (however, the operating system will forcefully switch to another thread, once the CPU runtime quantum of the current thread has been exceeded, of course).
+
+**The Problem**
+The problem with mutexes is that putting threads to sleep and waking them up again are both rather expensive operations, they'll need quite a lot of CPU instructions and thus also take some time. If now the mutex was only locked for a very short amount of time, the time spent in putting a thread to sleep and waking it up again might exceed the time the thread has actually slept by far and it might even exceed the time the thread would have wasted by constantly polling on a spinlock. On the other hand, polling on a spinlock will constantly waste CPU time and if the lock is held for a longer amount of time, this will waste a lot more CPU time and it would have been much better if the thread was sleeping instead.
+
+**The Solution**
+Using spinlocks on a single-core/single-CPU system makes usually no sense, since as long as the spinlock polling is blocking the only available CPU core, no other thread can run and since no other thread can run, the lock won't be unlocked either. IOW, a spinlock wastes only CPU time on those systems for no real benefit. If the thread was put to sleep instead, another thread could have ran at once, possibly unlocking the lock and then allowing the first thread to continue processing, once it woke up again.
+
+On a multi-core/multi-CPU systems, with plenty of locks that are held for a very short amount of time only, the time wasted for constantly putting threads to sleep and waking them up again might decrease runtime performance noticeably. When using spinlocks instead, threads get the chance to take advantage of their full runtime quantum (always only blocking for a very short time period, but then immediately continue their work), leading to much higher processing throughput.
