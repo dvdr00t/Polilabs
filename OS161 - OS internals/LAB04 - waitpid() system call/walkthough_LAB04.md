@@ -39,7 +39,7 @@ The laboratory can be divided into four parts:
 Before starting, let's review one more time the data structures we need to exploits in this laboratory.
 
 ### Process data structure
-The process data structure contains all the useful information regarding a particular process, wither it is a kernel process or it is a user process. In *os161*, the process data structure is initially defined in `proc.h` (*path*: `os161/src/kern/include/proc.h`) as:
+The process data structure contains all the useful information regarding a particular process, whether it is a kernel process or it is a user process. In *os161*, the process data structure is initially defined in `proc.h` (*path*: `os161/src/kern/include/proc.h`) as:
 ```C
 struct proc {
 	char *p_name;			        /* Name of this process */
