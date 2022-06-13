@@ -1,6 +1,6 @@
 # OS161 - System and Device Programming
 
-## LAB03 - Implementing `waitpid()` system call
+## LAB04 - Implementing `waitpid()` system call
 * **Author**: `Davide Arcolini`
 * **Date**: `2022-06-09`
 
