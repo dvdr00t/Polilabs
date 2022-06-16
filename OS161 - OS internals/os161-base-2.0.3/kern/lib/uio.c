@@ -158,7 +158,29 @@ uio_kinit(struct iovec *iov, struct uio *u,
 	u->uio_iovcnt = 1;
 	u->uio_offset = pos;
 	u->uio_resid = len;
+
+	/**
+	 * uio_segflag is used to define the kind of IO operation required
+	 * -----------------------------------------------------------------
+	 * Here, we are assigning UIO_SYSSPACE to uio_segflg because the load_elf()
+	 * which called this uio_kinit() is preparing for a VOP_READ of the header
+	 * section of the file which will be stored in the kernel. Therefore it is a
+	 * UIO_SYSSPACE operation.
+	 */
 	u->uio_segflg = UIO_SYSSPACE;
 	u->uio_rw = rw;
+
+	/**
+	 * uio_space is used for the translation of logical addresses to physical addresses.
+	 * --------------------------------------------------------------------------------
+	 * Here, we are assigning NULL to uio_space because headers of the ELF file will be 
+	 * stored in the Kernel address space (see `u->uio_segflg = UIO_SYSSPACE` which
+	 * refers to SYSTEM (KERNEL) SPACE) and therefore the translation consists only on
+	 * adding/subtracting MIPS_KSEG0 to/from the logical address.
+	 * 
+	 * NB: in load_segment(), on the other hand, we will need to assign a specific 
+	 * 	   uio_space, because we will need actual translation.
+	 * 
+	 */
 	u->uio_space = NULL;
 }

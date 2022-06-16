@@ -99,8 +99,29 @@ load_segment(struct addrspace *as, struct vnode *v,
 	u.uio_iovcnt = 1;
 	u.uio_resid = filesize;          // amount to read from the file
 	u.uio_offset = offset;
+
+	/**
+	 * uio_segflag is used to define the kind of IO operation required
+	 * -----------------------------------------------------------------
+	 * Here, we are assigning either UIO_USERISPACE or UIO_USERSPACE to uio_segflg 
+	 * because the load_elf() which called this load_segment() is actually ready
+	 * to load instructions or data from the ELF file to the user space.
+	 */
 	u.uio_segflg = is_executable ? UIO_USERISPACE : UIO_USERSPACE;
 	u.uio_rw = UIO_READ;
+
+	/**
+	 * uio_space is used for the translation of logical addresses to physical addresses.
+	 * --------------------------------------------------------------------------------
+	 * Here, we are assigning as to uio_space because segments of the ELF file will be 
+	 * stored in the user address space (see `u->uio_segflg =  UIO_USERISPACE : UIO_USERSPACE`)
+	 * and therefore the translation is based on the mapping defined in load_elf().
+	 * 
+	 * NB: in uio_kinit(), on the other hand, we won't need to assign a specific 
+	 * 	   uio_space, because we won't need actual translation, but only to add/subtract the 
+	 * 	   MIPS_KSEG0 value.
+	 * 
+	 */
 	u.uio_space = as;
 
 	result = VOP_READ(v, &u);
@@ -156,16 +177,44 @@ load_elf(struct vnode *v, vaddr_t *entrypoint)
 	Elf_Ehdr eh;   /* Executable header */
 	Elf_Phdr ph;   /* "Program header" = segment header */
 	int result, i;
+
+	/**
+	 * IO utilities structure:
+	 * -------------------------------------------------------------------------------
+	 * 
+	 * 		- [struct iovec] --> it contains:
+	 * 									1) the pointer to the destination area in memory 
+	 * 										where the VOP_READ will store the result.
+	 * 											- &eh for load_elf() 		--> kernel
+	 * 											- vaddr for load_segment()	--> user
+	 * 									2) the length of the destination area:
+	 * 											- sizeof(eh) for load_elf() --> kernel
+	 * 											- memsize for load_segment()--> user
+	 * 
+	 *  	- [struct uio] 	--> it contains IO information:
+	 * 									1) the pointer to one or more struct iovec
+	 * 									2) the counter of struct iovec pointed to
+	 * 									3) offset and number of bytes to read from
+	 * 									4) the kind of pointer (UIO_SYSSPACE, i.e. kernl or 
+	 * 									   UIO_USERISPACE/UIO_USERSPACE, i.e. user)
+	 * 									5) the address space for the user pointers
+	 * 										(see uio.c --> uio_kinit())
+	 */
 	struct iovec iov;
 	struct uio ku;
 	struct addrspace *as;
 
 	as = proc_getas();
 
-	/*
+	/**
 	 * Read the executable header from offset 0 in the file.
-	 */
-
+	 * -------------------------------------------------------
+	 * NB: before doing a kernel IO (e.g. reading headers), it 
+	 * 	   is sufficient to call uio_kinit() to initialize the 
+	 * 	   two structures (iovec and uio). 
+	 * 	   On the other hand, before doing a user IO, the two 
+	 * 	   structures need to be explicitly initialized.
+	*/
 	uio_kinit(&iov, &ku, &eh, sizeof(eh), 0, UIO_READ);
 	result = VOP_READ(v, &ku);
 	if (result) {
@@ -243,6 +292,10 @@ load_elf(struct vnode *v, vaddr_t *entrypoint)
 			return ENOEXEC;
 		}
 
+		/**
+		 * HERE: we map the logical address space. We know, for each segment, 
+		 * 		 where it starts (vaddr) and how long it is (memsize).
+		 */
 		result = as_define_region(as,
 					  ph.p_vaddr, ph.p_memsz,
 					  ph.p_flags & PF_R,
@@ -288,6 +341,10 @@ load_elf(struct vnode *v, vaddr_t *entrypoint)
 			return ENOEXEC;
 		}
 
+		/**
+		 * HERE: this time actually load the data in the previously defined
+		 * 		 user space. 
+		 */
 		result = load_segment(as, v, ph.p_offset, ph.p_vaddr,
 				      ph.p_memsz, ph.p_filesz,
 				      ph.p_flags & PF_X);
