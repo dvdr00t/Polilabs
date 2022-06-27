@@ -37,11 +37,13 @@ int main (int args, char *argv[]) {
         ERR_print_errors((BIO *)stderr);
         exit(EXIT_FAILURE);
     }
+    fprintf(stdout, "stringA in characters: %s\n", stringA);
     if (RAND_bytes(stringB, STRING_LENGTH) != 1) {
         fprintf(stderr, "[ERROR] function RAND_bytes failed execution.");
         ERR_print_errors((BIO *)stderr);
         exit(EXIT_FAILURE);
     }
+    fprintf(stdout, "stringB in characters: %s\n", stringB);
     print_hex_string(stringA, STRING_LENGTH, "stringA");
     print_hex_string(stringB, STRING_LENGTH, "stringB");
 
