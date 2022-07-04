@@ -1,0 +1,11 @@
+1. Write a program that, using OpenSSL, generates three random strings of 32 bytes each, convert them into Big Numbers bn1,bn2,bn3, then computes:
+- sum (bn1+bn2)
+- difference (bn1-bn3)
+- multiplication (bn1*bn2*bn3)
+- integer division (bn3/bn1)
+- modulus (bn1 mod bn2)
+- modulus-exponentiation (bn1^bn3 mod bn2)
+
+2. Using OpenSSL, write a C program that implements all the operations that are performed by both the parties of a DH 
+   key exchange (no need to exchange data, just perform the mathematical operations).
+
