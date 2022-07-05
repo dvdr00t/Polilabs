@@ -197,7 +197,7 @@ static paddr_t getfreeppages(unsigned long npages) {
 
 	/* CHECKING IF WE HAVE FOUND AN AVAILABLE SPACE */
 	if (start_adr != -1) {
-		for (long int i = 0; i < start_adr + (long int)npages; i++) {
+		for (long int i = start_adr; i < start_adr + (long int)npages; i++) {
 			bitmap_freePages[i] = 0;				/* UPDATING BITMAP OF POSITIONS */
 		}
 		bitmap_sizePages[start_adr] = npages;		/* UPDATING BITMAP OF DIMENSIONS */
