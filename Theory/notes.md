@@ -38,17 +38,3 @@ $$
 \hline
 \end{array}
 $$
-
-### Chinese Remainder Theorem
-The Chinese remainder theorem is a powerful tool to find the last few digits of a power. The idea is to find a number mod $5^n$ and mod $2^n$ and then combine those results, using the Chinese remainder theorem, to find that number mod $10^n$.
-
-- **Example:**
-Find the last two digits of $74^{540}$.
-Observe that $100=4 \times 25$ and $\operatorname{gcd}(4,25)=1$. So we can compute $74^{540}(\bmod 4)$ and $74^{540}$ (mod 25$)$, and then combine those results to find $74^{540} \bmod 100$. Now
-$$
-\begin{array}
-74^{540} \equiv 2^{540} \times 37^{540} \equiv 0 \quad(\bmod 4) \\
-74^{540} \equiv(-1)^{540} \equiv 1 &(\bmod 25)
-\end{array}
-$$
-The unique solution $\bmod 100$ to $x \equiv 0 (\bmod 4)$ and $x \equiv 1(\bmod 25)$ is 76 , so this is the answer.
