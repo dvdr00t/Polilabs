@@ -39,6 +39,8 @@ def get_nth_block(n: int, text: bytes) -> bytes:
 def guess_block(c1: bytes, c2: bytes) -> bytes:
     
     '''
+    LINK: https://robertheaton.com/2013/07/29/padding-oracle-attack/
+
     Decrypt a specific block c2 to p2 given the previous block c1.
     
     + ------------- +                   + ------------- +  
