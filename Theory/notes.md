@@ -38,3 +38,23 @@ $$
 \hline
 \end{array}
 $$
+
+## Trucco magico
+
+18^23 mod 55 = 2 mod 55 —> con CRT?
+
+Nope
+
+C'è un trucco op di @daveinnocenzi. Scrivete il numero in binario:
+
+18^(10111)  e C0=1
+
+E poi scrivete:
+
+C0^2 * 18^1 = C1
+C1^2 * 18^0 = C2
+C2^2 * 18*1 = C3
+C3^2 * 18^1 = C4
+C4^2 * 18^1 = C5
+
+C5 è il risultato
