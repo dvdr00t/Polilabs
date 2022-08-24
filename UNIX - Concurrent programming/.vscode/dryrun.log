@@ -1,0 +1,6 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/media/psf/Home/Desktop/PoliTo_CyberSecurity/Courses/System and Device Programming/[LAB] GitHub repository/PoliTo_SDP/UNIX - Concurrent programming'
+make: Leaving directory '/media/psf/Home/Desktop/PoliTo_CyberSecurity/Courses/System and Device Programming/[LAB] GitHub repository/PoliTo_SDP/UNIX - Concurrent programming'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+
