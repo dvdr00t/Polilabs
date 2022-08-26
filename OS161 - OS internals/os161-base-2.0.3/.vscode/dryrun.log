@@ -1,6 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory `/Users/davidearcolini/Desktop/PoliTo_CyberSecurity/Courses/System and Device Programming/[LAB] GitHub repository/PoliTo_SDP/OS161 - OS internals/os161-base-2.0.3'
-make: Leaving directory `/Users/davidearcolini/Desktop/PoliTo_CyberSecurity/Courses/System and Device Programming/[LAB] GitHub repository/PoliTo_SDP/OS161 - OS internals/os161-base-2.0.3'
- 
-Makefile:24: *** missing separator.  Stop.
-
