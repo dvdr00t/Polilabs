@@ -152,7 +152,7 @@ int process_routine(key_t key, int msqid, bool do_i_start) {
     if (do_i_start) {
 
         /* P2 */
-        //int msgctr = 1;         // message counter
+        int msgctr = 1;         // message counter
         while (running) {
 
             /* GENERATING TEXT */
@@ -161,8 +161,8 @@ int process_routine(key_t key, int msqid, bool do_i_start) {
             sprintf(message.msg_text, "%d", length);
 
             /* SENDING MESSAGE */
-            message.msg_type = 0;
-            if (msgsnd(msqid, &message, MSG_LENGTH*sizeof(char), 0) == -1) {
+            message.msg_type = msgcrt;
+            if (msgsnd(msqid, &message, sizeof(message), 0) == -1) {
                 fprintf(stderr, "[ERROR] msgsnd() failed execution: %s\n", strerror(errno));
                 return -1;
             } else if (length == 0) {
@@ -171,10 +171,10 @@ int process_routine(key_t key, int msqid, bool do_i_start) {
             }
 
             /* INCREMENT COUNTER */
-            // msgctr++;
+            msgctr += 2;
 
             /* RECEIVING TEXT */
-            if (msgrcv(msqid, &message, MAX_LENGTH*sizeof(char), 0, 0) == -1) {
+            if (msgrcv(msqid, &message, sizeof(message), msgctr-1, 0) == -1) {
                 fprintf(stderr, "[ERROR] msgrcv() failed execution: %s\n", strerror(errno));
                 return -1;
             }
@@ -192,11 +192,11 @@ int process_routine(key_t key, int msqid, bool do_i_start) {
     } else {
 
         /* P1 */
-        //int msgctr = 1;         // message counter
+        int msgctr = 1;         // message counter
         while (running) {
             
             /* RECEIVING TEXT */
-            if (msgrcv(msqid, &message, MAX_LENGTH*sizeof(char), 0, 0) == -1) {
+            if (msgrcv(msqid, &message, sizeof(message), msgctr-1, 0) == -1) {
                 fprintf(stderr, "[ERROR] msgrcv() failed execution: %s\n", strerror(errno));
                 return -1;
             }
@@ -216,8 +216,8 @@ int process_routine(key_t key, int msqid, bool do_i_start) {
             sprintf(message.msg_text, "%d", length);
 
             /* SENDING MESSAGE */
-            message.msg_type = 0;
-            if (msgsnd(msqid, &message, MSG_LENGTH*sizeof(char), 0) == -1) {
+            message.msg_type = msgctr;
+            if (msgsnd(msqid, &message, sizeof(message), 0) == -1) {
                 fprintf(stderr, "[ERROR] msgsnd() failed execution: %s\n", strerror(errno));
                 return -1;
             } else if (length == 0) {
@@ -226,7 +226,7 @@ int process_routine(key_t key, int msqid, bool do_i_start) {
             }
 
             /* INCREMENT COUNTER */
-            //msgctr++;
+            msgctr += 2;
         }
     }
     
