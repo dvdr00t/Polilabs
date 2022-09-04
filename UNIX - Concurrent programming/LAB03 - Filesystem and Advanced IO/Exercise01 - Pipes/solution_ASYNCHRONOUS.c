@@ -213,6 +213,7 @@ int parent_routine(int pipe_1, int pipe_2, int STR_NUM, int STR_SIZE) {
         if (!pipe_1_PENDING) {
 
             /* INITIATE OPERATION */
+            fprintf(stdout, "[!] scheduling async reading on pipe1\n");
             aio_read(&control_block_1);
 
 
@@ -224,6 +225,7 @@ int parent_routine(int pipe_1, int pipe_2, int STR_NUM, int STR_SIZE) {
         if (!pipe_2_PENDING) {
 
             /* INITIATE OPERATION */
+            fprintf(stdout, "[!] scheduling async reading on pipe2\n");
             aio_read(&control_block_2);
 
             /* OPERATION HERE IS PENDING */
@@ -250,6 +252,7 @@ void communication_protocol(int signal) {
 void signal_manager_1(int signal) {
 
     /* PERFORMING READING OPERATION */
+    fprintf(stdout, "[!] Ready to read from pipe1\n");
     if (parent_process_reading(pipe_1[0], header1) != 0) {
         fprintf(stderr, "[ERROR] parent_process_reading() failed execution\n");
         exit(EXIT_FAILURE);
@@ -266,6 +269,7 @@ void signal_manager_1(int signal) {
 void signal_manager_2(int signal) {
 
     /* PERFORMING READING OPERATION */
+    fprintf(stdout, "[!] Ready to read from pipe2\n");
     if (parent_process_reading(pipe_2[0], header2) != 0) {
         fprintf(stderr, "[ERROR] parent_process_reading() failed execution\n");
         exit(EXIT_FAILURE);
