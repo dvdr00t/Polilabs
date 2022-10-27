@@ -1,0 +1,102 @@
+<DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link href=".css.css" rel="stylesheet" type="text/css">
+
+<title>OOP Simulazione Sistema Idraulico</title>
+</head>
+
+<body>
+
+<h1>Simulazione Idraulica</h1>
+
+<p>Realizzare il sistema software per la descrizione e la simulazione di un sistema idraulico.<br>
+Tutte le classi si trovano nel package <b>hydraulic</b>.
+</p>
+
+<h2>R1: Elementi e Tubi</h2>
+
+<p>Un sistema idraulico è composto da elementi di vario tipo
+connessi tra loro (tramite tubi che però non sono modellati esplicitamente con questo software).
+</p>
+<p>Un sistema idraulico è rappresentato da un oggetto di classe <b>HSystem</b>;
+questa classe permette di aggiungere nuovi elementi tramite il metodo <b>addElement()</b>, 
+il quale riceve come parametro un oggetto <b>Element</b> e lo aggiunge ai componenti che formano il sistema idraulico.
+</p><p>
+Tramite il metodo <b>getElements()</b> è possibile ottenere un array contenente tutti e soli gli elementi presenti nel
+sistema, questo metodo restituisce un array di oggetti <i>Element</i>.
+</p>
+<p>
+Tutti gli elementi hanno un nome che può essere letto tramite il metodo <b>getName()</b>.</p>
+
+
+<h2>R2: Elementi semplici</h2>
+<p>
+Sono definiti tre tipi di elementi semplici: sorgente, rubinetto e scarico, 
+che sono rispettivamente rappresentati dalle classi <b>Source</b>, <b>Tap</b> e <b>Sink</b>.</p>
+<p>
+È possibile connettere l'uscita di un elemento all'ingresso di un altro tramite il metodo <b>connect()</b>;
+il metodo riceve come parametro l'elemento al cui ingresso deve essere
+connessa l'uscita dell'elemento sui cui &egrave; invocato: ad esempio, <i>a.connect(b);</i> connette
+l'uscita di <i>a</i> all'ingresso di <i>b</i>. 
+Il metodo <b>connect()</b> se invocato su un oggetto <i>Sink</i> non ha nessun effetto.</p>
+<p>
+Dato un elemento semplice qualunque, è possibile sapere a quale altro elemento è
+connessa la sua uscita, tramite il metodo <b>getOutput()</b> che resituisce un oggetto di tipo <i>Element</i>.</p>
+
+
+
+<h2>R3: Elementi complessi</h2>
+<p>
+Oltre agli elementi semplici, sopra descritti,è possibile utilizzare degli elementi complessi. 
+L'elemento a T, rappresentato dalla classe <b>Split</b>, permette di suddividere 
+l'ingresso in due flussi in uscita uguali tra loro. Per tale classe il metodo <b>connect()</b> 
+riceve un ulteriore parametro, di tipo intero, che indica il numero dell'uscita a cui connettere l'elemento. 
+Tale intero ha valore <i>0</i> per la prima uscita e <i>1</i> per la seconda.</p>
+<p>
+Per sapere quali elementi sono connessi in uscita ad un elemento a T, è possibile utilizzare il
+metodo <b>getOutputs()</b> che restituisce un array con i due elementi connessi.</p>
+
+<h2>R4: Simulazione</h2>
+<p>
+Dato un sistema corretto, ovvero un albero che ha come radice una sorgente
+ed in cui ogni percorso termina con uno scarico, è possibile fare un calcolo 
+delle portate e di come vengono ripartite nei vari elementi.</p>
+<p>
+Il calcolo prevede due fasi: una prima fase (<em>setup</em>) i cui si definiscono i parametri
+dei diversi elementi del sistema e una seconda fase (<em>simulazione</em>) in cui si avvia la simulazione.</p>
+<p>
+Durante la fase si setup è possibile:
+<ul>
+<li> definire la portata per una sorgente (<i>Source</i>) con il metodo  <b>setFlow()</b>, che riceve come
+parametro un numero reale che rappresenta i metri cubi al secondo erogati dalla sorgente</p>
+<li> impostare l'apertura dei rubinetti (<i>Tap</i>), tramite il metodo <b>setOpen()</b>, che riceve
+come parametro un <i>boolean</i>. Se un rubinetto è aperto la portata
+in uscita è uguale a quell in ingresso, altrimenti la portata in uscita è nulla (<i>0.0</i>).</p>
+</ul>
+<p>
+Per i raccordi a T la portata in ingresso viene ripartita equamente tra le due uscite.</p>
+<p>
+Il metodo <b>simulate()</b> della classe <b>HSystem</b>, effettua i calcoli di portata a partire da ogni
+sorgente e notifica, per ogni elemento: il nome e le portate in ingresso e in uscita.
+Questo metodo richiede come parametro un oggetto che implementa l'interfaccia <b>SimulationObserver</b>,
+che presenta un unico metodo.
+<p>
+Quando, durante la simulazione, sono noti i flussi in entrata ed in uscita per un elemento deve essere
+invocato il metodo <b>notifyFlow()</b> passando il tipo di elemento (nome della classe), il nome dell'elemento, 
+ed i flussi in ingresso ed uscita;
+se uno dei flussi non è definito (ad es. per <i>Source</i> e <i>Sink</i>) si usa la costante <i>NO_FLOW</i>.
+</p>
+<p>
+<ul class="hint">
+<li>Suggerimento: dato un oggetto, per sapere se è un'istanza di una classe si può usare
+l'operatore <code>instanceof</code>. Es. <i>if(element instanceof Source)</i>
+<li>Attenzione: non è richiesto implementare l'interfaccia <i>SimulationObserver</i> ma solamente
+usarla; per scopi di verifica viene fornito un esempio di implementazione (classe <i>PrintingObserver</i>)
+che semplicemente stampa su console le notifiche.
+</ul>
+
+<footer>Version 2.0 - 2020-04-16</footer>
+</body>
+</html>

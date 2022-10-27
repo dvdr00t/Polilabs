@@ -1,0 +1,35 @@
+<html>
+<body>
+Contains the classes that implement a software system for the
+definition and simulation of an hydraulic system.
+<p>
+The first step consists in creating the system:
+<pre>
+		HSystem s = new HSystem();
+</pre>
+
+Then (1) one can define the elements:
+<pre>
+		Source src = new Source("Src");
+		s.addElement(src);
+		Tap r = new Tap("R");
+		s.addElement(r);
+		Sink sink = new Sink("Sink");
+		s.addElement(sink);
+</pre>
+After that (2) the elements can be connected to each other:
+<pre>
+		src.connect(r);
+		r.connect(sink);
+</pre>
+At this stage (3) we define the parameter:
+<pre>
+		src.setFlow(20);
+		r.setOpen(true);
+</pre>
+Eventually (4) the simulation can be started passing an observer object:
+<pre>
+		s.simulate(new PrintObserver());
+</pre>
+</body>
+</html>

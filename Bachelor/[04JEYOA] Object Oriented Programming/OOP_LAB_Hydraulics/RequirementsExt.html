@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="utf-8">
+	<link href=".css.css" rel="stylesheet" type="text/css">
+
+	<title>OOP - Hydraulic System Simulation - Extended</title>
+</head>
+<body>
+<h1 style="text-align: center;">Hydraulic System Simulation - <b>Extended</b></h1>
+<p>
+Extend, inside class <b>HSystemExt</b> the 
+<a href="Requirements.html">functions already implemented</a>
+in class <i>HSystem</i>.
+<p>
+The class <b>HSystemExt</b> extends class <i>HSystem</i>.
+
+
+<h2>R5. Multi-split</h2>
+<p>Class <b>Multisplit</b> represents an extension of class <i>Split</i> 
+that allows multiple outputs.
+The constructor accepts, in addition to the name, the number of outputs.
+</p><p>
+The method <b>connect()</b> accepts two arguments: 
+the element to be connected and the output number to connect it to.
+Outputs are numbered starting from <i>0</i>.
+<p></p>
+To find out which elements are connected to the outputs of a multi-splice,
+method <b>getOutputs()</b> can be used; it returns an array of the 
+connected elements.
+If no elements is connected to an output the corresponding item in the
+array is set to <i>null</i>.
+</p><p>
+In preparation for the simulation method <b>setProportions()</b>
+can be used; it accepts a series of <i>double</i> values that 
+define the proportion according to which the input flow is
+divided among the outputs.
+</p>
+<ul class="hint">
+<li>Assume that the number of proportions passed to the method is equal
+to the number of outputs and that their sum is <i>1.0</i>.
+</ul>
+
+
+<h2>R6. Visualization</h2>
+
+Method <b>layout()</b> of class <i>HSystemExt</i> (warning: not <i>HSystem</i>) returns a string containing
+the layout of the system using ASCII characters and spacing.
+<p>
+For instance, a system composed of a <i>Source</i>, connected to a <i>Tab</i>, 
+that is connected to a <i>Split</i> whose outputs are connected to <i>Sink</i>s,
+would return a layout like the following one:
+<pre>
+[Src]Source -> [R]Tap -> [T]Split +-> [sink A]Sink *
+                                  | 
+                                  +-> [sink B]Sink *
+</pre>
+	
+<h2>R7. Element removal</h2>
+<p>
+Method <b>deleteElement()</b> of class <b>HSystemExt</b> deletes from the system
+a previously added element; the method takes as input parameter the name of element to be deleted.
+<p>
+If such element is not a <i>Split</i>, and is connected to other elements in input/output,
+modify the connections appropriately. Taking the example from R5, the layout after deleting
+the <i>Tap</i> should be like the following one:
+<pre>
+[Src]Source -> [T]Split +-> [sink A]Sink *
+                        |
+                        +-> [sink B]Sink *
+</pre> 
+
+<h2>R8. Maximum flow rate and related alarms</h2>
+The new class <b>ElementExt</b> extends the class <b>Element</b> adding
+a method <b>setMaxFlow()</b>, which takes as input parameter a real number,
+representing the maximum flow rate of an element. If an element takes in input
+a flow greater than its max flow rate, the element is in danger of breaking down.
+For <b>Source</b> objects, since they do not have any input,
+calls to the <b>setMaxFlow()</b> method should not have any effect.
+<p>
+The <b>HSystemExt</b> class contains an overloaded version of the <b>simulate</b> method, 
+taking as parameter the boolean <b>enableMaxFlowCheck</b>: if the latter is true, 
+the method should check also the maximum flow of elements, notifying 
+an error if the element input flow is greater than its maximum flow rate.
+The overloaded <b>simulate</b> method takes in input also an object implementing
+the <b>SimulationObserverExt</b> interface, which extends the <b>SimulationObserver</b>,
+adding a method <b>notifyFlowError</b>, which can be used to notify the aforementioned
+maximum flow error, passing the element type, the name, the input flow and the maximum flow rate.
+
+<ul class="hint">
+<li> Hint: it is allowed to modify the <b>Source</b>, <b>Split</b>, <b>Tap</b> and <b>Sink</b> classes
+to make them extend the <b>ElementExt</b> class (since the latter in turn extends <b>Element</b>).
+</ul>
+
+
+<footer>
+Version 1.0 - April 18, 2020
+</footer>
+</body>
+</html>

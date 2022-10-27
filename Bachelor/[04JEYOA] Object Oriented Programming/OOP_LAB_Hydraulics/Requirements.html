@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href=".css.css" rel="stylesheet" type="text/css">
+
+<title>OOP Hydraulic System Simulation</title>
+</head>
+
+<body>
+
+<h1>Hydraulic System Simulation</h1>
+
+Design and implement a program to manage the simulation of an hydraulic system.<br>
+All the classes must belong to the package <b>hydraulic</b>.
+<p>
+
+<h2>R1. Elements and pipes</h2>
+A hydraulic system is composed of elements (of different types) connected to each other 
+(through pipes that are not explicitly modeled in the system).
+<p>
+A system is represented by an object of class <b>HSystem</b> that allows adding
+new elements through the method <b>addElement()</b> that accepts 
+as argument an object of class <b>Element</b> and adds it to the system components.
+<p>
+By means of method <b>getElements()</b> it is possible to get an array containing all and only the 
+elements that compose the system.
+
+
+<h2>R2. Simple elements</h2>
+
+The simple elements are represented by the classes <b>Source</b>, <b>Tap</b>, and <b>Sink</b>.
+<p>
+All elements have a name that can be read through the getter method <b>getName()</b>.
+<br>
+It is possible to connect the output of an element to the input of another element by 
+means of the method <b>connect()</b>
+that accepts as argument the element whose input should be connected to the output of the subject:
+<i>a.connect(b);</i> connects the output of element <i>a</i> to the input of element <i>b</i>.
+<p>
+The invocation of method connect on a <i>Sink</i> object has no effect.
+<p>
+Given an element, it is possible to know to which other output element it is connected by means
+ of the method <b>getOutput()</b> that returns an <i>Element</i> object.
+<p>
+
+
+<h2>R3. Complex elements</h2>
+<p>
+In addition to the simple elements described above, there are some complex elements.
+The "T" element, represented by class <b>Split</b>, allows splitting the input flow into
+two equal output flows. For this class, the <b>connect()</b> method accepts an additional argument
+specifying which output is being connected, such parameter may assume
+the values <i>0</i> for the first output and <i>1</i> for the second output.
+<br>
+For this class, it is possible to know which elements are connected to the outputs, by means
+of the method <b>getOutputs()</b> that returns an array with the two connected elements. 
+<p>
+
+<h2>R4. Simulation</h2>
+<p>
+Given a valid system, i.e. a tree with a source as the root and where each path ends with a sink,
+it is possible to compute flow and how it is split among the distinct paths.
+<p>
+The computation takes place into two phases: in the first phase the parameters of
+the elements belonging to the system are defined, in the second phase the 
+actual simulation starts. 
+<p>
+During the first setup phase it is possible to:
+<ul>
+<li> define the flow of a Source through the method <b>setFlow()</b> that accepts a number 
+representing the cubic meters per hour.
+<li> set the opening of <i>Tap</i>s using the method <b>setOpen()</b> that accepts a boolean argument.
+When a tap is open the output flow is equal to the input flow, otherwise the output is zero.
+</ul>
+
+<p>
+For the T split the input flow is divided into two equal output flows (each a half of the input flow).
+<p>
+The <b>simulate()</b> method of class <i>HSystem</i>, performs the flow computations for each element in the system
+starting from each source (for the source, only the output flow, and for the sink just the input flow).
+This method requires as argument an object implementing the <b>SimulationObserver</b> interface, that provides a single method.
+<p>
+When, during simulation, the input and output flows are known for an element method <b>notifyFlow()</b> must be called
+on the observer passing the element type, the name, and the input and output flows;
+if any of the flows is not defined (e.g. for the <i>Source</i> and <i>Sink</i>), the constant <i>NO_FLOW</i> can be used.
+</p>
+
+<ul class="hint">
+<li>Hint: given an object, to find out if it is an instance
+of a specific class the operator <i>instanceof</i> can be used.<br/>
+E.g. <i>if( element instanceof Source )</i>.
+<li>Warning: you are not required to implement the interface <i>SimulationObserver</i>, you only need to use it;
+an example of implementation that simply prints to the console the notifications, is given in class <i>PrintingObserver</i>.
+</ul>
+
+<footer>Version 2.0 - 2020-04-16</footer>
+</body>
+</html>

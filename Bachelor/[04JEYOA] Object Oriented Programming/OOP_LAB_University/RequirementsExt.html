@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href=".css.css" rel="stylesheet" type="text/css">
+
+<title>OOP - University Management System - Extended</title>
+</head>
+<body>
+<h1 style="text-align: center;">University Management System - <b>Extended</b></h1>
+<p>
+Extend, inside class <b>UniversityExt</b> the 
+<a href="Requirements.html">functions already implemented</a>
+in class <i>University</i>.
+<p>
+The class <b>UniversityExt</b> extends class <i>University</i>.
+
+<h2 id="R5">R5. Exams</h2>
+<p>
+Students can take the exams for the courses in which they have been enrolled. 
+The grade for an exam can be registered through the method <b>exam()</b> that accepts as arguments the ID 
+of the student, course code and a grade (integer 0-30).
+</p><p>
+To get the average grade for a student, the method <b>studentAvg()</b> 
+is used. It accepts as argument the ID of the student. If the student took at least one exam 
+it returns a String of the following format <i>"Student STUDENT_ID : AVG_GRADE"</i>. 
+Otherwise, it  returns <i>"Student STUDENT_ID hasn't taken any exams"</i>.
+</p><p>
+It is possible to get the average grades of all students that took the exam for a given course, 
+method <b>courseAvg()</b> accepting as argument the course code can be used for this purpose. 
+The format is the following: <i>"The average for the course COURSE_TITLE is: COURSE_AVG"</i>, 
+if at least one student took the exam for that course. 
+If this is not the case, the method should return <i>"No student has taken the exam in COURSE_TITLE"</i>.
+</p>
+<ul class="hint">
+<li>It can be safely assumed that if a student takes an exam, 
+it has been previously enrolled to the corresponding course.
+</ul>
+
+<h2 id="R6">R6. Student award</h2>
+<p>
+The university has decided to award the best students for their hard-work and effort. 
+The method <b>topThreeStudents()</b> is used to retrieve information for helping the
+committee to award the price(s).
+<p> 
+The students' score is evaluated as the average grade of the exams they've taken. 
+To take into account the number of exams taken and not only the grades, 
+special bonus is assigned on top of the average grade:
+the number of taken exams divided by the number of courses the student is enrolled to, 
+multiplied by 10 is added. 
+<p>
+The method returns a string with the information about the three students with the
+highest score.
+The students appear one per row (rows are terminated by a new-line character <i>'\n'</i>) 
+and each one of them is formatted as: <i>"STUDENT_FIRSTNAME STUDENT_LASTNAME : SCORE"</i>.
+</p>
+
+<ul class="hint">
+<li>Assume that there are no ties.
+</ul>
+
+
+<h2 id="R7">R7. Logger</h2>
+<p>
+Add logging of operations performed through the <i>UniversityExt</i> facade class. 
+Such operations include:
+<ul>
+<li>enrolling a new student: <i>"New student enrolled: 10000, Mario Rossi"</i><br></li>
+<li>activating a new course <i>"New course activated: 11, Object Oriented Programming James Gosling"</i><br></li>
+<li>a student signing up for a course <i>"Student 10004 signed up for course 11"</i><br></li>
+<li>a student taking an exam <i>"Student 10001 took an exam in course 12 with grade 27"</i><br></li>
+</ul>
+</p>
+
+<ul class="hint">
+<li>to perform logging a <i>logger</i> object of class 
+<a href="https://oop.polito.it/api/java/util/logging/Logger.html"><i>java.util.logging.Logger</i></a> 
+is available within class <i>UniversityExt</i>;
+<li>use the <a href="https://oop.polito.it/api/java/util/logging/Logger.html#info-java.lang.String-"
+><i>info()</i> method</a> of object <i>logger</i> to generate the logging messages;
+<li>please note that by default the messages will be printed to the console.
+</ul>
+
+<footer>
+Version 1.1 - April 5, 2019
+</footer>
+</body>
+</html>

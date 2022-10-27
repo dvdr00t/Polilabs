@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lab - Medical Clinic</title>
+  <meta charset="utf-8">
+  <meta name="revision" content="June 3, 2020">
+  <meta name="author" content="Marco Torchiano">
+  <link href=".css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h1>Medical Clinic</h1>
+<p>
+Implement a system to manage patients of a medical clinic.
+The classes are hosted in package <b>clinic</b>.</p>
+<p>
+The system must meet the following requirements.</p>
+
+
+<h2>R1: Patients</h2>
+
+<p>The main class of the program is class <b>Clinic</b>.</p>
+<p>
+Patients are characterized by the first name, the last name, and the
+unique social security number (SSN). 
+ New patients can be added to the system by means of method <b>addPatient()</b>.</p>
+<p>
+The information about a patient can be retrieved by means of method
+<b>getPatient()</b> that given an SSN returns a string with the format
+<i>"&lt;Last&gt; &lt;First&gt; (&lt;SSN&gt;)"</i>.
+If the patient does not exist, exception <b>NoSuchPatient</b> is thrown.</p>
+
+
+<h2>R2: Doctors</h2>
+
+<p>Doctors are characterized by the first name, last name, SSN, unique badge ID, 
+and the specialization (e.g. "cardiologist", "dentist", etc.).
+New doctors can be added to the system by means of method <b>addDoctor()</b>.</p>
+<p>
+Method <b>getDoctor()</b>, given a badge ID, returns a string with 
+the following format: <i>"&lt;Last&gt; &lt;First&gt; (&lt;SSN&gt;) [&lt;ID&gt;]: &lt;Specialization&gt;"</i>. 
+<p>
+If the doctor does not exist, exception <b>NoSuchDoctor</b> is thrown.</p>
+<p> 
+Keep in mind that doctors can be patients of the same clinic they work in.</p>
+
+<h2>R3: Patient registration</h2>
+
+<p>When accepted, a patient is assigned to one of the clinic doctors. To
+this aim, method <b>assignPatientToDoctor()</b>
+is provided. Patient is identified by means of her SSN, and doctor is
+identified by means of her badge ID. If the doctor does not exist,
+exception <b>NoSuchDoctor</b> is thrown. 
+Further, if the patient does not exist, exception <b>NoSuchPatient</b> is thrown.</p>
+<p>
+By means of method <b>getAssignedDoctor()</b> that accepts a patient SSN,
+it is possible to obtain the ID of the Doctor assigned to that person.
+If the patient does not exist a <i>NoSuchPatient</i> exception is thrown. If there is no
+doctor assigned to the patient a <i>NoSuchDoctor</i> is thrown.</p>
+<p>
+The method <b>getAssignedPatients()</b> accepts a doctor ID and
+returns the list of all patients SSN of that doctor. If there is no doctor
+with the given ID a <i>NoSuchDoctor</i> exception is thrown.</p>
+
+
+<h2>R4: Loading</h2>
+
+<p>The method <b>loadData()</b> of class <i>Clinic</i> accepts a <i>Reader</i>
+parameter and loads from it the information about patients and doctors.<br>
+The text file is organized by rows; each row contains info about
+either a patient or a doctor.</p>
+<p>
+Rows containing a person's info begin with letter <i>"P"</i> followed by first name,
+last name, and SSN. Rows containing doctor's info start with letter <i>"M"</i>,
+followed by badge ID, first name, last name, SSN, and specialization.<br>
+The elements on a line are separated by the <i>";"</i> character, possibly
+surrounded by spaces that should be ignored.</p>
+<p>
+In case of error in the data present on a given row, the method should be able
+to ignore the row and skip to the next one.<br>
+In case of IO errors the method propagates an <i>IOException</i> to the caller.</p>
+
+
+<h2>R5: Statistics</h2>
+
+<p>
+The method <b>idleDoctors()</b> returns the collection of
+doctors that have no patient at all, sorted in alphabetic order (last name and then first name).</p>
+<p>
+The method <b>busyDoctors()</b> returns the collection of
+doctors that are assigned a number of patients larger than the average.</p>
+<p>
+The method <b>doctorsByNumPatients()</b> returns a list of strings
+containing the name of the doctor and the relative number of patients, sorted by decreasing number.<br>
+The string must be formatted as "<i>### : ID SURNAME NAME</i>" where <i>###</i>
+represent the number of patients (printed on three characters).</p>
+<p>
+The method <b>countPatientsPerSpecialization()</b> computes the number of
+patients per (their doctor's) specialization.
+The elements are sorted first by decreasing count and then by alphabetic specialization.<br>
+The strings are structured as "<i>### - SPECIALITY</i>" where <i>###</i>
+represent the number of patients (printed on three characters).</p>
+
+<h3>Hint:</h3>
+<ul class="hint">
+<li> Formatting can be performed using the 
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#format-java.lang.String-java.lang.Object...-"><i>String.format()</i></a> method.<br>
+	E.g. <i>String.format("%3d", i)</i> prints integer variable <i>i</i>
+	on three characters.
+</ul>
+<p>
+
+
+<!--
+<h2>R6: Saving</h2>
+The method <b>saveData()</b> accepts a file path as a parameter and
+saves the information of doctors and patients on that file, according
+to the format specified in the previous requirement.
+<p>
+ In case of IO errors the method propagates an IOException.
+<p>
+-->
+
+</body>
+</html>

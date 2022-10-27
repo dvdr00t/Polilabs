@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Book</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href=".css.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Book</h1>
+</div>
+<!--
+> To generate html and pdf use
+> ```bash
+> $ pandoc -s -f markdown+Smart requirements.md -c .css.css -o requirements.html
+> $ pandoc -s -f markdown+Smart requirements.md -o requirements.pdf
+> ```
+-->
+<p>Develop a system that assists Professors building their text books, adding chapters containing either theory or exercise and checking the coherence of the final result.</p>
+<p>All classes must be inside the package <code>it.polito.oop.book</code>. The <em>facade class</em> is <code>Book</code> — all operations can be performed through it.</p>
+<p>The class <code>TestApp</code> in the default package contains some drivers to help testing the application.</p>
+<blockquote>
+<p>The JDK documentation is accessible from the URL <a href="http://softeng.polito.it/courses/docs/api/index.html" class="uri">http://softeng.polito.it/courses/docs/api/index.html</a>.</p>
+</blockquote>
+<h2 id="r1-topics">R1: Topics</h2>
+<p>A <code>Topic</code> can be one of the topics of a theory chapter or the single topic of a question. A topic is defined by its keyword - which is unique. <!-- That is, the methods `hashCode` and `equals` should consider **only** the keyword. --></p>
+<p>The factory method <code>getTopic(String keyword)</code> in <code>Book</code> returns the <code>Topic</code> associated to the given keyword. It either creates a new topic, if it does not exist yet, or retrieves an existing one, if it has already been created. The method accepts the keyword as single argument and throws the exception <code>BookException</code> if the keyword is <code>null</code> or empty. The method <code>getKeyword()</code> in <em>Topic</em> returns the keyword, and the same is also returned by the <code>toString()</code> method.</p>
+<p>A topic can have other topics as sub-topics. The method <code>addSubTopic(Topic)</code> accepts a <em>Topic</em> as an argument and adds it as sub-topic; it returns <code>true</code> if the subtopic was added or <code>false</code> if the subtopic was not added because already listed as a sub-topic. The method <code>getSubTopics()</code> returns a <code>List&lt;Topic&gt;</code> of all direct subtopics sorted alphabetically.</p>
+<h2 id="r2-questions">R2: Questions</h2>
+<p>For the different topics it is possible to define exercises.</p>
+<p>A <code>Question</code> represents a multiple answer questions. It can be created using the method <code>createQuestion(String,Topic)</code> that accepts the text of the question and its main topic. Getters are available for both fields: <code>getQuestion()</code>, <code>getMainTopic()</code>.</p>
+<p>The method <code>toString()</code> returns the question text followed by the main topic in parenthesis, e.g. <code>“What is a functional interface? (Interface)&quot;</code>.</p>
+<p>The method <code>addAnswer(String,boolean)</code> of class <em>Question</em> accepts an answer and a boolean value indicating whether the given answer is correct for the specific question. The method <code>numAnswers()</code> returns the total number of answers added for the question. The methods <code>getCorrectAnswers()</code> and <code>getIncorrectAnswers()</code> return the set of answers (<code>Set&lt;String&gt;</code>) that are respectively correct and not correct for the question.</p>
+<h2 id="r3-chapters">R3: Chapters</h2>
+<p>There are two types of chapters: <em>theory</em> and <em>exercise</em>.</p>
+<p>A theory chapter can be built using the method <code>createTheoryChapter(String title, int numPages, String text)</code> that gets the title of the chapter, the number of pages, and a string with all the text of the chapter. The method returns a <code>TheoryChapter</code> object. Topics may be added to the chapter using the method <code>addTopic(Topic)</code>; the method adds the given topic to the chapter and, recursively, all its subtopics, either directly or indirectly specified.</p>
+<blockquote>
+<p>For instance, if <em>Class</em> is a subtopic of <em>Java</em> and <em>Abstract Class</em> is a subtopic of <em>Class</em>, adding the topic <em>Java</em> to a chapter would add both <em>Class</em> and <em>Abstract Class</em>.</p>
+</blockquote>
+<p>The class provides getter and setter for the text. The method <code>getTopics()</code> returns all topics inserted by <em>addTopic()</em>, without repetitions and sorted in alphabetical order.</p>
+<p>An exercise chapter can be added to the book using the method <code>createExerciseChapter(String title, int numPages)</code> that accepts the title of the chapter and the number of pages. The method returns an <code>ExerciseChapter</code> object. Questions may be added to it using the method <code>addQuestion(Question)</code> that accepts a <em>Question</em>. The method <code>getTopics()</code> returns all topics specified as main topic in the questions, without repetitions and sorted in alphabetical order.</p>
+<p>Both classes provide the getters and setters for both attributes title and pages: <code>getTitle()</code>, <code>setTitle(String)</code>, <code>getNumPages()</code> and <code>setNumPages(int)</code>.</p>
+<h2 id="r4-statistics-and-checks">R4: Statistics and Checks</h2>
+<p>The method <code>getAllTopics()</code> in <em>Book</em> returns a list of all topics <code>List&lt;Topic&gt;</code> specified in the book chapters – both theory and exercise –; the list is sorted in alphabetical order and does not contains duplicates.</p>
+<p>The method <code>checkTopics</code> return <code>true</code> if all the topics specified in all exercise chapters are contained in at least one theory chapter.</p>
+<p>The method <code>questionOptions()</code> in <em>Book</em> returns a map having as key the number of answers and as values the list of questions having that number of answers.</p>
+<!--
+The method `topicPopularity()` in `Book` returns the list of strings formatted as `"<Topic> : <num>"` where `<Topic>` is the keyword of the topic and `<num>` is the number of theory chapters treating the topic. The list is sorted by decreasing number of chapters and, in case of tie, by topic keyword.
+-->
+<h2 id="r5-assignment">R5: Assignment</h2>
+<p>An assignment represents the answers to a question provided by a student.</p>
+<p>The method <code>newAssignment(String, ExerciseChapter)</code> creates a new assignment for the given student whose ID is provided as argument and the given exercise chapter. It returns an <code>Assignment</code> object that provides the getter methods for the two pieces of information.</p>
+<p>The method <code>addResponse(Question, List&lt;String&gt;)</code> adds the response by the student to the given question: the list contains the answers that the student considers correct. The method returns the score achieved by the student: the score is <code>(N - FP - FN)/N</code> where:</p>
+<ul>
+<li><code>N</code> is the number of total answers for the question,</li>
+<li><code>FP</code> is the number of answers provided by the student that are not correct for the question,</li>
+<li><code>FN</code> is the number of correct answers for the question that are not provided by the student.</li>
+</ul>
+<blockquote>
+<p>For instance, let us consider a question has answers <code>A</code> (wrong), <code>B</code> (wrong), <code>C</code> (correct), and <code>D</code> (correct); and a response containing answers <code>B</code> and <code>C</code>, we have: <code>N=4</code>, <code>FP=1</code> (since <code>B</code> is in the response but is not correct), <code>FN=1</code> (since <code>D</code> is correct but is not in the response), so the score would be <code>0.5</code>.</p>
+</blockquote>
+<p>The method <code>totalScore()</code> returns the sum of the scores for all provided responses.</p>
+</body>
+</html>

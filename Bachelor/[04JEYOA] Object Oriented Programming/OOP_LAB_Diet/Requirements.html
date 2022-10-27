@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link href=".css.css" rel="stylesheet" type="text/css">
+
+   <title>OOP Lab - Diet</title>
+   <meta name="revision" content="April 24, 2018">
+  
+</head>
+<body>
+<h1>Diet</h1>
+
+<p>Write an application to manage a diet by means of nutritional values computation.
+</p>
+<p>The application must allow the definition of raw materials, their
+use as ingredients for recipes, the definition of products and menus.
+</p>
+<p>All the classes must be in the package "<b>diet</b>".</p>
+
+
+<h2>R1 - Raw Materials<br>
+</h2>
+<p>The system works though the facade class <b>Food</b>.
+</p>
+<p>To define a raw material, we can use the method <b>defineRawMaterial()</b> that accepts as arguments
+the name, the kilo-calories, the amount of proteins, carbohydrates (carbs), and fat;
+all the values refer to 100 grams of raw material. The name of the raw material can be considered unique.
+
+<p>To retrieve some information about the raw materials we can use the method <b>rawMaterials()</b> which
+returns a list of raw materials, sorted by name in alphabetic order.
+To get info about a specific material, we can use the method <b>getRawMaterial()</b> that accepts the name
+of the raw material and returns the corresponding raw material.
+
+<p>The raw materials returned by the above methods are objects implementing the interface <b>NutritionalElement</b>,
+which provides the getter methods <b>getName()</b>, <b>getCalories()</b>, <b>getProteins()</b>, <b>getCarbs()</b>, <b>getFat()</b>.
+Calories are expressed in KCal, while proteins, carbs, and fat are expressed in grams.
+
+<p>Moreover the interface includes the method <b>per100g()</b> that indicates whether the values
+refer to 100 grams of nutritional element or represent an absolute value. For raw materials 
+the nutritional values are always expressed per 100 grams, therefore the method returns <code>true</code>.
+
+
+<h2>R2 - Products</h2>
+
+<p>The diet may include also pre-packaged products (e.g. an ice cream or a snack).
+Products are defined by means of the method <b>defineProduct()</b> of class Food
+accepting as arguments the name, the kilo-calories, the amount of proteins, carbohydrates (carbs), and fat.
+Such values express the value for the whole product, therefore the method per100g() returns <code>false</code>.
+The name of the product can be considered unique.
+
+<p>To retrieve information about the products we can use the method <b>products()</b> of class Food that returns
+a collection of products sorted by name. To get information about a specific product, method <b>getProduct()</b> is
+available that accepts the name of the product and returns the corresponding object.
+<p>
+Both methods return the products as object implementing the interface 
+<i>NutritionalElement</i> (described in the previous requirement); 
+the values are expressed for the whole product
+(i.e. the method <i>per100g()</i> returns <i>false</i>).
+</p>
+
+
+<h2>R3 - Recipes</h2>
+
+<p>Raw materials can be combined as ingredients of recipes.
+To define a recipe we can use the method <b>createRecipe()</b>, from class <i>Food</i>,
+that accepts as argument the name of the recipe.
+The name of the recipe can be considered unique.
+
+<p>A recipe is represented by an object of class <b>Recipe</b> that allows
+adding new ingredients by means of its method <b>addIngredient()</b> accepting
+as arguments the name of the raw material and the relative amount in grams.
+
+<p>Class Recipe implements the interface <i>NutritionalElement</i> and the values are
+expressed per 100 grams.
+
+<p>To retrieve the information about the recipes we
+can use the method <b>recipes()</b>, of class <i>Food</i>, that returns a collection
+of recipes sorted by name. To get information regarding a specific recipe we
+can use the method <b>getRecipe()</b> that accepts as argument the name of the
+recipe and return the corresponding recipe.
+Both methods return recipes as <i>NutritionalElement</i>
+
+<p>
+The method <b>toString()</b> in class <i>Recipe</i> returns a string 
+that contains all the ingredients, one per per line, using the following format
+<i>"Material : ###.#"</i> where <i>Material</i> is the name of the raw material 
+and <i>###.#</i> is the relative quantity. 
+Lines are all terminated with character <i>'\n'</i> and the ingredients 
+must appear in the same order they have been added to the recipe.
+</p>
+
+<ul class="hint"><li><strong>Warning</strong>:
+While the sum of  the amounts of ingredients (in grams) of a recipe is not
+necessarily equal to 100g, the nutritional values of the recipe must refer
+to an ideal portion of 100 grams.
+</li></ul>
+
+<h2>R4 - Menu</h2>
+
+<p>A menu consists of either portions of recipes or pre-packaged products.
+
+<p>Menus can be create with method <b>createMenu()</b> of class <i>Food</i>,
+that accepts as argument the name of the menu.
+
+<p>A menu is represented by class <b>Menu</b> that allows to add a portion of 
+a recipe to the menu through method <b>addRecipe()</b> that
+accepts as argument the name of the recipe and the size of the portion, in grams.
+
+<p>To add an item of a pre-packaged product, class <i>Menu</i> provides the method 
+<b>addProduct()</b> that accepts as argument the name of the product.
+
+<p>Class <i>Menu</i> implements the <i>NutritionalElement</i> interface; in this case the values are
+referred to the whole menu.
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Laboratorio - Ambulatorio</title>
+	<meta charset="utf-8">
+	<meta name="revision" content="June 3, 2020">
+	<meta name="author" content="Marco Torchiano">
+	<link href=".css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h1>Ambulatorio</h1>
+
+<p>Realizzare un sistema per gestire i pazienti di un ambulatorio medico.
+Le classi sono contenute nel package <b>clinic</b>.</p>
+
+
+<h2>R1: Pazienti</h2>
+<p>La classe principale del programma &egrave; <b>Clinic</b>.</p>
+
+<p>
+I pazienti sono caratterizzati da nome, cognome, e dal codice fiscale (SSN).
+Nuovi pazienti possono essere aggiunti tramite il metodo <b>addPatient()</b>.</p>
+<p>
+Le informazioni su un paziente possono essere recuperate tramite il metodo
+<b>getPatient()</b> che, dato un codice fiscale restituisce una stringa con il seguente
+formato <i>"&lt;Last&gt; &lt;First&gt; (&lt;SSN&gt;)"</i>.
+</p>
+<p>
+Se il paziente non esiste viene generata l'eccezione <b>NoSuchPatient</b>.
+</p>
+
+<h2>R2: Dottori</h2>
+
+I dottori sono caratterizzati da nome, cognome, SSN, numero di badge e dalla specializzazione 
+(es. "cardiologo", "dentista"). &Egrave; possibile aggiungere un nuovo dottore
+tramite il metodo <b>addDoctor()</b>.</p>
+<p>
+Il metodo <b>getDoctor()</b>, dato il numero di badge restituisce una stringa con il seguente
+formato <i>"&lt;Last&gt; &lt;First&gt; (&lt;SSN&gt;) [&lt;ID&gt;]: &lt;Specialization&gt;"</i>.</p>
+<p>
+Se il dottore non esiste viene generata l'eccezione <b>NoSuchDoctor</b>.</p>
+<p> 
+Si tenga presente che un dottore potrebbe essere paziente dello stesso ambulatorio.</p>
+
+
+<h2>R3: Registrazione dei pazienti</h2>
+
+<p>Quando sono accettati, i pazienti vengono assegnati a uno dei dottori dell'ambulatorio.
+Per questo si usa il metodo <b>assignPatientToDoctor()</b>, che accetta come
+parametri il codice fiscale del paziente ed il numero di badge del dottore. 
+Se il dottore non esiste, viene generata l'eccezione <b>NoSuchDoctor</b>, mentre
+se il paziente non esiste viene generata l'eccezione <b>NoSuchPatient</b>.</p>
+<p>
+Tramite il metodo <b>getAssignedDoctor()</b> che accetta il codice fiscale di un paziente
+&egrave; possibile ottenere il codice del dottore assegnato al paziente. Se il paziente non esiste
+viene lanciata un'eccezione <i>NoSuchPatient</i>; se il paziente non &egrave; stato
+assegnato ad alcun dottore viene lanciata un'eccezione <i>NoSuchDoctor</i>.</p>
+<p>
+Il metodo <b>getAssignedPatients()</b> accetta il codice di un dottore e restituisce
+la collezione dei codici fiscali dei pazienti assegnati al dottore. Se il codice
+non corrisponde ad alcun dottore, viene lanciata un'eccazione <i>NoSuchDoctor</i>.</p>
+
+
+<h2>R4: Lettura</h2>
+
+<p>Il metodo <b>loadData()</b> della classe <i>Clinic</i> accetta un Reader
+e legge le informazioni su pazienti e dottori.</p>
+<p> 
+Il file &egrave; organizzato per righe; ogni riga contiene informazioni
+relative a pazienti o a dottori.</p>
+<p>
+Le righe contenenti informazioni sulle persone iniziano con la lettera "<i>P</i>"
+seguita da nome, cognome, e SSN. Le righe che descrivono i dottori iniziano
+con la lettera "<i>M</i>", seguita da numero di badge, nome, cognome, SSN e specialit&agrave;.</p>
+<p>
+Tutti gli elementi su una linea sono separati dal carattere "<i>;</i>", eventualmente
+circondato da spazi che devono essere ignorati.</p>
+<p>
+In caso di errore nei contenuti del file, il metodo ignora la linea e passa a quella successiva.
+</p>
+<p>In caso di errori di IO le eccezioni devono essere propagate al chiamante.
+</p>
+
+<h2>R5: Statistiche</h2>
+
+<p>Il metodo <b>idleDoctors()</b> resituisce una collezione con tutti i dottori
+che non hanno pazienti, ordinata in ordine alfabetico (prima per cognome e poi per nome).</p>
+<p>
+Il metodo <b>busyDoctors()</b> restituisce la collezione dei dottori che hanno
+un numero di pazienti superiore alla media.</p>
+<p>
+Il metodo <b>doctorsByNumPatients()</b> restituisce una collezione di stringhe
+contenenti il nome del dottore ed il relativo numero di pazienti
+ordinati in maniera decrescente di numero.<br>
+Le stringhe devono essere formattate come "<i>### : ID SURNAME NAME</i>"
+dove <i>###</i> rappresenta il numero di pazienti (stampato su tre caratteri).</p>
+<p>
+Il metodo <b>countPatientsPerSpecialization()</b> conta il numero di pazienti per
+specializzazione (dei dottori).
+Gli elementi della lista di stringhe sono ordinati prima per numero decrescente di pazienti
+e poi in ordine alfabetico di specializzazione.<br>
+Le stringhe sono strutturate come "<i>### - SPECIALITY</i>" dove <i>###</i>
+rappresenta il numero di pazienti (stampato su tre caratteri).
+</p>
+
+<h3>Suggerimento:</h3>
+<ul class="hint">
+<li> Per formattare il numero di pazienti si pu&ograve; utilizzare il metodo 
+<a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#format-java.lang.String-java.lang.Object...-"><i>String.format()</i></a>.<br>
+	Ad esempio  <i>String.format("%3d", i)</i> stampa una variabile intera <i>i</i>
+	con una larghezza di tre caratteri.
+</ul>
+<p>
+
+
+<!--
+<h2>R6: Saving</h2>
+The method <b>saveData()</b> accepts a file path as a parameter and
+saves the information of doctors and patients on that file, according
+to the format specified in the previous requirement.
+<p>
+ In case of IO errors the method propagates an IOException.
+<p>
+-->
+
+</body>
+</html>

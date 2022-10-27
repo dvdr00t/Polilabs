@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href=".css.css" rel="stylesheet" type="text/css">
+
+<title>OOP - University Management System</title>
+</head>
+<body>
+<h1 style="text-align: center;">University Management System</h1>
+
+Design and implement a program to manage university courses, teachers, and students.<br>
+All the classes must belong to the package <b>university</b>.
+<p>
+
+<h2 id="R1">R1. University</h2>
+<p>
+The user interface (not part of this assignment) interacts through the class <b>University</b>, 
+whose constructor accepts as argument the name of the university.
+</p><p>
+The name of the university can be retrieved through method <b>getName()</b>.<p>
+It is possible to assign the name of the Rector by means of the method <b>setRector()</b> 
+that accepts as arguments the first and last name of the Rector.
+</p><p>
+The method <b>getRector()</b> returns the first and last name of the Rector concatenated and 
+separated by a blank space (<i>" "</i>). 
+</p>
+
+
+<h2 id="R2" >R2. Students</h2>
+<p>
+It is possible to enter information concerning a new student thought the method 
+<b>enroll()</b> of class <i>University</i>, that accepts as arguments first and last name 
+of the student; the method returns the ID number that has been assigned to the student.<br>
+ID numbers are are assigned progressively in each university starting from number 10000.
+</p><p>
+To retrieve the information about a student we can use the method <b>student()</b> 
+that accepts as  an argument the ID number and returns a string made up of ID, first, 
+and last name separated by blank spaces, e.g. <i>"10000 Donald Duck"</i>.
+</p>
+
+<ul class="hint">
+<li>We can assume that each university has at most 1000 enrolled students.
+</ul>
+
+<h2 id="R3">R3. Courses</h2>
+<p>
+To define a new course we can use the method <b>activate()</b> that accepts as arguments
+the title of the course and the name of the responsible teacher. The method returns an integer
+that corresponds to the course code. Course codes are assigned progressively starting from 10.
+</p><p>
+To retrieve the information about a course we can use the method <b>course()</b> that accepts 
+the course's code and returns a string containing code, title, and teacher separated by commas, 
+e.g., <i>"10,Object Oriented Programming,James Gosling"</i>.
+</p>
+
+<ul class="hint">
+<li>We can safely assume that any university offers no more than 50 courses.
+</ul>
+
+
+<h2 id="R4">R4. Course attendance</h2>
+<p>
+Students that wish to attend a course must be registered through the method <b>register()</b> 
+that accepts as arguments the ID of the student and the course's code.
+</p><p>
+To get the list of students attending a course we can use the method <b>listAttendees()</b> 
+that accepts the code of the course and returns a string containing the list of attendees.<br>
+The students appear one per row (rows are terminated by a new-line character <i>'\n'</i>) 
+and each row is formatted as describe in requirement <a href="#R2">R2</a>.
+</p><p>
+Given the ID of a student, it is possible to get the  list of courses she is attending
+through the method <b>studyPlan()</b>. The courses are described one per row and formatted 
+as described in requirement <a href="#R3">R3</a>.
+</p>
+
+<ul class="hint">
+<li>We can safely assume that no course has more than 100 attendees and that each student 
+can attend no more that 25 distinct courses.
+</ul>
+
+<footer>
+Version 1.2 - March 19, 2019
+</footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head lang="it">
+	<meta charset="utf-8">
+	<link href=".css.css" rel="stylesheet" type="text/css">
+	<title>Simulazione Sistema Idraulico - Estensione</title>
+</head>
+<body>
+<h1 style="text-align: center;">Simulazione Sistema Idraulico - <b>Estensione</b></h1>
+
+Estendere all'interno della classe <b>HSystemExt</b>
+ le <a href="Requisiti.html">funzionalità già implementate</a> 
+ nella classe <i>HSystem</i>.
+<p>
+La nuova classe <b>HSystemExt</b> estende la classe <i>HSystem</i>.
+
+
+<h2>R5. Multi-split</h2>
+<p>La classe <b>Multisplit</b> rappresenta un'estensione delle classe <i>Split</i> 
+che prevede più uscite.
+Il costruttore accetta, oltre al nome, il numero di uscite.
+</p><p>
+Il metodo <b>connect()</b> riceve due parametri: 
+l'elemento da collegare ed il numero dell'uscita a cui collegarlo.
+Le uscite sono numerate a partire da <i>0</i>
+<p></p>
+Per sapere quali elementi sono connessi in uscita ad un multisplit, 
+è possibile utilizzare il metodo <b>getOutputs()</b> che restituisce 
+un array con gli elementi connessi.
+Se nessun elemento è connesso ad una certa uscita, la cella
+corrispondente dell'array è <i>null</i>.
+</p><p>
+In preparazione alla simulazione è possibile utilizzare il metodo
+<b>setProportions()</b> che accetta una serie di <i>double</i>
+che definiscono la proporzione con cui ripartire il flusso in ingresso
+sulle uscite.
+</p>
+<ul class="hint">
+<li>Si assuma che il numero di proporzioni passate al metodo sia pari al numero 
+di uscite e che la loro somma sia pari a <i>1.0</i>.
+</ul>
+
+
+
+<h2>R6. Visualizzazione</h2>
+<p>
+Il metodo <b>layout()</b> della classe <b>HSystemExt</b> (attenzione: non <b>HSystem</b>) restituisce una stringa
+che contiene la disposizione degli element del sistema utilizzando caratteri
+ASCII e opportune spaziature.
+<p>
+Ogni elemento viene stampato nella forma <i>"[name]Type"</i> dove <i>name</i> è il nome
+dell'elemento e <i>Type</i> è la classe dell'elemento.
+La connessione tra uscita di un elemento e ingresso di un altro è rappresentata dal simbolo 
+<i>"-&gt;"</i> mentre l'assenza di un elemento connesso in uscita è rappresentata da <i>"*"</i>.
+Nel caso di più elementi connessi a valle di un elemento si usa il carattere <i>"+"</i> e si riporta
+la prima connessione sulla stessa riga, e in righe successive si ripete <i>"+"</i> 
+(allineato verticalmente al primo) e poi si riportano le altre connessioni.
+Le righe che separano le connessioni multiple 
+(almeno una, ma potrebbero essere più di una se a valle ci sono altri elementi con uscite multiple)
+si riporta il carattere <i>"|"</i> allineato verticalmente a <i>"+"</i>.
+<p>
+Per esempio, un sistema composto da una <i>Source</i> connessa a un <i>Tap</i>,
+che &egrave; connesso a uno <i>Split</i> le cui uscite sono connesse a due <i>Sink</i>,
+avrebbe un layout simile al seguente:
+<pre>
+[Src]Source -> [R]Tap -> [T]Split +-> [sink A]Sink *
+                                  |
+                                  +-> [sink B]Sink * 
+</pre>
+                          
+<h2>R7. Eliminazione elementi</h2>
+<p>
+Il metodo <b>deleteElement()</b> della classe <b>HSystemExt</b> permette di eliminare 
+un elemento precedentemente aggiunto al sistema; il metodo accetta come parametro il 
+nome dell'elemento da eliminare.
+<p>
+Se l'elemento da eliminare non è un elemento a T, ed è connesso ad altri elementi in 
+ingresso e/o in uscita, modificare le connessioni di conseguenza.Riprendendo l'esempio
+in R5, il layout dopo l'eliminazione di R deve essere il seguente:
+<pre>
+[Src]Source -> [T]Split +-> [sink A]Sink *
+                        |
+                        +-> [sink B]Sink *
+</pre> 
+
+<h2>R8. Portata massima elementi ed allarmi</h2>
+La nuova classe <b>ElementExt</b> estende la classe <b>Element</b> aggiungendo
+il metodo <b>setMaxFlow()</b>, che accetta come parametro un numero reale che
+rappresenta la portata massima di un elemento. Se un elemento riceve una portata
+in ingresso maggiore della portata massima, l'elemento rischia di rompersi. Per 
+gli oggetti di classe <b>Source</b>, non avendo questi ultimi alcun ingresso,
+le chiamate al metodo <b>setMaxFlow()</b> non devono sortire alcun effetto.
+<p>
+La classe <b>HSystemExt</b> contiene un overload del metodo <b>simulate</b> che 
+accetta come parametro il valore booleano <b>enableMaxFlowCheck</b>: se quest'ultimo 
+è settato a vero, il metodo deve effettuare il controllo aggiuntivo sulla portata 
+massima, notificando un errore se la portata in ingresso di un elemento è superiore 
+alla sua portata massima. Il metodo <b>simulate</b> accetta in ingresso anche un oggetto 
+che implementa la classe <b>SimulationObserverExt</b>, estensione dell'interfaccia 
+<b>SimulationObserver</b>, che aggiunge a quest'ultima il metodo <b>notifyFlowError</b>,
+attraverso il quale è possibile notificare l'errore sulla portata massima, passando il 
+tipo di elemento (nome della classe), il nome dell'elemento, il flusso in ingresso e 
+la sua portata massima.
+
+<ul class="hint">
+<li> Hint: è consentito modificare le classi <b>Source</b>, <b>Split</b>, <b>Tap</b> e <b>Sink</b>
+in modo che estendano la classe <b>ElementExt</b> (dato che quest'ultima estende a sua volta 
+<b>Element</b>).
+</ul>
+
+<footer>
+Version 1.0 - April 18, 2020
+</footer>
+</body>
+</html>

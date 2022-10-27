@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+
+
+<style>
+<!--
+body {
+	margin: 0.5cm;
+	/*
+	font-size: 13px;
+	*/
+	}
+p   {
+    margin-top: 0.1em;
+    margin-bottom: 0.5em;
+    }
+b   {
+	font-family: "Courier New";
+	color: MidnightBlue;
+	background: #f8f8f8;
+	border-radius: 2pt;
+	padding: 1pt;
+/*
+    font-size=85%;
+	border: 1pt dotted silver;
+*/
+	}
+	
+i   {
+	color: Navy;
+	font-family: "Courier New";
+	}
+	
+h1  {
+	font-family: sans-serif;
+	text-align: center;
+    line-height: 1.1em;
+	}
+	
+h2  {
+	color: RoyalBlue;
+	font-family: sans-serif;
+	border-top: 1px dotted gray;
+	}
+.hint {
+    color:LightSlateGray;
+    margin-left:10ch;
+    margin-right:10ch;
+    text-indent:-5ch;
+    }
+.hint b {
+	font-family: inherit;
+	color: MidnightBlue;
+	background: inherit;
+	border-radius: inherit;
+	padding: inherit;
+    }
+.hint i {
+	color: gray;
+    }
+
+@media print {
+body {
+	font-size: 10pt;
+	}
+
+  h2 {
+  	float:left;
+    margin-top: 0;
+    padding: 5px 15px 5px 0px;
+    line-height: 0.8em;
+  	}
+}
+table {
+	float: right;
+	margin: 20px;
+	border-collapse:collapse;
+	border-bottom: 1px solid Navy;
+	border-top: 1px solid Navy;
+	}
+td, th  {
+	padding: 1px 5px 1px 5px;
+	}
+tr:nth-child(even) {
+    background-color: PowderBlue;
+    margin: 1pt solid PowderBlue;
+}
+-->
+</style>
+
+<title>Product Procurement</title>
+</head>
+
+<body>
+
+<h1>Product Procurement</h1>
+<p>
+
+Develop an application to manage a warehouse.<br>
+All the classe must be in the package <b>warehouse</b>.<br>
+
+<p>
+All <a href="http://softeng.polito.it/courses/docs/api/index.html" target="api" target="_blank">JDK documentation</a>  
+is available on a local server.
+</p>
+
+<h2>R1 - Product Definition</h2>
+
+The system main interface is represented by class   <b>Warehouse</b>.
+<p>
+The method <b>newProduct()</b> that accepts as arguments code and description of products,
+creates and object of class <b>Product</b> and records it in the warehouse.
+Class <b>Product</b>provides the method getter methods <b>getCode()</b> and <b>getDescription()</b>.
+</p>
+<p>
+To define the quantity of products in the warehouse the method <b>setQuantity()</b> can be used,
+it accepts as argument an integer; in addition the method <b>decreaseQuantity()</b> decrements
+the quantity of a product by one.
+The method  <b>getQuantity()</b> allow reading the current quantity.
+</p>
+<p>
+To retrieve the list of products we can use the method <b>products()</b> that returns a collection of <i>Prodotto</i> objects.
+A specific product can be retrieve by means of the method <b>findProduct()</b> that accepts 
+as argument the code and returns the relative <i>Product</i> object.
+</p>
+
+
+
+<h2>R2 - Suppliers Definition</h2>
+
+<p>
+Products are provided by suppliers. To define a supplier we can use
+the method <b>newSupplier()</b> of class <i>Warehouse</i> that accepts as arguments
+the code and name of the supplier; such method returns a <b>Supplier</b> object.
+Class <i>Supplier</i> offers the getter methods <b>getCode()</b> e <b>getName()</b>.
+</p>
+<p>
+To retrieve a given supplier it is possible to use the the methods <b>findSupplier()</b>
+of class <i>Warehouse</i> that accepts the code of the supplier.
+</p>
+<p>
+To define which products are provided by a given supplier we can use the method <b>newSupply()</b>
+of class  <i>Supplier</i> that accepts as argument a <i>Product</i> object.
+</p>
+<p> 
+It is possible to know what products are provided by a given supplier through the method 
+<b>supplies()</b> of the <i>Supplier</i> class that returns a list of <i>Product</i> objects
+sorted alphabetically by description.
+Conversely, it is possible to know which suppliers provide a given product using the method <b>suppliers()</b>
+of class <i>Product</i> that returns a collection of <i>Supplier</i> objects sorted by name.
+</p>
+
+
+<h2>R3 - Placing orders</h2>
+
+<p>
+When required, an employee can place an order.
+Orders a places by means of the method <b>issueOrder()</b> of the class <i>Warehouse</i>,
+that accepts as arguments the product, the supplier, and the required quantity,
+it returns an object of class <b>Order</b>.
+</p>
+<p>
+If the supplier is not among those providing that type of product an <b>InvalidSupplier</b> exception is thrown.
+</p>
+<p>
+The warehouse generates an unique alphanumeric code with the format <i>"ORD<span style="font-style: italic;">n</span>"</i>
+where <i><span style="font-style: italic;">n</span></i> is a progressive number starting from 1.
+Class <i>Order</i> provides the getter method <b>getCode()</b>.
+</p>
+<p>
+To retrieve a specific order we can use the method <b>findOrder()</b> of class <i>Warehouse</i>
+that accepts the code and returns the relative <i>Order</i> object.
+</p>
+<p>
+Every order can be converted into a string using the method <b>toString()</b> that 
+returns a string with the following format:
+</p>
+<p style="text-align: center;">
+<i>Order &lt;order code&gt; for &lt;quantity&gt; of &lt;product code&gt; :
+ &lt;product description&gt; from &lt;supplier name&gt;</i>
+</p>
+
+<p>
+For instance:
+<i>"Order ORD2 for 100 of BNN : Banana from Del Monte"</i>
+</p>
+
+
+
+<h2>R4 - Pending orders</h2>
+
+<p>
+When orders are first placed they are in the non-delivered state.
+To check the delivery state of an order we can use the method <b>delivered()</b> that returns a boolean value.
+</p>
+<p>
+When products are received, we can invoke the method <b>setDelivered()</b> that sets the
+delivered status to <i>true</i> and increments the quantity of the products available
+in the warehouse by the order quantity.
+If the order was already delivered a <b>MultipleDelivery</b> exception is thrown.
+</p>
+<p>
+Class <i>Warehouse</i> provides the method <b>pendingOrders()</b> that returns a list
+of orders not yet delivered, sorted by product code. 
+</p>
+<p>
+Also class <i>Product</i> provides a method <b>pendingOrders()</b> that returns the list
+of yet to be delivered orders for that product, sorted by decreasing quantity.
+</p>
+
+<h2>R5 - Statistics</h2>
+
+<p>
+A few statistics are required concernign the working of the warehouse, in particular:
+<ul>
+
+<li>the method <b>ordersByProduct()</b> returns a map grouping all the orders
+(both pending and delivered) by product code.
+
+<li>the method <b>orderNBySupplier()</b> returns the count of the delivered orders
+for each supplier (sorted by name in alphabetic order)
+
+
+<li>the method <b>countDeliveredByProduct()</b> returns a list of string each containing
+ the product and the number of delivered orders separated by <i>" - "</i> (es. <i>"BNN - 10"</i>)
+ sorted by decreasing number of orders.
+
+</ul>
+
+
+</body>
+</html>

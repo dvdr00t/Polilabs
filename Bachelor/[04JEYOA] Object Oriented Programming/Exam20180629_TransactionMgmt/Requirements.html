@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+
+<title>Transaction management</title>
+
+<link href=".css.css" rel="stylesheet" type="text/css">
+
+<style>
+@media print {  /* adjusted to print the html to a single-page pdf */
+body {
+	font-size: 10pt;
+}
+</style>
+
+</head>
+<body>
+
+
+<h1>Transaction management</h1>
+<p>
+
+Write a program for transaction management. Classes are located in the <b>transactions</b> package; 
+the main class is <b>TransactionManager</b>. The <b>Example</b> class in the <b>main</b> package shows usage examples for the main methods
+and examples of the requested checks. Only implement the requested checks.
+Exceptions in the methods described below are of <b>TMException</b> type.<br>
+
+<p>
+The <a href="https://oop.polito.it/api/" rel="noopener" target="api">JDK documentation</a> is located on the local server.
+</p>
+
+<h2>R1: Regions and carriers</h2>
+
+
+The <b> List&lt;String&gt; addRegion</b> (String regionName, String... placeNames) method adds a region and places located in the region given their names.
+Places with already existing names are not added. The method returns the ordered lists of names of the added places.<br>
+
+The <b> List&lt;String&gt; addCarrier</b> (String carrierName, String... regionNames) method adds a carrier and the regions he supplies. Duplicate or non existent region names are ignored. 
+The method returns the ordered list of region names served by the carrier.<br>
+
+The <b> List&lt;String&gt; getCarriersForRegion</b> (String regionName) method returns the ordered list of the names of carriers supplying the region with the given name.<br>
+
+
+
+<h2>R2: Requests and offers</h2>
+
+The <b> addRequest</b> (String requestId, String placeName, String productId) method defines a request given its code, the place of delivery and the requested product's id.
+The method throws an exception if the place is undefined or if the code is duplicated.<br>
+
+The <b> addOffer</b> (String offerId, String placeName, String productId) method defines an offer given its code, the pickup place and and the offered product's id. 
+The method throws an exception if the place is undefined or if the code is duplicated.<br>
+
+
+<h2>R3: Transactions</h2>
+
+
+The <b> addTransaction(String transactionId, String carrierName, String requestId, String offerId) </b> method defines a transaction given its code, the carrier's name, and the request's and offer's ids.
+You can safely assume that the carrier, the request and the offer are defined.
+Therefore, you must enforce the following checks: request and offer should not have been bound to previous transactions, they should relate to the same product id and
+the carrier should serve both the delivery and pickup places (i.e. the corresponding regions).
+If any of the previous checks should fail, an exception must be raised, otherwise the transaction must be associated to both the request and the offer.<br>
+
+The <b> boolean evaluateTransaction(String transactionId, int score) </b> method assigns a score to the transaction. When generated, a transaction has a score equal to 0.
+The returned value is false if the score is not comprised between 1 and 10 (extremes included) ; otherwise the method returns true.<br>
+
+<h2>R4: Statistics</h2>
+
+The <b>SortedMap&lt;Long, List&lt;String&gt;&gt; deliveryRegionsPerNT</b> method returns the list of names of regions (ordered alphabetically)
+that are delivery locations for the same number of transactions.
+A region is a location of delivery for a transaction if the region includes the place of delivery of the request associated to the transaction.
+The returned map shows the number of transactions in decreasing order.<br>
+
+The <b>SortedMap&lt;String, Integer&gt; scorePerCarrier</b> (int minimumScore) method returns the total score of the transactions related to the same carrier. 
+Transaction with a total score below the given minimumScore are ignored.
+Carriers appear in alphabetical order.<br>
+
+The <b>SortedMap&lt;String, Long&gt; nTPerProduct</b> returns the number of transactions (only if greater than 0) 
+for product's id, with the latter alphabetically ordered.<br>
+
+
+
+
+</body>
+</html>
