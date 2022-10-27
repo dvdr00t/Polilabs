@@ -1,0 +1,71 @@
+183658   DELL'ANNA   FRANCESCO GIUSEPPE   01OGDLM (10)   INF1T3   1      Da frequentare
+186988   YE   YU   01OGDLM (10)   INF1T3   1      Da frequentare
+186840   BEN AYED   AMNA   01OGDLM (10)   INF1T3   1      Da frequentare
+177484   KUMI   PRINCE OPOKU   01OGDLM (10)   INF1T3   1      Frequentato nel 2011/2012
+173369   WU   WENAO   01OGDLM (10)   INF1T3   1      Frequentato nel 2011/2012
+89499   DATO AGGIUNTO PER PROVA 1 (10)   TLC1T3   1      Da frequentare
+187747   RAHMAN   NAJEEB UR   01OGDLJ (10)   TLC1T3   1      Da frequentare
+186946   MASOUDI TARAMSARI   ZAHRA   01OGDLM (10)   INF1T3   1      Da frequentare
+177076   EL QORAICHI   BADR   01OGDLJ (10)   TLC1T3   1      Da frequentare
+180946   ZEVOLA   LUIGI   01OGDLM (10)   INF1T3   1      Da frequentare
+186888   LI   LONG   01OGDLJ (10)   TLC1T3   1      Da frequentare
+187028   YU   TENGFEI   01OGDLJ (10)   TLC1T3   1      Da frequentare
+187362   CHEN   JIESI   01OGDLJ (10)   TLC1T3   1      Da frequentare
+177768   LI   HUAN   01OGDLM (10)   INF1T3   1      Da frequentare
+94799   DATO AGGIUNTO PER PROVA 2 (10)   TLC1T3   1      Da frequentare
+174780   SAWORO   EROMO   01OGDLJ (10)   TLC1T3   1      Da frequentare
+181872   GALLINA   PAOLO   01OGDLM (10)   INF1T3   1      Da frequentare
+174826   HADDADI   RASOUL   01OGDLJ (10)   TLC1T3   1      Frequentato nel 2011/2012
+187380   YAN   YUE   01OGDLJ (10)   TLC1T3   1      Da frequentare
+186961   HE   MUZHOU   01OGDLJ (10)   TLC1T3   1      Da frequentare
+176193   LODDO   SELENE   01OGDLM (10)   INF1T3   1      Frequentato nel 2011/2012
+174107   WANG   HAOYI   01OGDLJ (10)   TLC1T3   1      Frequentato nel 2011/2012
+186433   MISTRETTA   SERGIO   01OGDLJ (10)   TLC1T3   1      Da frequentare
+183581   SAADEH   TAMER   01OGDLM (10)   INF1T3   1      Da frequentare
+176151   CHEN   XIN   01OGDLJ (10)   TLC1T3   1      Da frequentare
+183534   KHOSHKHOU GILAVAEI   VAHID   01OGDLM (10)   INF1T3   1      Da frequentare
+187780   HAXHILLARI   JOVO   01OGDLM (10)   INF1T3   1      Da frequentare
+186955   HAN   YIGE   01OGDLJ (10)   TLC1T3   1      Da frequentare
+180402   BETTONI   MARCO   01OGDLM (10)   INF1T3   1      Da frequentare
+187245   QIU   XIAOLING   01OGDLJ (10)   TLC1T3   1      Da frequentare
+185443   VARDANEGA   ELIA   01OGDLJ (10)   TLC1T3   1      Da frequentare
+174845   HUANG   HAITAO   01OGDLM (10)   INF1T3   1      Frequentato nel 2011/2012
+183000   KARIM   MERYEM   01OGDLM (10)   INF1T3   1      Da frequentare
+174855   LIU   DONG   01OGDLM (10)   INF1T3   1      Frequentato nel 2011/2012
+168111   KHATRI   NIRANJAN   01OGDLM (10)   INF1T3   1      Da frequentare
+187580   CHEN   WEI   01OGDLM (10)   INF1T3   1      Da frequentare
+187493   HUANG   YANYU   01OGDLJ (10)   TLC1T3   1      Da frequentare
+187609   JAN   MAIN MUHAMMAD FAHEEM   01OGDLM (10)   INF1T3   1      Da frequentare
+173809   LIU   FENGXIAN   01OGDLJ (10)   TLC1T3   1      Frequentato nel 2011/2012
+176602   JOBARTEH   MARIAMA   01OGDLM (10)   INF1T3   1      Da frequentare
+178503   NADEEM   MUHAMMAD   01OGDLJ (10)   TLC1T3   1      Frequentato nel 2011/2012
+180412   IACOBUCCI   ALEX   01OGDLM (10)   INF1T3   1      Da frequentare
+187696   LIN   ZIXUAN   01OGDLM (10)   INF1T3   1      Da frequentare
+186992   WANG   JUNHUI   01OGDLJ (10)   TLC1T3   1      Da frequentare
+175746   KAFAEI LOTFIE   ARASH AHMAD ALESSANDRO   01OGDLM (10)   INF1T3   1      Frequentato nel 2011/2012
+158381   KIMANI   JAMES MUNYIRI   01OGDLM (10)   INF1T3   1      Da frequentare
+164370   CONG   RUI   01OGDLM (10)   INF1T3   1      Da frequentare
+174308   BACCO   MICHAEL   01OGDLM (10)   INF1T3   1      Da frequentare
+187354   ZENG   LUYUAN   01OGDLJ (10)   TLC1T3   1      Da frequentare
+183886   UR RAHMAN   ASAD   01OGDLM (10)   INF1T3   1      Da frequentare
+183917   TARDINI   GIOVANNI   01OGDLM (10)   INF1T3   1      Da frequentare
+186960   MA   QINGYA   01OGDLJ (10)   TLC1T3   1      Da frequentare
+184130   MA   RUI   01OGDLJ (10)   TLC1T3   1      Da frequentare
+158776   ELLAHI   EHSAN   01OGDLM (10)   INF1T3   1      Frequentato nel 2011/2012
+186670   WEN   SHIYU   01OGDLJ (10)   TLC1T3   1      Da frequentare
+186959   LI   JIAO   01OGDLJ (10)   TLC1T3   1      Da frequentare
+174789   GE   SHENFENG   01OGDLM (10)   INF1T3   1      Da frequentare
+187444   SUN   SHU   01OGDLJ (10)   TLC1T3   1      Da frequentare
+174421   CIORNII   VITALIE   01OGDLM (10)   INF1T3   1      Da frequentare
+176117   DJAPA PAGNIA   SYLVAIN   01OGDLM (10)   INF1T3   1      Da frequentare
+186956   YU   QIAN   01OGDLJ (10)   TLC1T3   1      Da frequentare
+173787   KANA ZEBAZE   JEAN PIERRE   01OGDLJ (10)   TLC1T3   1      Frequentato nel 2011/2012
+183578   HUSSAIN   MURAD   01OGDLM (10)   INF1T3   1      Da frequentare
+187166   LI   HAIYAN   01OGDLJ (10)   TLC1T3   1      Da frequentare
+187041   FORNO   EVELINA   01OGDLM (10)   INF1T3   1      Da frequentare
+164690   SHUKAIR   WAEL   01OGDLJ (10)   TLC1T3   1      Da frequentare
+187432   XU   GUANGHUAN   01OGDLJ (10)   TLC1T3   1      Da frequentare
+183548   OBEID   RAFIC   01OGDLJ (10)   TLC1T3   1      Da frequentare
+173376   ZHAO   LONGSHENG   01OGDLM (10)   INF1T3   1      Frequentato nel 2011/2012
+182304   SIBONA   FIORELLA   01OGDLM (10)   INF1T3   1      Da frequentare
+186690   STRAZIMIRI   ARBER   01OGDLM (10)   INF1T3   1      Da frequentare
