@@ -1,0 +1,4 @@
+[HEADER] file2.txt
+[HEADER] 5
+
+file2
