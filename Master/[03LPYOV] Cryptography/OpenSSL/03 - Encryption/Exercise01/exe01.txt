@@ -1,0 +1,5 @@
+This file is super confidential.
+
+Only the owner of the key should be able to read the content of this file.
+
+Be aware!

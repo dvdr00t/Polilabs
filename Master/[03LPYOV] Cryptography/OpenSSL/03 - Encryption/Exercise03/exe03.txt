@@ -1,0 +1,3 @@
+This file will be encrypted with a stream cipher.
+Then a mask will be applied.
+Finally it will be decrypted and xored again with the mask.
