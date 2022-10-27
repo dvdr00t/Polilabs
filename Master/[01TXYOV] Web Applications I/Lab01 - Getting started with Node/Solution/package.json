@@ -1,0 +1,14 @@
+{
+  "name": "solution",
+  "version": "1.0.0",
+  "description": "solution of the Lab01",
+  "main": "exercise00.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Davide Arcolini",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.10.8"
+  }
+}

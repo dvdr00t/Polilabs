@@ -1,0 +1,15 @@
+{
+  "name": "lab02-database-integration",
+  "version": "1.0.0",
+  "description": "Lab02 - Database integration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Davide Arcolini",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.11.0",
+    "sqlite3": "^4.2.0"
+  }
+}
