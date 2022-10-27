@@ -1,0 +1,8 @@
+A0003 Giulia Arcolini 06/10/2005 Via_Brigola La_Spezia 19136
+A4674 Mario Rossi 13/06/2003 Via_Monginevro Torino 11010
+A5690 Marco Verdi 11/11/2000 Via_Roma La_Spezia 19134
+A0001 Davide Arcolini 27/02/1999 Via_Cumiana Torino 11010
+A0002 Franco Arancioni 01/01/1993 Via_Vigone Torino 11023
+A0023 Luca Bianchi 30/01/1989 Via_Frejus Torino 11010
+A0010 Carlo Gialli 22/09/1956 Corso_Dante Milano 20190
+A0099 BHBH BHBH 01/01/1789 BHBH BHBH 22222
