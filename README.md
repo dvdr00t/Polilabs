@@ -1,5 +1,7 @@
 # Polilabs
 
+![Logo](PoliTo.png)
+
 ## ⚠️ <span style="color:orange">Disclaimer</span> ⚠️
 
 > *Polilabs* repository contains <span style="color:orange">my personal solutions</span> to the exercises. These solutions <span style="color:orange">are not</span> in any way the official solutions issued by the Politecnico di Torino. Professors of the listed courses are not involved in this work in any way.
@@ -9,8 +11,6 @@ Due to these reasons, all the solutions may contain errors or inconsistencies wi
 > Please, if you find any error or inconsistency, contact my through: 
 > - **Telegram** at: [dvdr00t](https://t.me/dvdr00t).
 > - **Email** at: <davide.arcolini@studenti.polito.it>
-
-![Logo](PoliTo.png)
 
 ## 👾 <span style="color:lightblue">Polilabs</span> 👾
 ```
