@@ -1,12 +1,17 @@
+# System and Device Programming (SDP)
+<p align="center">
+  <img src="header.gif" alt="animated"/>
+</p>
 
-# System and Device Programming
+## <span style="color:lightgreen">Getting started</span>
 
-| | |
-|:-|:-:|
-|**Author**|Davide Arcolini|
-|**Year**|2021/2022|
-
-A collection of codes and programs used to solve the laboratories in the System and Device Programming course in Politecnico di Torino during the academic year 2021/2022.
+Here some <span style="color:lightblue">meta-information</span> about this repository:
+- **<span style="color:lightblue">Course</span>**: `01NYHOV` - System and Device Programming
+- **<span style="color:lightblue">Teacher</span>**: Stefano Quer / Gianpiero Cabodi
+- **<span style="color:lightblue">Academic Year</span>**: 2021/2022
+- **<span style="color:lightblue">CFU</span>**: 10
+- **<span style="color:lightblue">Author of the notes</span>**: Davide Arcolini
+- **<span style="color:lightblue">Reviewed by</span>**: -
 
 In particular: 
 - `OS161 - OS internals` contains the laboratories regarding the *os161* operating system, the part of the course covered by professor **Gianpiero Cabodi**. In particular:
