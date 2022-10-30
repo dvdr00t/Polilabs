@@ -1,0 +1,44 @@
+(* 
+        SECURITY VERIFICATION AND TESTING
+               LAB02 - Proverif
+    -----------------------------------------
+
+    Hash protocol.
+    This script provides a fixed hash protocol which uses a high-entropy key to hash a weak 
+    secret.
+
+*)
+
+
+
+(* DECLARATIONS *)
+
+(* types and variables declarations *)
+free c: channel.                (* public channel used for communication *)
+free s: bitstring [private].    (* the secret to be exchanged *)
+free high_entropy_secret: bitstring [private].
+
+(* functions *)
+fun hash(bitstring): bitstring. (* notice that it has no destructor since it is a one-way function *)
+
+(* assertions *)
+weaksecret s.
+query attacker(s).
+
+
+(* MACROS *)
+let sender() = 
+    out(c, hash((s, high_entropy_secret)));
+0.
+
+let receiver() = 
+    in(c, h: bitstring);
+0.
+
+
+(* PROCESS *)
+process
+    (
+        !sender() |
+        !receiver()
+    )

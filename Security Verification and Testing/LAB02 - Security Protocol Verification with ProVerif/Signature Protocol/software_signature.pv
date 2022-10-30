@@ -1,0 +1,81 @@
+(* 
+        SECURITY VERIFICATION AND TESTING
+               LAB02 - Proverif
+    -----------------------------------------
+
+    A simple protocol to guarantee the authenticity of a software issued and delivered by a software vendor.
+*)
+
+
+
+(* DECLARATIONS *)
+
+(* types and variables declarations *)
+type pkey.                      (* public key *)
+type skey.                      (* secret key *)
+type keymat.                    (* key material *)
+type result.                    (* result of the signature check *)
+type metadata.                  (* software related information *)
+
+free c: channel.                (* public channel used for communication *)
+free sw: bitstring.             (* the software *)
+free swd: metadata.             (* the software metadata *)
+
+(* functions declarations *)
+fun asymm_encryption(bitstring, pkey): bitstring.   (* asymmetric encryption *)
+fun get_publickey(keymat): pkey.                    (* retrieve a public key from a key material *)
+fun get_privatekey(keymat): skey.                   (* retrieve a private key from a key material *)
+reduc forall msg: bitstring, keymaterial: keymat;
+    asymm_decryption(asymm_encryption(msg, get_publickey(keymaterial)), get_privatekey(keymaterial)) = msg.
+
+fun ok(): result.                       (* signature confirmation *)
+fun sign(bitstring, skey): bitstring.   (* sign a message with its own secret key *)
+reduc forall msg: bitstring, keymaterial: keymat;
+    get_message(sign(msg, get_privatekey(keymaterial))) = msg.
+reduc forall msg: bitstring, keymaterial: keymat;
+    verify(sign(msg, get_privatekey(keymaterial)), get_publickey(keymaterial)) = ok().
+
+
+(* events *)
+event issued(bitstring, metadata).
+event verified(bitstring, metadata).
+
+(* assertions *)
+query sw: bitstring, swd: metadata;
+    event(verified(sw, swd)) ==> event(issued(sw, swd)).
+
+
+
+(* MACROS *)
+let client(issuer_publickey: pkey) = 
+
+    (* receiving the software and checking the signature *)
+    in(c, y: bitstring);
+    let (ysw: bitstring, yswd: metadata) = get_message(y) in
+    if verify(y, issuer_publickey) = ok() then
+        event verified(ysw, yswd);
+
+0.
+
+let issuer(issuer_keymaterial: keymat, sw: bitstring, swd: metadata) = 
+
+    (* issuing the sofware and sending the signed version *)
+    event issued(sw, swd);
+    out(c, sign((sw, swd), get_privatekey(issuer_keymaterial)));
+    
+0.
+
+
+
+(* PROCESS *)
+process
+
+    (
+        new issuer_keymaterial: keymat;
+        !(
+            new sw: bitstring;
+            new swd: metadata;
+            !issuer(issuer_keymaterial, sw, swd)
+        ) |
+        !client(get_publickey(issuer_keymaterial))
+    )

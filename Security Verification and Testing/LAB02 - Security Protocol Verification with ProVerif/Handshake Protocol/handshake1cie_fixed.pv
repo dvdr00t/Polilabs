@@ -1,0 +1,121 @@
+(* 
+        SECURITY VERIFICATION AND TESTING
+               LAB02 - Proverif
+    -----------------------------------------
+
+    This script replicates the handshake provided in the example material during lectures.
+    Here, in `handshake1cie_fixec.pv`:
+        - `c` stands for authentication version 
+        - `i` stands for events injection (used instead of simple events)
+        - `e` stands for termination events
+        - `fixed` indetifies the fixed version of the protocol, using the nonce in order to 
+                  distinguish among different sessions.
+*)
+
+
+
+(* DECLARATIONS *)
+
+(* types and variables declarations *)
+type pkey.                      (* public key *)
+type skey.                      (* secret key *)
+type keymat.                    (* key material *)
+type result.                    (* result of the signature check *)
+
+free c: channel.                (* public channel used for communication *)
+free s: bitstring [private].    (* the secret to be exchanged *)
+
+(* functions declarations *)
+fun asymm_encryption(bitstring, pkey): bitstring.   (* asymmetric encryption *)
+fun get_publickey(keymat): pkey.                    (* retrieve a public key from a key material *)
+fun get_privatekey(keymat): skey.                   (* retrieve a private key from a key material *)
+reduc forall msg: bitstring, keymaterial: keymat;
+    asymm_decryption(asymm_encryption(msg, get_publickey(keymaterial)), get_privatekey(keymaterial)) = msg.
+
+fun ok(): result.                       (* signature confirmation *)
+fun sign(bitstring, skey): bitstring.   (* sign a message with its own secret key *)
+reduc forall msg: bitstring, keymaterial: keymat;
+    get_message(sign(msg, get_privatekey(keymaterial))) = msg.
+reduc forall msg: bitstring, keymaterial: keymat;
+    verify(sign(msg, get_privatekey(keymaterial)), get_publickey(keymaterial)) = ok().
+
+fun symm_encryption(bitstring, bitstring): bitstring.   (* symmetric encryption *)
+reduc forall msg: bitstring, key: bitstring;
+    symm_decryption(symm_encryption(msg, key),key) = msg.
+
+(* events *)
+event request_auth(pkey, pkey, bitstring, bitstring).       (* this event indicates that the client has request the authentication to the server *)
+event confirm_auth(pkey, pkey, bitstring, bitstring).       (* this event indicates that the serevr has confirmed the authentication of the client *)
+event client_is_reachable().                                (* this event indicates that the client is reachable in the network *)
+event server_is_reachable().                                (* this event indicates that the server is reachable in the network *)
+
+(* assertions *)
+query attacker(s).
+query event(client_is_reachable()).
+query event(server_is_reachable()).
+query client_publickey: pkey, server_publickey: pkey, nonce: bitstring, key: bitstring;
+    inj-event(confirm_auth(client_publickey, server_publickey, nonce, key)) ==> inj-event(request_auth(client_publickey, server_publickey, nonce, key)).
+
+
+
+(* MACROS *)
+let client(client_keymaterial: keymat, server_publickey: pkey) = 
+
+    (* Client sends the ClientHello message and waits for the challenge *)
+    new ClientHello: bitstring;
+    out(c, ClientHello);
+    in(c, challenge: bitstring);
+    
+    (* Client computes the challenge and replies to the server *)
+    new secret_key: bitstring;
+    let nonce = asymm_decryption(challenge, get_privatekey(client_keymaterial)) in
+    event request_auth(get_publickey(client_keymaterial), server_publickey, nonce, secret_key);
+    out(c, asymm_encryption(sign((nonce, secret_key), get_privatekey(client_keymaterial)), server_publickey));
+    in(c, x: bitstring);
+
+    (* Secret received *)
+    let xs = symm_decryption(x, secret_key) in 
+    event client_is_reachable();
+0.
+
+let server(server_keymaterial: keymat, client_publickey: pkey) = 
+
+    (* Server waiting for incoming connection's requests *)
+    in(c, y: bitstring);
+
+    (* Server has received a ClientHello and generates the challenge-response nonce *)
+    new nonce: bitstring;
+    out(c, asymm_encryption(nonce, client_publickey));
+    in(c, response: bitstring);
+
+    (* Server receives the nonce along with the key *)
+    let y1 = asymm_decryption(response, get_privatekey(server_keymaterial)) in
+    if verify(y1, client_publickey) = ok() then
+        let (=nonce, xk: bitstring) = get_message(y1) in
+        event confirm_auth(client_publickey, get_publickey(server_keymaterial), nonce, xk);
+        out(c, symm_encryption(s, xk));
+    event server_is_reachable();
+0.
+
+
+
+(* PROCESS *)
+process
+    new client_keymaterial: keymat;
+    new server_keymaterial: keymat;
+    (
+        !out(c, get_publickey(client_keymaterial)); 0 |
+        !out(c, get_publickey(server_keymaterial)); 0 |
+        !client(client_keymaterial, get_publickey(server_keymaterial)) | 
+        !server(server_keymaterial, get_publickey(client_keymaterial))
+    )
+
+
+(* RESULT EXPECTED BY RUNNING PROVERIF:
+    
+    Query not attacker(s[]) is true.
+    Query not event(client_is_reachable) is false.
+    Query not event(server_is_reachable) is false.
+    inj-event(confirm_auth(client_publickey, server_publickey, key)) ==> inj-event(request_auth(client_publickey, server_publickey, key)) is false.
+
+*)

@@ -1,0 +1,44 @@
+(* 
+        SECURITY VERIFICATION AND TESTING
+               LAB02 - Proverif
+    -----------------------------------------
+
+    Hash protocol.
+    This script provides a non-secure hash protocol which uses a weak secret to hash
+    a message.
+
+*)
+
+
+
+(* DECLARATIONS *)
+
+(* types and variables declarations *)
+free c: channel.                (* public channel used for communication *)
+free s: bitstring [private].    (* the secret to be exchanged *)
+
+(* functions *)
+fun hash(bitstring): bitstring. (* notice that it has no destructor since it is a one-way function *)
+
+(* assertions *)
+weaksecret s.
+query attacker(s).
+
+
+
+(* MACROS *)
+let sender() = 
+    out(c, hash(s));
+0.
+
+let receiver() = 
+    in(c, h: bitstring);
+0.
+
+
+(* PROCESS *)
+process
+    (
+        !sender() |
+        !receiver()
+    )
