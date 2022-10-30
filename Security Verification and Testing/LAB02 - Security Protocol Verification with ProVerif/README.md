@@ -1,7 +1,7 @@
 # LAB 02 - Security Protocol Verification with ProVerif
 
 1. [Introduction](#introduction)
-    1.1. [Structure of a script file](#structure-of-a-script-file)
+    1-1. [Structure of a script file](#structure-of-a-script-file)
 2. [The Handshake Protocol](#the-handshake-protocol)
     2.1. [Running the protocol](#running-the-protocol)
     2.2. [Fixing the protocol](#fixing-the-protocol)
