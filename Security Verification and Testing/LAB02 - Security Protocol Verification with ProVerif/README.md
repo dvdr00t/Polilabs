@@ -1,15 +1,15 @@
 # LAB 02 - Security Protocol Verification with ProVerif
 
 1. [Introduction](#introduction)
-    1-1. [Structure of a script file](#structure-of-a-script-file)
+    1. [Structure of a script file](#structure-of-a-script-file)
 2. [The Handshake Protocol](#the-handshake-protocol)
-    2.1. [Running the protocol](#running-the-protocol)
-    2.2. [Fixing the protocol](#fixing-the-protocol)
-    2.3. [Verifying the authenticity of the secret](#verifying-the-authenticity-of-the-secret)
-    2.4. [Verifying the integrity of the secret when different secrets can be sent](#verifying-the-integrity-of-the-secret-when-different-secrets-can-be-sent)
+    1. [Running the protocol](#running-the-protocol)
+    2. [Fixing the protocol](#fixing-the-protocol)
+    3. [Verifying the authenticity of the secret](#verifying-the-authenticity-of-the-secret)
+    4. [Verifying the integrity of the secret when different secrets can be sent](#verifying-the-integrity-of-the-secret-when-different-secrets-can-be-sent)
 3. [The Hash Protocol](#the-hash-protocol)
-    3.1. [Running the protocol](#running-the-protocol-1)
-    3.2. [Fixing the protocol](#fixing-the-protocol-1)
+    1. [Running the protocol](#running-the-protocol-1)
+    2. [Fixing the protocol](#fixing-the-protocol-1)
 4. [The Signature Protocol](#the-signature-protocol)
 
 
