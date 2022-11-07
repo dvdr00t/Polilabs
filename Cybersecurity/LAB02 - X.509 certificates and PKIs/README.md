@@ -142,7 +142,7 @@ Some CAs issue TLS server certificates with a particular extension named **Exten
 The verification process for **Organization Validation** (**OV**) and **Domain Validated** (**DV**) certificates is not as comprehensive as for EV. DV certificates only require a proof that the website owner has administrative control over the domain. OV certificates include some identity information about the site operator, but it is not as extensive as for EV.
 
 - Now consider the first certificate (www.nist.org), can you identify how the Domain Validation is performed?
-![Domain validation](./Solution/Images/domain-validation.png)
+![Domain validation](./Images/domain-validation.png)
 
 
 ## Certificate Transparency
