@@ -1,0 +1,5 @@
+echo "pvs-run with parameters: $@"
+pvs-clean
+pvs-studio-analyzer trace -- make "$@"
+pvs-studio-analyzer analyze -a 'GA;OWASP' -o ./project.log
+plog-converter -a 'GA:1,2,3' -t fullhtml -o ./htmlreport ./project.log

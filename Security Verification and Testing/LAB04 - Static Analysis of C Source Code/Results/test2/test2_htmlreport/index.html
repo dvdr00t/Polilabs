@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PVS-Studio HTML Report</title>
+<style type="text/css">
+   TABLE {
+    width: 100%;
+   }
+   #col_group, #col_level, #col_code, #col_cwe, #col_sast {
+    text-align: center;
+    white-space: nowrap;
+    width: 0;
+   }
+   #col_file, #col_info, #col_projects {
+    white-space: nowrap;
+    text-align: left;
+    width: 0;
+   }
+   #col_info {
+    width: 120px;
+   }
+   #col_message {
+    text-align: left;
+   }
+  </style>
+<link rel="stylesheet" href="style.css" />
+<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/logo.png" alt=""/>
+    <h1>PVS-Studio Analysis Results</h1>
+    <br class="clear">
+  </div>
+  <table cellpadding="0" cellspacing="0" border="0" class="infotopic">
+     <tr><th id="col_info">Date:</th><td>Fri Nov 25 14:26:23 2022</td></tr>
+     <tr><th id="col_info">PVS-Studio Version:</th><td>7.20.63487.255</td></tr>
+     <tr><th id="col_info">Command Line:</th><td>plog-converter -a GA\:1,2,3 -t fullhtml -o ./htmlreport ./project.log </td></tr>
+     <tr><th id="col_info">Total Warnings (GA):</th><td>2</td></tr>
+  </table>
+  <table cellpadding="0" cellspacing="0" border="0" class="sortable" id="sorter">
+    <tr>
+      <th class="gsort">Group</th>
+      <th>Location</th>
+      <th class="lsort">Level</th>
+      <th class="vsort">Code</th>
+      <th>Message</th>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_file"><a target="_blank" href="sources/test2.c_0.html#ln50">test2.c:50</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v512/">V512</td>
+      <td id="col_message">A call of the 'strncpy' function will lead to overflow of the buffer 'log'.</td>
+    </tr>
+    <tr>
+      <td id="col_group">General Analysis</td>
+      <td id="col_file"><a target="_blank" href="sources/test2.c_0.html#ln52">test2.c:52</a></td>
+      <td id="col_level" style="color:#FF0000"><b>High</b></td>
+      <td id="col_code"><a target="_blank" href="https://pvs-studio.com/en/docs/warnings/v512/">V512</td>
+      <td id="col_message">A call of the 'strncpy' function will lead to overflow of the buffer 'buf'.</td>
+    </tr>
+  </table>
+<script type="text/javascript">
+var sorter=new table.sorter("sorter");
+sorter.init("sorter",0);
+</script>
+</body>
+</html>

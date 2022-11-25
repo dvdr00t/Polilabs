@@ -1,0 +1,4 @@
+rm -f -r htmlreport
+rm -f project.log
+rm -f strace_out
+
