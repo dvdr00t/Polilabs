@@ -1,4 +1,4 @@
-# Cybersecurity
+# Distributed Systems Programming
 <p align="center">
   <img src="header.gif" alt="animated"/>
 </p>
