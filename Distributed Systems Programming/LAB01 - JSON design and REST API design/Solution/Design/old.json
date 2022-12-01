@@ -1,0 +1,1041 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swagger ToDo Manager",
+    "description": "REST APIs for the interaction with the ToDo Manager service.",
+    "termsOfService": "http://swagger.io/terms/",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "https://todo.swagger.io/v2"
+    },
+    {
+      "url": "http://todo.swagger.io/v2"
+    }
+  ],
+  "tags": [
+    {
+      "name": "tasks",
+      "description": "resource representing the set of all the tasks"
+    },
+    {
+      "name": "tasks/public",
+      "description": "resource representing the set of the public tasks"
+    },
+    {
+      "name": "tasks/{taskId}",
+      "description": "resource representing a single task"
+    },
+    {
+      "name": "tasks/{taskId}/assignees",
+      "description": "resource representing the users to which the task with ID taskID is assigned"
+    },
+    {
+      "name": "tasks/{taskId}/assignees/{userId}",
+      "description": "resource representing one user to which the task with ID taskID is assigned"
+    },
+    {
+      "name": "tasks/{taskId}/completion",
+      "description": "resource representing the completion of the the task with ID taskID"
+    },
+    {
+      "name": "tasks/assignments",
+      "description": "resource representing the assignments of tasks to users"
+    },
+    {
+      "name": "users",
+      "description": "resource representing the set of all the users"
+    },
+    {
+      "name": "users/authenticator",
+      "description": "resource representing the authenticator"
+    },
+    {
+      "name": "users/{userId}",
+      "description": "resource representing the user with ID userId"
+    },
+    {
+      "name": "users/{userId}/tasks/created",
+      "description": "resource representing the tasks created by the user with ID userId"
+    },
+    {
+      "name": "users/{userId}/tasks/assigned",
+      "description": "resource representing the tasks assigned to the user with ID userId"
+    }
+  ],
+  "paths": {
+    "/api/tasks/public": {
+      "get": {
+        "tags": [
+          "tasks/public"
+        ],
+        "summary": "Retrieve the public tasks",
+        "description": "The public tasks (i.e., the tasks that are visible for all the users of the service) are retrieved. This operation does not require authentication. A pagination mechanism is implemented to limit the size of messages.",
+        "operationId": "getPublicTasks",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pageNo",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The id of the requested page (if absent, the first page is returned)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "currentPage": {
+                      "type": "integer"
+                    },
+                    "totalItems": {
+                      "type": "integer"
+                    },
+                    "tasks": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Task"
+                      }
+                    },
+                    "next": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/tasks": {
+      "post": {
+        "tags": [
+          "tasks"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Create a new task",
+        "description": "A new task is created by the authenticated user.",
+        "operationId": "addTask",
+        "requestBody": {
+          "description": "Task object that needs to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/tasks/assignments": {
+      "post": {
+        "tags": [
+          "tasks/assignments"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Assign automatically the unassigned tasks in a balanced manner",
+        "description": "The tasks, whose owner is the user who performed this request and that are not assigned to any user, are automatically assigned to the users of the service in a balanced manner.",
+        "operationId": "assign",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/tasks/{taskId}": {
+      "put": {
+        "tags": [
+          "tasks/{taskId}"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Update a task",
+        "description": "The task with ID taskId is updated. This operation does not allow to mark a task as completed. This operation can be performed only by the owner.",
+        "operationId": "updateSingleTask",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of the task to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The updated task object that needs to replace the old object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Task"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "tasks/{taskId}"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Retreve a task",
+        "description": "The task with ID taskId is retrieved. This operation can be performed on the task if at least one of the following three conditions is satisfied. 1) The task is public. 2) The user who performs the operation is the task's owner. 3) The user who performs the operation is a task's assignee.",
+        "operationId": "getSingleTask",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of the task to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tasks/{taskId}"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Delete a task",
+        "description": "The task with ID taskId is deleted. This operation can only be performed by the owner.",
+        "operationId": "deleteTask",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of the task to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation - No Content",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Get information about the users",
+        "description": "The available information (passwords excluded) about all the users is retrieved.",
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/{userId}": {
+      "get": {
+        "tags": [
+          "users/{userId}"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Get information about a user",
+        "description": "The available information (password excluded) about the user specified by userId is retrieved.",
+        "operationId": "getSingleUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user to get",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/authenticator": {
+      "post": {
+        "tags": [
+          "users/authenticator"
+        ],
+        "summary": "Logs a user in or out",
+        "description": "The user who wants to log in or out sends the user data to the authenticator which performs the operation.",
+        "operationId": "authenticateUser",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The operation type (\"login\" or \"logout\")"
+          }
+        ],
+        "requestBody": {
+          "description": "The data of the user who wants to perform log in or log out. For login the structure must contain email and password. For logout, the structure must contain the user id.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "example": "token=abcde12345; Path=/; HttpOnly"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized - Wrong password",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found - Wrong username",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/tasks/{taskId}/assignees": {
+      "post": {
+        "tags": [
+          "tasks/{taskId}/assignees"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Assign a task to a user",
+        "description": "The task with ID taskId is assigned to the user specified in the request body. This operation can only be performed by the owner.",
+        "operationId": "assignTaskToUser",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of the task",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "the user to whom the task is assigned",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful operation - No Content",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "tasks/{taskId}/assignees"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Retreve the users a task has been assigned to",
+        "description": "The users to whom the task with ID taskId is assigned are retrieved. This operation can be performed only by the owner.",
+        "operationId": "getUsersAssigned",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of the task to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/tasks/{taskId}/assignees/{userId}": {
+      "delete": {
+        "tags": [
+          "tasks/{taskId}/assignees/{userId}"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Remove a user from the assigned task",
+        "description": "The user that is removed is the user, identified by userId, that was assigned to the task identified by taskId. This operation can be performed only by the owner.",
+        "operationId": "removeUser",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of the assigned task",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user to remove",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation - No Content",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/tasks/{taskId}/completion": {
+      "put": {
+        "tags": [
+          "tasks/{taskId}/completion"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Complete a task",
+        "description": "The task with ID taskId is marked as completed. This operation can only be performed by an assignee of the task.",
+        "operationId": "completeTask",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "description": "ID of the task",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation - No Content",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/{userId}/tasks/created": {
+      "get": {
+        "tags": [
+          "users/{userId}/tasks/created"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Retrieve the tasks created by the user with ID userId",
+        "description": "This operation allows an authenticated user to retrieve the tasks that she has created. A pagination mechanism is implemented to limit the size of messages.",
+        "operationId": "getUserTasks",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageNo",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The id of the requested page (if absent, the first page is returned)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "currentPage": {
+                      "type": "integer"
+                    },
+                    "totalItems": {
+                      "type": "integer"
+                    },
+                    "tasks": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Task"
+                      }
+                    },
+                    "next": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/api/users/{userId}/tasks/assigned": {
+      "get": {
+        "tags": [
+          "users/{userId}/tasks/assigned"
+        ],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Retrieve the tasks assigned to the user with ID userId",
+        "description": "This operation allows an authenticated user to retrieve the tasks that has been assigned to her. A pagination mechanism is implemented to limit the size of messages.",
+        "operationId": "getAssignedTasks",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of the user",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageNo",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The id of the requested page (if absent, the first page is returned)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "currentPage": {
+                      "type": "integer"
+                    },
+                    "totalItems": {
+                      "type": "integer"
+                    },
+                    "tasks": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Task"
+                      }
+                    },
+                    "next": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Task": {
+        "type": "object",
+        "properties": {
+          "$schema": {
+            "type": "string",
+            "description": "path to the JSON Schema to use for the validation of the JSON file describing the task"
+          },
+          "id": {
+            "type": "integer",
+            "description": "unique identifier for the task"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "textual task description"
+          },
+          "important": {
+            "type": "boolean",
+            "description": "this property is set to true if the task is marked as important, false otherwise",
+            "default": false
+          },
+          "private": {
+            "type": "boolean",
+            "description": "this property is set to true if the task is marked as private, false otherwise",
+            "default": true
+          },
+          "project": {
+            "type": "string",
+            "description": "project in which the task is inserted"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time",
+            "description": "the due date and hour of the task"
+          },
+          "completed": {
+            "type": "boolean",
+            "description": "this property is set to true if the task is marked as completed, false otherwise",
+            "default": false
+          },
+          "owner": {
+            "$ref": "#/components/schemas/User"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "self": {
+            "type": "string",
+            "format": "uri-reference",
+            "description": "self link"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "$schema": {
+            "type": "string",
+            "description": "path to the JSON Schema to use for the validation of the JSON file describing the task"
+          },
+          "id": {
+            "type": "integer",
+            "description": "unique identifier for the user"
+          },
+          "name": {
+            "type": "string",
+            "description": "username of the user"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "email address of the user"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 20,
+            "description": "password of the user"
+          },
+          "self": {
+            "type": "string",
+            "format": "uri-reference",
+            "description": "self link"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "description": "JWT to identify the authenticated user.",
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "connect.sid"
+      }
+    }
+  }
+}

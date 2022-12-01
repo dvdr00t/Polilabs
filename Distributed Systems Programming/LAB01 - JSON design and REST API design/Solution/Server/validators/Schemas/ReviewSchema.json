@@ -1,0 +1,77 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id" : "ReviewSchema",
+    "title": "Review",
+    "description": "JSON schema for the Review data structures",
+    "type": "object",
+    "additionalProperties": false,
+
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "description": "path to the JSON Schema to use for the validation of the JSON file describing the film"
+        },
+
+        "filmId": {
+            "type": "integer",
+            "description": "unique identifier of the film for which a review invitation has been issued"
+        },
+        "reviewerId": {
+            "type": "integer",
+            "description": "unique identifier of the the user who has received the review invitation"
+        },
+        "completed": {
+            "type": "boolean",
+            "description": "this property is set to true if the review has been completed, false otherwise",
+            "default": "false"
+        },  
+        "reviewDate": {
+            "type": "string",
+            "format": "date",
+            "description": "the date when the review has been completed by the invited user"
+        },
+        "rating": {
+            "type": "integer",
+            "description": "the rating the reviewer has given to the film",
+            "minimum": 1,
+            "maximum": 10
+        },
+        "review": {
+            "type": "string",
+            "description": "a textual description of the review",
+            "maxLength": 1000
+        }
+    },
+    
+    "required": ["filmId", "reviewerId", "completed"],
+    "dependencies": {
+        "completed": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "completed": {
+                            "const": false
+                        }
+                    },
+                    "allOf" : [   
+                        {"not" : { "required" : ["reviewDate"] } },  
+                        {"not" : { "required" : ["rating"] } },
+                        {"not" : { "required" : ["review"] } }
+                    ]
+                },
+                {
+                    "properties": {
+                        "completed": {
+                            "const": true  
+                        }
+                    },
+                    "required": ["reviewDate", "rating", "review"]
+                }
+            ]
+        },    
+
+        "reviewDate": ["completed"],
+        "rating": ["completed"],
+        "review": ["completed"]
+    }
+}

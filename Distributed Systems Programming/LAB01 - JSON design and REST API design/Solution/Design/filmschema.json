@@ -1,0 +1,191 @@
+{
+    /*
+        Schema language: it states that this schema is written according to a specific draft of the standard and used 
+        for a variety of reasons, primarily version control.
+    */
+    "$schema": "http://json-schema.org/draft-07/schema",   
+
+    /*
+        Schema id: it defines a URI for the schema, and the base URI that other URI references within the schema are 
+        resolved against.
+    */
+    "$id": "filmschema.json",
+
+    /*
+        Title and description: are descriptive only. They do not add constraints to the data being validated. The intent 
+        of the schema is stated with these two keywords.
+    */
+    "title": "LAB01 - Filmography",
+    "description": "A filmography schema defined for the LAB01's assessment.",
+
+    /*
+        To establish a difference between the main schema and the auxiliary definitions we adopt the convention that every 
+        JSON Schema document consists of two parts. A JSON Schema, and a set of definitions. 
+    */
+    "definitions": {
+
+        /* Users want to manage their film lists by means of this application. */
+        "user": {
+            "$id": "#definitions/user",
+            "type": "object",
+            "properties": {
+                "userID": { 
+                    "type": "integer",
+                    "description": "An unique identifier of the user data structure in the Film Manager service (mandatory)."
+                }, 
+                "name": { 
+                    "type": "string",
+                    "description": "Username of the user."
+                },
+                "email": { 
+                    "type": "string", 
+                    "format": "email",
+                    "description": "email address of the user, which must be used for the authentication to the service (mandatory, it must be a valid email address)."
+                },
+                "password": { 
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 20,
+                    "description": "The user's password, which must be used for the authentication to the service."
+                }
+            },
+            "required": ["userID", "name"]
+        }, 
+
+        /* A film is the object of the application */
+        "film": {
+            "$id": "#definitions/film",
+            "type": "object",
+            "properties": {
+                "filmID": { 
+                    "type": "integer",
+                    "description": "An unique identifier of the film data structure in the Film Manager service (mandatory)."
+                },
+                "title": { 
+                    "type": "string",
+                    "description": "Textual title of the film (mandatory)."
+                },
+                "owner": { 
+                    "type": "integer",
+                    "description": "The id of the film data structure owner, i.e., the user who created it (mandatory)."
+                },
+                "private": { 
+                    "type": "boolean",
+                    "description": "A mandatory Boolean property, set to true if the film data structure is marked as private, false if it is public (default value: true). A film data structure is said private if only its owner can access it, public if every user can access it"
+                },
+                "watchdate": { 
+                    "type": "string",  
+                    "format": "date",
+                    "description": "The date when the film was watched by the owner, expressed in the YYYY-MM-DD format."
+                },
+                "rating": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "This property can be included in the film data structure only if private is true."
+                },
+                "favorite": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "This property can be included in the film data structure only if private is true."
+                }
+            },
+            "required": ["filmID", "title", "owner", "private"],
+            "dependencies": {
+                "watchdate": {
+                    "properties": {
+                        "private": { "enum": [true] }
+                    }
+                },
+                "rating": {
+                    "properties": {
+                        "private": { "enum": [true] }
+                    }
+                },
+                "favorite": {
+                    "properties": {
+                        "private": { "enum": [true] }
+                    }
+                }
+            }
+        },
+
+        /* A review invitations from a user to another user */
+        "review": {
+            "$id": "#definitions/review",
+            "type": "object",
+            "properties": {
+                "filmID": {
+                    "type": "integer",
+                    "description": "An unique identifier of the film for which a review invitation has been issued (mandatory)."
+                },
+                "userID": {
+                    "type": "integer",
+                    "description": "An unique identifier of the user who has received the review invitation (mandatory)."
+                }, 
+                "completed": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "A mandatory Boolean property, set to true if the review has been completed, false otherwise."
+                },
+                "reviewDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "This property can be included only if completed is true, and in that case it is mandatory."
+                },
+                "rating": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "This property can be included only if completed is true, and in that case it is mandatory."
+                },
+                "review": {
+                    "type": "string",
+                    "exclusiveMinimum": 0,
+                    "maximum": 1000,
+                    "description": "This property can be included only if completed is true, and in that case it is mandatory."
+                }
+            },
+            "if": {
+                "properties": {
+                    "completed": { "enum": [true] }
+                }
+            }, "then": {
+                "required": ["filmID", "userID", "completed", "reviewDate", "rating", "review"]
+            }, "else": {
+                "required": ["filmID", "userID", "completed"]
+            }
+        }
+    },
+
+    /*
+        It defines the first constraint on our JSON data and in this case it has to be a JSON Object.
+    */
+    "type": "object",
+
+    /*
+        The value of "properties" MUST be an object. Each value of this object MUST be a valid JSON Schema.
+        Omitting this keyword has the same assertion behavior as an empty object.
+    */
+    "properties": {
+        "users": {
+            "type": "array",
+            "items": {
+                "$ref": "#definitions/user"
+            }
+        },
+        "films": {
+            "type": "array",
+            "items": {
+                "$ref": "#definitions/film"
+            }
+        },
+        "reviews": {
+            "type": "array",
+            "items": {
+                "$ref": "#definitions/review"
+            }
+        }
+    }
+
+}

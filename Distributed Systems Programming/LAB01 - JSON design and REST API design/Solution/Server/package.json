@@ -1,0 +1,30 @@
+{
+  "name": "film-library",
+  "version": "1.0",
+  "description": "A **simple application** to manage different films, requesting and providing reviews and logging into a database full of contents! **Check it out!**",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "ajv": "^8.11.2",
+    "ajv-formats": "^2.1.1",
+    "bcrypt": "^5.1.0",
+    "connect": "^3.2.0",
+    "express-json-validator-middleware": "^3.0.1",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.14.2",
+    "js-yaml": "^3.3.0",
+    "oas3-tools": "2.0.2",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "passport-session": "^1.0.2",
+    "sqlite3": "^5.1.2"
+  }
+}
