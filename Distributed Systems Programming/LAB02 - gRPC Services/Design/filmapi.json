@@ -1,0 +1,2277 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Film Library",
+        "version": "1.0",
+        "description": "A **simple application** to manage different films, requesting and providing reviews and logging into a database full of contents! **Check it out!**"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "user": { 
+                "type": "object",
+                "properties": {
+                    "userId": { 
+                        "type": "string",
+                        "pattern": "USER_[0-9]{10}",
+                        "description": "An unique identifier of the user data structure in the Film Manager service (mandatory)."
+                    }, 
+                    "name": { 
+                        "type": "string",
+                        "description": "Username of the user."
+                    },
+                    "email": { 
+                        "type": "string", 
+                        "format": "email",
+                        "description": "email address of the user, which must be used for the authentication to the service (mandatory, it must be a valid email address)."
+                    },
+                    "password": { 
+                        "type": "string",
+                        "minLength": 6,
+                        "maxLength": 20,
+                        "description": "The user's password, which must be used for the authentication to the service."
+                    }
+                },
+                "required": ["userId", "name"]
+            },
+
+            "film": {
+                "type": "object",
+                "properties": {
+                    "filmId": { 
+                        "type": "string",
+                        "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+                        "minLength": 36,
+                        "maxLength": 36,
+                        "description": "An unique identifier of the film data structure in the Film Manager service (mandatory)."
+                    },
+                    "title": { 
+                        "type": "string",
+                        "description": "Textual title of the film (mandatory)."
+                    },
+                    "owner": { 
+                        "type": "string",
+                        "pattern": "USER_[0-9]{10}",
+                        "description": "The id of the film data structure owner, i.e., the user who created it (mandatory)."
+                    },
+                    "private": { 
+                        "type": "boolean",
+                        "description": "A mandatory Boolean property, set to true if the film data structure is marked as private, false if it is public (default value: true). A film data structure is said private if only its owner can access it, public if every user can access it"
+                    },
+                    "watchdate": { 
+                        "type": "string",  
+                        "format": "date",
+                        "description": "The date when the film was watched by the owner, expressed in the YYYY-MM-DD format."
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10,
+                        "description": "This property can be included in the film data structure only if private is true."
+                    },
+                    "favorite": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "This property can be included in the film data structure only if private is true."
+                    }
+                },
+                "required": ["filmId", "title", "owner", "private"]
+            },
+
+            "review": {
+                "type": "object",
+                "properties": {
+                    "filmId": {
+                        "type": "string",
+                        "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+                        "minLength": 36,
+                        "maxLength": 36,
+                        "description": "An unique identifier of the film for which a review invitation has been issued (mandatory)."
+                    },
+                    "userId": {
+                        "type": "string",
+                        "pattern": "USER_[0-9]{10}",
+                        "description": "An unique identifier of the user who has received the review invitation (mandatory)."
+                    }, 
+                    "completed": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "A mandatory Boolean property, set to true if the review has been completed, false otherwise."
+                    },
+                    "reviewDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "This property can be included only if completed is true, and in that case it is mandatory."
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10,
+                        "description": "This property can be included only if completed is true, and in that case it is mandatory."
+                    },
+                    "review": {
+                        "type": "string",
+                        "exclusiveMinimum": true,
+                        "minimum": 0,
+                        "maximum": 1000,
+                        "description": "This property can be included only if completed is true, and in that case it is mandatory."
+                    }
+                }
+            },
+
+            "image": {
+                "type": "object",
+                "properties": {
+                    "$schema": {
+                        "type": "string",
+                        "description": "The schema for an image object."
+                    },
+                    "imageId": {
+                        "type": "integer",
+                        "description": "Unique identifier of the image."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the image file."
+                    },
+                    "fileURI": {
+                        "type": "string",
+                        "format": "uri-reference",
+                        "description": "Link to the content of the image."
+                    },
+                    "self": {
+                        "type": "string",
+                        "format": "uri-reference",
+                        "description": "Link to self object."
+                    }
+                }
+            }
+        },
+
+        "securitySchemes": {
+            "bearerAuth": {
+                "description": "JWT to identify the authenticated user.",
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+
+    "tags": [
+        {
+            "name": "Films Collection",
+            "description": "Operations about the complete list of films in the database."
+        },
+        {
+            "name": "Film",
+            "description": "Operations about a specific film in the database."
+        },
+        {
+            "name": "Users",
+            "description": "Operations about the users (login and logout included)."
+        },
+        {
+            "name": "Invitations",
+            "description": "Operations about issued invitations."
+        },
+        {
+            "name": "Images",
+            "description": "Operations about the images for a film."
+        }
+    ],
+
+    "paths": {
+        "/api/users/authenticator": {
+            "post": {
+                "summary": "Login API to authenticate an user.",
+                "description": "Users who want to authenticate themselves should provide a valid `username` and `password` in order to log into the application and receive a **session cookie**. The session cookie will be used for subsequent requests in order to authenticate the user to the specific APi.",
+                "tags": ["Users"],
+                "operationId": "login",
+                "parameters": [],
+                "requestBody": {
+                    "description": "The request body contains `username` (email) and `password` of the user who wants to authenticate.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user"
+                            },
+                            "example": {
+                                "username": "frank.stein@polito.it",
+                                "password": "shelley97"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/user"
+                                },
+                                "example": {
+                                    "userId": 2,
+                                    "email": "frank.stein@polito.it",
+                                    "name": "Frank"
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Set-Cookie": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "token=abcde12345; Path=/; HttpOnly"
+                                },
+                                "description": "The authenticator session cookie (JWT token)"
+                            }
+                        },
+                        "links": {
+                            "getUser": {
+                                "description": "The `userId` returned in the response can be used as the `userId` parameter in `GET api/users/{userId}`.",
+                                "operationRef": "#paths~1api~1users~1{userId}/get",
+                                "parameters": {
+                                    "userId": "$response.body#/userId"
+                                }
+                            }
+                        }
+                    }, 
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody!"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Incorrect username or password."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Logout API to de-authenticate an user.",
+                "description": "Users who want to logout from the application should provide their valid **session cookie**.",
+                "tags": ["Users"],
+                "operationId": "logout",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    }, 
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody!"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid session token."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/users": {
+            "get": {
+                "summary": "Get the whole list of users.",
+                "description": "The whole list of users can be accessed only by the server admin who can access the API with a special token.",
+                "tags": ["Users"],
+                "operationId": "getUsers",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "pageNo",
+                        "required": false,
+                        "schema": {
+                          "type": "integer"
+                        },
+                        "description": "The id of the requested page (if absent, the first page is returned)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "totalPages": { "type": "integer" },
+                                        "currentPage": { "type": "integer" },
+                                        "totalItems": { "type": "integer" },
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/user"
+                                            }
+                                        },
+                                        "next": { "type": "string" }
+                                    }
+                                }, 
+                                "example": [
+                                    {
+                                        "userId": 1,
+                                        "email": "user.dsp@polito.it",
+                                        "name": "User",
+                                        "password": "password"
+                                    },
+                                    {
+                                        "userId": 2,
+                                        "email": "frank.stein@polito.it",
+                                        "name": "Frank",
+                                        "password": "shelley97"
+                                    },
+                                    {
+                                        "userId": 3,
+                                        "email": "karen.makise@polito.it",
+                                        "name": "Karen",
+                                        "password": "fg204v213"
+                                    },
+                                    {
+                                        "userId": 4,
+                                        "email": "rene.regeay@polito.it",
+                                        "name": "Rene",
+                                        "password": "historia"
+                                    },
+                                    {
+                                        "userId": 5,
+                                        "email": "beatrice.golden@polito.it",
+                                        "name": "Beatrice",
+                                        "password": "seagulls"
+                                    },
+                                    {
+                                        "userId": 6,
+                                        "email": "arthur.pendragon@polito.it",
+                                        "name": "Arthur",
+                                        "password": "holygrail"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody!"
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/users/{userId}": {
+            "get": {
+                "summary": "Retrieve the information about a specific user.",
+                "description": "The available information (password excluded) about the user is retrieved.",
+                "tags": ["Users"],
+                "operationId": "getUserByID",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    { 
+                        "name": "userId",
+                        "description": "The identifier of the user.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 2,
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/review"
+                                },
+                                "example": {
+                                    "userId": 2,
+                                    "email": "frank.stein@polito.it",
+                                    "name": "Frank"
+                                }
+                            }
+                        }
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    }, 
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Film not found."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+
+
+        "/api/films/public": {
+            "get": {
+                "summary": "Get the whole list of public films.",
+                "description": "The whole list of public films can be viewed both by an authenticated user and a non-authenticated one. When a list of films is retrieved, a **pagination mechanism** is implemented, in order to limit the size of the messages the service sends back.",
+                "tags": ["Films Collection"],
+                "operationId": "getPublicFilms",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "pageNo",
+                        "required": false,
+                        "schema": {
+                          "type": "integer"
+                        },
+                        "description": "The id of the requested page (if absent, the first page is returned)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "totalPages": { "type": "integer" },
+                                        "currentPage": { "type": "integer" },
+                                        "totalItems": { "type": "integer" },
+                                        "films": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/film"
+                                            }
+                                        },
+                                        "next": { "type": "string" }
+                                    }
+                                }, 
+                                "example": [
+                                    {
+                                        "filmId": 2,
+                                        "title": "Heaven's Feel",
+                                        "owner": 2,
+                                        "private": false
+                                    },
+                                    {
+                                        "filmId": 3,
+                                        "title": "You Can (Not) Redo",
+                                        "owner": 1,
+                                        "private": false
+                                    },
+                                    {
+                                        "filmId": 4,
+                                        "title": "Weathering With You",
+                                        "owner": 1,
+                                        "private": true
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody!"
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/films/created": {
+            "get": {
+                "summary": "Get the list of films created by the user.",
+                "description": "An authenticated user can retrieve the list of films that she created.  When a list of films is retrieved, a **pagination mechanism** is implemented, in order to limit the size of the messages the service sends back.",
+                "tags": ["Films Collection"],
+                "operationId": "getCreatedFilms",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "pageNo",
+                        "required": false,
+                        "schema": {
+                          "type": "integer"
+                        },
+                        "description": "The id of the requested page (if absent, the first page is returned)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "totalPages": { "type": "integer" },
+                                        "currentPage": { "type": "integer" },
+                                        "totalItems": { "type": "integer" },
+                                        "films": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/film"
+                                            }
+                                        },
+                                        "next": { "type": "string" }
+                                    }
+                                }, 
+                                "example": [
+                                    {
+                                        "filmId": 1,
+                                        "title": "Your Name",
+                                        "owner": 1,
+                                        "private": true,
+                                        "watchdate": "2021-10-03",
+                                        "rating": 9,
+                                        "favorite": true
+                                    },
+                                    {
+                                        "filmId": 3,
+                                        "title": "You Can (Not) Redo",
+                                        "owner": 1,
+                                        "private": false
+                                    },
+                                    {
+                                        "filmId": 4,
+                                        "title": "Weathering With You",
+                                        "owner": 1,
+                                        "private": true
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody!"
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/films/invited": {
+            "get": {
+                "summary": "Get review invitations to the user.",
+                "description": "Get the list of films for which the authenticated user has been invited to review.  When a list of films is retrieved, a **pagination mechanism** is implemented, in order to limit the size of the messages the service sends back.",
+                "tags": ["Films Collection"],
+                "operationId": "getInvitedFilms",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "pageNo",
+                        "required": false,
+                        "schema": {
+                          "type": "integer"
+                        },
+                        "description": "The id of the requested page (if absent, the first page is returned)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "totalPages": { "type": "integer" },
+                                        "currentPage": { "type": "integer" },
+                                        "totalItems": { "type": "integer" },
+                                        "films": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/film"
+                                            }
+                                        },
+                                        "next": { "type": "string" }
+                                    }
+                                }, 
+                                "example": [
+                                    {
+                                        "filmId": 3,
+                                        "title": "You Can (Not) Redo",
+                                        "owner": 1,
+                                        "private": false
+                                    },
+                                    {
+                                        "filmId": 4,
+                                        "title": "Weathering With You",
+                                        "owner": 1,
+                                        "private": true
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody!"
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/films": {
+            "post": {
+                "summary": "Create a new film.",
+                "description": "Authenticated users of the application can create a new film. An unique `filmId` will be automatically generated.",
+                "tags": ["Films Collection"],
+                "operationId": "addFilm",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "description": "The new film to be added to the application. The user must provide a title and define the film either as `private` or `public`.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/film"
+                            },
+                            "example": {
+                                "title": "Godfather I",
+                                "private": false
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                },
+                                "example": {
+                                    "filmId": 12,
+                                    "title": "Godfather I",
+                                    "owner": 1,
+                                    "private": false
+                                }
+                            }
+                        },
+                        "links": {
+                            "getFilm": {
+                                "description": "The `filmId` returned in the response body can be used to retrieve the film in the operation `GET /api/films/{filmsId}`",
+                                "operationRef": "#paths~1api~1films~1{filmID}/get",
+                                "parameters": {
+                                    "filmId": "$response.body#/filmId"
+                                }
+                            }
+                        }
+                    }, 
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+
+
+        "/api/films/{filmId}": {
+            "get": {
+                "summary": "Retrieve a single public or private film element.",
+                "description": "A single public film can be viewed both by an authenticated user and a non-authenticated one. On the other hand, if a film is marked as private, a JWT identifying the owner must be provided. The film is identified by its unique `filmId`.",
+                "tags": ["Film"],
+                "operationId": "getFilm",
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film to be retrieved.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/film"
+                                },
+                                "example": {
+                                    "filmId": 1,
+                                    "title": "Your Name",
+                                    "owner": 1,
+                                    "private": true,
+                                    "watchdate": "2021-10-03",
+                                    "rating": 9,
+                                    "favorite": true
+                                }
+                            }
+                        }
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    }, 
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Film not found."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update an existing film.",
+                "description": "An authenticated user can update an existing film, if she is the owner of the film. However, this operation does not allow changing its visibility from `public` to `private` (and viceversa).",
+                "tags": ["Film"],
+                "operationId": "editFilm",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film to be modified.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 2,
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "The changes to be applied to the film.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/film"
+                            },
+                            "example": {
+                                "title": "Godfather II"
+                            }
+                        }
+                    },
+                    "required": true
+                }, 
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Film not found."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remove an existing film.",
+                "description": "An authenticated user can delete an existing film, if she is the owner of the film.",
+                "tags": ["Film"],
+                "operationId": "removeFilm",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film to be removed.",
+                        "schema": { "type": "string" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/films/{filmId}/reviews": {
+            "get": {
+                "summary": "Retrieve the list of reviews for this film.",
+                "description": "The whole list of reviews for a certain film can be viewed both by an authenticated user and a non-authenticated one. When a list of reviews is retrieved, a pagination mechanism is recommended, in order to limit the size of the messages the service sends back.",
+                "tags": ["Film"],
+                "operationId": "getReviews",
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 2,
+                        "required": true,
+                        "description": "The identifier of the film whose reviews need to be retrieved."
+                    },
+                    {
+                        "in": "query",
+                        "name": "pageNo",
+                        "required": false,
+                        "schema": {
+                          "type": "integer"
+                        },
+                        "description": "The identifier of the requested page (if absent, the first page is returned)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "totalPages": { "type": "integer" },
+                                        "currentPage": { "type": "integer" },
+                                        "totalItems": { "type": "integer" },
+                                        "reviews": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/review"
+                                            }
+                                        },
+                                        "next": { "type": "string" }
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "filmId": 2,
+                                        "userId": 5,
+                                        "completed": true,
+                                        "reviewDate": "2022-03-04",
+                                        "rating": 10,
+                                        "review": "This film is a perfect conclusion for the trilogy."
+                                    }, 
+                                    {
+                                        "filmId": 2,
+                                        "userId": 1,
+                                        "completed": true,
+                                        "rating": 8,
+                                        "reviewDate": "2022-10-11",
+                                        "review": "I could not stop watching until the very end. However, you must watch the prequels before this film to really understand it."
+                                    }
+                                ]
+                            }
+                        }
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    }, 
+
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Film not found."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/films/{filmId}/reviews/{userId}": {
+            "get": {
+                "summary": "Retrieve a specific review for this film.",
+                "description": "The reviews for a certain film can be viewed both by an authenticated user and a non-authenticated one. A specific review is identified both by the `filmId` of the film and the `userId` of the user who wrote the review.",
+                "tags": ["Film"],
+                "operationId": "getReview",
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film whose review needs to be retrieved.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 2,
+                        "required": true
+                    },
+                    { 
+                        "name": "userId",
+                        "description": "The identifier of the user whose review needs to be retrieved.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/review"
+                                },
+                                "example": {
+                                    "filmId": 2,
+                                    "userId": 1,
+                                    "completed": true,
+                                    "rating": 8,
+                                    "reviewDate": "2022-10-11",
+                                    "review": "I could not stop watching until the very end. However, you must watch the prequels before this film to really understand it."
+                                }
+                            }
+                        }
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    }, 
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Film not found."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+
+        "/api/films/{filmId}/invitations": {
+            "post": {
+                "summary": "Issue review(s) invitation to specific user(s).",
+                "description": "The owner of a public film can issue a review invitation to a user (the reviewer may be the **owner herself**). Review invitations for a film can be **issued to multiple users at the same time**.",
+                "tags": ["Invitations"],
+                "operationId": "issueInvitationToUsers",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film to be reviewed.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "It contains the identifiers of the users(s) (`userId`) whom have been invited to review the film.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": { 
+                                "type": "object",  
+                                "properties": {
+                                    "users": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            },
+                            "example": {
+                                "users": [1, 2, 3]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/review"
+                                },
+                                "example": [
+                                    {
+                                        "filmId": 4,
+                                        "userId": 1,
+                                        "completed": false
+                                    },
+                                    {
+                                        "filmId": 4, 
+                                        "userId": 2,
+                                        "completed": false
+                                    }
+                                ]
+                            }
+                        }
+                    }, 
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+                    
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Forbidden."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Mark a review as completed.",
+                "description": "A reviewer invited for a film can mark the review as completed, also updating the review date, the rating and the textual description of the review.",
+                "tags": ["Invitations"],
+                "operationId": "completeInvitationForUser",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film whose review has to be marked as completed.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "It contains the review date, the rating and the textual description of the review.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/review"
+                            },
+                            "example": {
+                                "reviewDate": "2022-03-04",
+                                "rating": 10,
+                                "review": "This film is a perfect conclusion for the trilogy."
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    }, 
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+                    
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Forbidden."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/films/{filmId}/invitations/{userId}": {
+            "delete": {
+                "summary": "Remove an issued review invitation.",
+                "description": "The owner of a film can remove a review invitation, if the review has not yet been completed by the reviewer.",
+                "tags": ["Invitations"],
+                "operationId": "removeInvitationFromUser",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film whose review has to be removed.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    },
+                    {
+                        "name": "userId",
+                        "description": "The identifier of the user whose review has to be removed.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Forbidden."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+
+        "/api/films/public/{filmId}/images": {
+            "post": {
+                "summary": "Upload an image for that particular film",
+                "description": "A user can associate an image to a public film she owns, by uploading the image to the Film Manager service. Multiple images can be associated with a single film.",
+                "tags": ["Images"],
+                "operationId": "uploadImage",
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film to be reviewed.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "description": "It contains the image to be assigned to the specified film.",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "image": {
+                                    "contentType": "image/png, image/jpg, image/gif"
+                                }
+                            },
+                            "example": {
+                                "image": "110100100010010001000010001011101101010101001010010101010100101010101010010100100101001010100101"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/image"
+                                },
+                                "example": {
+                                    "imageId": 1,
+                                    "name": "myImage.jpg",
+                                    "fileURI": "path-to-the-image",
+                                    "self": "path-to-the-image"
+                                }
+                            }
+                        },
+                        "links": {
+                            "getImage": {
+                                "description": "The `imageId` returned in the response body can be used to retrieve the image in the operation `GET /api/films/public/{filmsId}/images/{imageId}`",
+                                "operationRef": "#paths~1api~1films~1public~1{filmID}~1images~1{imageId}/get",
+                                "parameters": {
+                                    "imageId": "$response.body#/imageId"
+                                }
+                            }
+                        }
+                    }, 
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Forbidden."
+                            }
+                        }
+                    },
+
+                    "415": {
+                        "description": "Unsupported Media Type",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Unsupported Media Type"
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/films/public/{filmId}/images/{imageId}": {
+            "get": {
+                "summary": "Retrieve a specific image for the specific film.",
+                "description": "A user can retrieve an image associated to a public film which she owns, or she is a reviewer of.",
+                "tags": ["Images"],
+                "operationId": "getImage",
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film to be retrieved.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    },
+                    { 
+                        "name": "imageId",
+                        "description": "The identifier of the image to be retrieved.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/image"
+                                },
+                                "example": {
+                                    "imageId": 1,
+                                    "name": "myImage",
+                                    "fileURI": "path-to-the-image",
+                                    "self": "path-to-the-image"
+                                }
+                            }
+                        }
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    }, 
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Unauthorized."
+                            }
+                        }
+                    }, 
+
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "text/plain": {
+                                "schema" : {
+                                    "type": "string"
+                                }, 
+                                "example": "Film not found."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    }, 
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            },
+
+            "delete": {
+                "summary": "Remove the specific image for the specific film.",
+                "description": "A user can delete an image associated to a public film she owns.",
+                "tags": ["Images"],
+                "operationId": "removeImage",
+                "security": [{
+                    "bearerAuth": []
+                }],
+                "parameters": [
+                    { 
+                        "name": "filmId",
+                        "description": "The identifier of the film to be retrieved.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    },
+                    { 
+                        "name": "imageId",
+                        "description": "The identifier of the image to be retrieved.",
+                        "schema": { "type": "integer" },
+                        "in": "path",
+                        "example": 1,
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    },
+
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Invalid requestBody."
+                            }
+                        }
+                    },
+
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "Must log in first."
+                            }
+                        }
+                    },
+
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "text/plain": {
+                                "schema": { 
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the server error."
+                            }
+                        }
+                    },
+
+                    "505": {
+                        "description": "Network Error",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }, 
+                                "example": "Reason(s) for the network error."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/films/public/{filmId}/images/{imageId}/imageFile": {
+            
+        }
+    }
+}

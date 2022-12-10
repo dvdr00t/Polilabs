@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "conversion";
+option java_outer_classname = "ConversionProto";
+option objc_class_prefix = "CP";
+
+package conversion;
+
+// The conversion service definition.
+service Converter {
+  rpc fileConvert (stream ConversionRequest) returns (stream ConversionReply) {}
+}
+
+// The conversion request message
+message ConversionRequest{
+        oneof request_oneof {
+              MetadataRequest meta = 1;
+              bytes file = 2;
+        }
+}
+message MetadataRequest{
+     string file_type_origin = 1;
+     string file_type_target = 2;
+}
+
+//The conversion reply message
+
+message ConversionReply{
+        oneof request_oneof {
+              MetadataReply meta = 1;
+              bytes file = 2;
+        }
+}
+message MetadataReply{
+	 bool success = 1;	
+     string error = 2;
+}

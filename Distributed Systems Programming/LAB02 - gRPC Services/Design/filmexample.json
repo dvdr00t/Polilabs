@@ -1,0 +1,127 @@
+{
+    "$schema": "./filmschema.json",
+
+    /*
+        After completing the design of the schemas, it is suggested to write some JSON files as 
+        examples, and to validate them against the schemas in Visual Studio Code. In this 
+        development environment, validation errors are shown in the editor and in the “Problem” view. 
+        You can access this view in two alternative ways:
+            • following the path View→Problems;
+            • pressing Ctrl+Shift +M.
+    */
+
+    "users": [
+        {
+            "userID": 1,
+            "email": "user.dsp@polito.it",
+            "name": "User",
+            "password": "password"
+        },
+        {
+            "userID": 2,
+            "email": "frank.stein@polito.it",
+            "name": "Frank",
+            "password": "shelley97"
+        },
+        {
+            "userID": 3,
+            "email": "karen.makise@polito.it",
+            "name": "Karen",
+            "password": "fg204v213"
+        },
+        {
+            "userID": 4,
+            "email": "rene.regeay@polito.it",
+            "name": "Rene",
+            "password": "historia"
+        },
+        {
+            "userID": 5,
+            "email": "beatrice.golden@polito.it",
+            "name": "Beatrice",
+            "password": "seagulls"
+        },
+        {
+            "userID": 6,
+            "email": "arthur.pendragon@polito.it",
+            "name": "Arthur",
+            "password": "holygrail"
+        }
+    ],
+
+    "films": [
+        {
+            "filmID": 1,
+            "title": "Your Name",
+            "owner": 1,
+            "private": true,
+            "watchdate": "2021-10-03",
+            "rating": 9,
+            "favorite": true
+        },
+        {
+            "filmID": 2,
+            "title": "Heaven's Feel",
+            "owner": 2,
+            "private": false
+        },
+        {
+            "filmID": 3,
+            "title": "You Can (Not) Redo",
+            "owner": 1,
+            "private": false
+        },
+        {
+            "filmID": 4,
+            "title": "Weathering With You",
+            "owner": 1,
+            "private": true
+        },
+        {
+            "filmID": 8,
+            "title": "Nausicaa",
+            "owner": 5,
+            "private": true,
+            "watchdate": "2020-03-15",
+            "rating": 9,
+            "favorite": false
+        }
+    ],
+
+    "reviews": [
+        {
+            "filmID": 2,
+            "userID": 5,
+            "completed": true,
+            "reviewDate": "2022-03-04",
+            "rating": 10,
+            "review": "This film is a perfect conclusion for the trilogy."
+        }, 
+        {
+            "filmID": 3,
+            "userID": 1,
+            "completed": true,
+            "rating": 9,
+            "reviewDate": "2022-01-23",
+            "review": "I appreciated the plot twists, but I did not understand so much the ending. I am eagerly waiting for the sequel."
+        },
+        {
+            "filmID": 4,
+            "userID": 1,
+            "completed": false
+        },
+        {
+            "filmID": 4,
+            "userID": 1,
+            "completed": false
+        },
+        {
+            "filmID": 2,
+            "userID": 1,
+            "completed": true,
+            "rating": 8,
+            "reviewDate": "2022-10-11",
+            "review": "I could not stop watching until the very end. However, you must watch the prequels before this film to really understand it."
+        }
+    ]
+}
