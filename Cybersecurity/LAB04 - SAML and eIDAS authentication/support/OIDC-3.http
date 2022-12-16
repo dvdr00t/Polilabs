@@ -1,0 +1,34 @@
+GET https://accounts.google.com/signin/oauth/consent?authuser=0&part=AJi8hAO5AzSQAMghvGHzDOPZ2Cxnx0ZhM-PeeZyyAZn2ARzcy9Q9DM0oCjyy83qmMc6BF_lwGBJoqVAZQPifmf-8ftukDhLYjVxmudSHXxvhvi2ZeSOj1KbQcWU_cR3SreN58je2kT-1RgIFXxks1saMF-I_GByNpsGe0BL2YDqHuIKtHT3z21E-CIrXEc-Y_NJHvqgjyPFdy3NC2mbeWjAqSnncW97ujZwafsKAndKcOQnpxdcsjOLjhzdslZYXWyNakDiadvOcDbO9Kc11T4o5qbdkwrWrdmo7V1R3wJSG0qJMBcWtx0QcHBNGCunbZuRmfB8r50pMoP5mgn3T7qfYsg4bq0apXOAkD4knooJkQwTh364-RJVQ5SuxIoP7dNeCLBxl9-FM00ADzpQxEhM6Zhi5OMFsL-cseWVPvGW28iXB1XeGCl3G4DztYt1fue_g0ZGkZVdT&as=S-687355286%3A1605998084777679&rapt=AEjHL4OzXOEuCxFUVwkCNV3OwU860tHUeJ2F21dYpLDdnHjL05a7zlcIp4xs8WlKO3JmIQBg5eUFXL3YX-dNcgy19AVWPcCybQ# HTTP/1.1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+X-Chrome-ID-Consistency-Request: version=1,client_id=77185425430.apps.googleusercontent.com,device_id=3d5e4997-b3f0-4474-95c7-877fa46cc528,signin_mode=all_accounts,signout_mode=show_confirmation
+X-Client-Data: CI+2yQEIpLbJAQipncoBCOu4ygEIrMfKAQj2x8oBCNzVygEIjpnLAQiYmssBGIvBygEYmMHKAQ==
+Sec-Fetch-Site: cross-site
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Dest: document
+Referer: https://accounts.google.it/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,it;q=0.7
+Cookie: CONSENT=YES+IT.it+20150628-20-0; ACCOUNT_CHOOSER=AFx_qI7Mb-BVFe_WPiPWMm_LRUt7mWSo9x-beloSGuJSr1Ral8_x0Ej3V5evWcAfYYNT9CVbBlgLjvxB73sixluWikixAtgVy6KR2-dNVCWwqzW2JYHuFyonTB2dXPYICD-2FBQYCfYVdrWUDqjX6Hx0fwhwWzp8PFgqHoVWQ7iyKjtCikr7cYDSrWLWoMkkhux_JMyMHBg5ltBWUb44ErkOHHwSvgY0vdUxQdSiu2aO5SkyKBro8_j1ChD-AzM-Xp2s99r8HbSdXYzwi3Wit0e0K3tSfXDJOxWIwrKytUTdy5W2X6oGW-n-bLi6X_3eDq1QsmxXgnz2Xlqqd3_JmYfU1zRb2cRiybyvmCe41deyLFYbe7GeIKnTY-QAuSEBdLKhJdfih2We; LSOLH=AH+1Ng3CMuZqSc+lAiYf6jXj8CnmqU/u7jwXRKOnFJp2X02udlrl88SPKYnAKay9UdiFRwWHzLJR; 1P_JAR=2020-11-21-22; ANID=OPT_OUT; SID=3wfy_uWv-z0EmboKMKATMx0KgGyfhZsNHzA-ERBF7nyptxerByM6Nomcl327iEFYeGPRhw.; __Secure-3PSID=3wfy_uWv-z0EmboKMKATMx0KgGyfhZsNHzA-ERBF7nyptxermJ2gMuTHdBuJaWgZdGI2NQ.; HSID=AKMSjp4xaB5N5e9QP; SSID=AkhQnBRDvSUVjp_W3; APISID=6EXoXEmhD_GXkZxI/A6or3ipRN7XS3CaVY; SAPISID=nCPyl9GM9ye4PqJg/AeGvcH4OO9G-_i29B; __Secure-3PAPISID=nCPyl9GM9ye4PqJg/AeGvcH4OO9G-_i29B; NID=204=ltb2OuQpuYG97nPZ2Y80OerVHR6kcpkRt2AemFF1SvQdVA_K_xqK2sGQ2Imb7s4qOMnyik0cWJGJdip5hE8Fk42pRR5DI3x9HUarSiGnkGYKp8tfGlnARfRpvm5kCZhhMc7aLK74VoNyITtYWyvrO0_DqlIkYs5NWGH8SEEH6JDtiX49Om6PVOmlNUzmTHVKsYn8lyXtKRz9AW8; user_id=113896857263189094143; __Host-GAPS=1:6Y5zHFUaXOG7IU6sYft7fQ7uBioxyxjOyXGu_gTlbzwWHT6qeBjavtdB3i8Q81na7RRenpBfgiU1iGzD4ZzTqAQAGC-8iUSPS6TaZMeY3vWBjPKmfkrtrkygEG2D0t1AB3HuWosrElICJg:_lhI1nAgwJ2GaEIK; LSID=s.IT|s.youtube:3wfy_lnhIu3fEStWDG9LVr022wblZyt9KmaGDTaUcoJvK1UPzTf5-Rn7OR89MrcyeBNuDQ.; __Host-3PLSID=s.IT|s.youtube:3wfy_lnhIu3fEStWDG9LVr022wblZyt9KmaGDTaUcoJvK1UPp9BjpWiLANyqLKR1a7Myqw.; SIDCC=AJi4QfHV2vQzj0p0yY1RnbMPVZ02WuPpbXhv5NAFjTanWoWLNkMOB-2r05eYZ3w9MmQOQmI6Sw; __Secure-3PSIDCC=AJi4QfHp3Q2S9-961pmzRSI3ljdhiRN1ynJIn_2CqeZC-P2_HcoRnlBef03dR5DfOAvchdEv
+
+HTTP/1.1 302
+status: 302
+content-type: text/html; charset=UTF-8
+x-frame-options: DENY
+cache-control: no-cache, no-store, max-age=0, must-revalidate
+pragma: no-cache
+expires: Mon, 01 Jan 1990 00:00:00 GMT
+date: Sat, 20 Nov 2021 22:35:04 GMT
+location: http://localhost:8080/oauth2/callback/google?state=nORfJ5TjhQjKvPoA2iAwOCjrfly4HdrS5SSPPyr_EtM%3D&code=4%2F0AY0e-g5mTJUdRlajL-hQH1PF9abiLRF0brpgnZrY3mbHJhBWJgPeXNon97tkqmGfNleu2g&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcontacts.readonly+openid&authuser=0&prompt=consent
+strict-transport-security: max-age=31536000; includeSubDomains
+content-security-policy: script-src 'report-sample' 'nonce-cfJ6hHxZAj7tFtwbwtLMGQ' 'unsafe-inline' 'unsafe-eval';object-src 'none';base-uri 'self';report-uri /cspreport
+content-encoding: gzip
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+content-length: 404
+server: GSE
+set-cookie: __Host-GAPS=1:8V0xUD_4MAoCXvrGfcaoBYAfSASc-wg2sspFjgCssmX6yTidblch_fdFBSgN3BLhJNJI7MPJ5mmlEdS9iM6Gul64E_QS43OIRnp5j0M2fGgiKT_UbteLgsmFEt5iOswkrPB8DRC_KUoXAQ:_X4jeVT5m9ZK8qAR;Path=/;Expires=Mon, 21-Nov-2022 22:35:04 GMT;Secure;HttpOnly;Priority=HIGH
+set-cookie: SIDCC=AJi4QfF3Rgd4GeYBE5Df1w95W6DR4ajlmBbHK7lE_6py9g18_uyRx67qtpWAOfxR8p4-cJRSiQ; expires=Sun, 21-Nov-2021 22:35:04 GMT; path=/; domain=.google.com; priority=high
+set-cookie: __Secure-3PSIDCC=AJi4QfEFMgycX_YLIf3TA7ApAYsBQ1FEyK5kkum2TOLp78W-rYEhOpm-dwOoH83o34oQ4wiU; expires=Sun, 21-Nov-2021 22:35:04 GMT; path=/; domain=.google.com; Secure; HttpOnly; priority=high; SameSite=none
+alt-svc: h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"

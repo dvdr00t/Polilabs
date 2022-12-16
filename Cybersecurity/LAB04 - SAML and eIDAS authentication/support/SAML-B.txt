@@ -1,0 +1,11 @@
+<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                    AssertionConsumerServiceURL="https://www.polito.it/Shibboleth.sso/SAML2/POST"
+                    Destination="https://idp.polito.it/idp/profile/SAML2/Redirect/SSO"
+                    ID="_1d7b8de86fcb46ca2ec8f318071637f4"
+                    IssueInstant="2021-11-17T17:08:50Z"
+                    ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                    Version="2.0"
+                    >
+    <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">https://www.polito.it/shibboleth-sp</saml:Issuer>
+    <samlp:NameIDPolicy AllowCreate="1" />
+</samlp:AuthnRequest>

@@ -1,0 +1,21 @@
+<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                    AssertionConsumerServiceURL="https://spididp.polito.it/Shibboleth.sso/SAML2/POST"
+                    AttributeConsumingServiceIndex="0"
+                    Destination="https://identity.sieltecloud.it/simplesaml/saml2/idp/SSO.php"
+                    ForceAuthn="1"
+                    ID="_425b4e256833aa087ce6c57c09d443fe"
+                    IssueInstant="2021-11-17T17:09:17Z"
+                    ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                    Version="2.0"
+                    >
+    <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+                 Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity"
+                 NameQualifier="https://spididp.polito.it/shibboleth"
+                 >https://spididp.polito.it/shibboleth</saml:Issuer>
+    <samlp:NameIDPolicy AllowCreate="1"
+                        Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+                        />
+    <samlp:RequestedAuthnContext Comparison="minimum">
+        <saml:AuthnContextClassRef xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">https://www.spid.gov.it/SpidL2</saml:AuthnContextClassRef>
+    </samlp:RequestedAuthnContext>
+</samlp:AuthnRequest>

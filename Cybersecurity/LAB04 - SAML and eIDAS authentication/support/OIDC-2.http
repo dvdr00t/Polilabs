@@ -1,0 +1,30 @@
+GET https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=758485046783-75l03cv59at80qnvfjhtppadp3bksgn0.apps.googleusercontent.com&scope=email%20profile%20https://www.googleapis.com/auth/contacts.readonly&state=nORfJ5TjhQjKvPoA2iAwOCjrfly4HdrS5SSPPyr_EtM%3D&redirect_uri=http://localhost:8080/oauth2/callback/google HTTP/1.1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Sec-Fetch-Site: cross-site
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+X-Chrome-ID-Consistency-Request: version=1,client_id=77185425430.apps.googleusercontent.com,device_id=3d5e4997-b3f0-4474-95c7-877fa46cc528,signin_mode=all_accounts,signout_mode=show_confirmation
+Referer: http://localhost:9090/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,it;q=0.7
+Cookie: CONSENT=YES+IT.it+20150628-20-0; ACCOUNT_CHOOSER=AFx_qI7Mb-BVFe_WPiPWMm_LRUt7mWSo9x-beloSGuJSr1Ral8_x0Ej3V5evWcAfYYNT9CVbBlgLjvxB73sixluWikixAtgVy6KR2-dNVCWwqzW2JYHuFyonTB2dXPYICD-2FBQYCfYVdrWUDqjX6Hx0fwhwWzp8PFgqHoVWQ7iyKjtCikr7cYDSrWLWoMkkhux_JMyMHBg5ltBWUb44ErkOHHwSvgY0vdUxQdSiu2aO5SkyKBro8_j1ChD-AzM-Xp2s99r8HbSdXYzwi3Wit0e0K3tSfXDJOxWIwrKytUTdy5W2X6oGW-n-bLi6X_3eDq1QsmxXgnz2Xlqqd3_JmYfU1zRb2cRiybyvmCe41deyLFYbe7GeIKnTY-QAuSEBdLKhJdfih2We; LSOLH=AH+1Ng3CMuZqSc+lAiYf6jXj8CnmqU/u7jwXRKOnFJp2X02udlrl88SPKYnAKay9UdiFRwWHzLJR; 1P_JAR=2020-11-21-22; NID=204=ckrvcqLGw2ay3GopvhwV5R28diwd3ngRPp_TzKGdHqmPm0pcbseLGX2Qhz8V6h5zjIZTFgQAzD4aYLq-C1utd_0SvpSXao08E7Gog7QbWw7ZQUCsYTIQ5-QS1MR3VznAolC4PDAZ46Kj9SDlZNGsAs8Io6KwjawpVwPVzQYfpBU; __Host-GAPS=1:WQpa3tls4Qchah8m72vYbmAokCL2XjxM4nLv3ou-sER_FKJFN3Bjdfgc9wPyQSheRTfNN9uJattATjM41Lrlr3Swls8_yustjBcBnf42srJRaOtdaRklBvIM54UsGNO8czmACljQJA_GZw:xvAlHMyCUo9LYxog; ANID=OPT_OUT
+
+HTTP/1.1 200
+status: 200
+content-type: text/html; charset=utf-8
+x-frame-options: DENY
+cache-control: no-cache, no-store, max-age=0, must-revalidate
+pragma: no-cache
+expires: Mon, 01 Jan 1990 00:00:00 GMT
+date: Sat, 20 Nov 2021 22:34:44 GMT
+content-encoding: gzip
+strict-transport-security: max-age=31536000; includeSubDomains
+content-security-policy: script-src 'report-sample' 'nonce-4OhWIXvAzOZt0pNBhjnPpw' 'unsafe-inline' 'unsafe-eval';object-src 'none';base-uri 'self';report-uri /cspreport
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+server: GSE
+set-cookie: __Host-GAPS=1:gZHsFIN3aIIaOGPB4TG0Yl7K0TDXAN_hbNLfrF_Q7Bn0a5wpHdZ0ypJnShI_yKq_m4BvELo9lJckoGafN5DxSYFrJV9hcNqz3GimF-nwqbw6EcaHXfsxyKuRNiJSJhkX-aUFUUpQ-TEZBQ:eePGWiON9nBa8jNM;Path=/;Expires=Mon, 21-Nov-2022 22:34:44 GMT;Secure;HttpOnly;Priority=HIGH
+alt-svc: h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
