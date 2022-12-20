@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "FilmSchema",
+    "title": "Film",
+    "description": "JSON schema for a film data structure",
+    "type": "object",
+    "additionalProperties": false,
+
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "description": "path to the JSON Schema to use for the validation of the JSON file describing the film"
+        },
+
+        "id": {
+            "type": "integer",
+            "description": "Unique identifier of the film"
+        },
+        "title": {
+            "type": "string",
+            "description": "textual title of the film"
+        },
+        "owner": {
+            "type": "integer",
+            "description": "unique identifier of the the film data structure owner"
+        },
+        "private": {
+            "type": "integer",
+            "description": "this property is set to true if the film if only its owner can get information about it, false if every user can get information about it",
+            "default": 1
+        },  
+        "watchDate": {
+            "type": "string",
+            "format": "date",
+            "description": "the date when the film was watched by the owner"
+        },
+        "rating": {
+            "type": "integer",
+            "description": "the rating the owner has given to the film",
+            "minimum": 1,
+            "maximum": 10
+        },
+        "favorite": {
+            "type": "integer",
+            "description": "this property is set to true if the film is among the favourite ones of the owner, false otherwise ",
+            "default": 0
+        }
+    },
+
+    "required": ["title"],
+    "dependencies": {
+        "watchDate": {
+            "properties": {
+                "private": { "const": 1 }
+            }
+        },
+        "rating": {
+            "properties": {
+                "private": { "const": 1 }
+            }
+        },
+        "favorite": {
+            "properties": {
+                "private": { "const": 1 }
+            }
+        }
+    }
+}

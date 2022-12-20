@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id" : "http://www.my-schema.com/ws_message_schema.json",
+  "title": "WebSocket Message",
+  "description": "JSON Schema for WebSocket Message",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "path to the JSON Schema to use for the validation of the JSON file describing the WebSocket Message"
+    },
+    "typeMessage": {
+      "type": "string",
+      "description": "type of the message (the available types are login, logout, or update)",
+      "enum": ["login", "logout", "update"]
+    },
+    "userId": {
+      "type": "integer",
+      "description": "identified of the user"
+    },
+    "userName": {
+      "type": "string",
+      "description": "name of the user"
+    },
+    "filmId": {
+      "type": "integer",
+      "description": "identified of the film"
+    },
+    "taskName": {
+      "type": "string",
+      "description": "title of the film"
+    }
+  },
+  "required": ["typeMessage", "userId"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "typeMessage": { "const": "login" } }
+      },
+      "then": {
+        "required": ["userName"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "typeMessage": { "const": "update" } }
+      },
+      "then": {
+        "required": ["userName", "filmId", "filmTitle"]
+      }
+    }
+  ]
+}
