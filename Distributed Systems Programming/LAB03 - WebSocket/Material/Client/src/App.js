@@ -12,7 +12,7 @@
 	import MessageContext from './messageCtx';
 	import API from './API';
 
-	const url = 'ws://localhost:50011'
+	const url = 'ws://localhost:50012'
 
 	function App() {
 
@@ -67,61 +67,6 @@
 	let socket = useRef(null);
 	useEffect(() => {
 
-		const messageReceived = (msg) => {
-			
-			/* parsing information */
-			const data = JSON.parse(msg.data.toString());
-
-			/* case of login */
-			if (data.typeMessage === 'login') {
-				setOnlineList(currentArray => {
-					const newArray = [...currentArray];
-					let found = false;
-					for (let i = 0; i < newArray.length; i++) {
-						if (newArray[i].userId === data.userId) {
-							found = true;
-						}
-					}
-
-					if (!found) newArray.push(data);
-					return newArray;
-				});
-			}
-
-			/* case of logout */
-			if (data.typeMessage === 'logout') {
-				setOnlineList(currentArray => {
-					const newArray = [...currentArray];
-					for (let i = 0; i < newArray.length; i++) {
-						if (newArray[i].userId === data.userId) {
-							newArray.splice(i, 1);
-						}
-					}
-
-					return newArray;
-				});
-			}
-
-			/* case of film active selection */
-			if (data.typeMessage === 'update') {
-				setOnlineList(currentArray => {
-					const newArray = [...currentArray];
-					let found = false;
-					for (let i = 0; i < newArray.length; i++) {
-						if (newArray[i].userId === data.userId) {
-							found = true;
-							newArray[i] = data;
-							return newArray;
-						}
-					}
-
-					if (!found) newArray.push(data);
-					return newArray;
-				});
-			}
-			
-		}
-
 		/* configuring web socket */
 		let ws = new WebSocket(url);
 		ws.onopen = () => {
@@ -138,9 +83,77 @@
 			}
 		};
 
+		/* callback function */
+		const messageReceived = (msg) => {
+			
+			/* parsing information */
+			const data = JSON.parse(msg.data.toString());
+
+			/* case of login */
+			if (data.typeMessage === 'login') {
+				setOnlineList(currentArray => {
+					
+					/* building new array */
+					const newArray = [...currentArray];
+					let found = false;
+
+					/* adding new user */
+					for (let i = 0; i < newArray.length; i++) {
+						if (newArray[i].userId === data.userId) {
+							found = true;
+						}
+					}
+					if (!found) newArray.push(data);
+
+					/* updating list */
+					return newArray
+				});
+			}
+
+			/* case of logout */
+			if (data.typeMessage === 'logout') {
+				setOnlineList(currentArray => {
+					
+					/* removing user */
+					const newArray = [...currentArray];
+					for (let i = 0; i < newArray.length; i++) {
+						if (newArray[i].userId === data.userId) {
+							newArray.splice(i, 1);
+						}
+					}
+
+					/* updating list */
+					return newArray;
+				});
+			}
+
+			/* case of film active selection */
+			if (data.typeMessage === 'update') {
+				setOnlineList(currentArray => {
+
+					/* building new array */
+					const newArray = [...currentArray];
+					let found = false;
+
+					/* searching target user */
+					for (let i = 0; i < newArray.length; i++) {
+						if (newArray[i].userId === data.userId) {
+							found = true;
+							newArray[i] = data;
+							return newArray;
+						}
+					}
+					if (!found) newArray.push(data);
+
+					/* updating list */
+					return newArray;
+				});
+			}
+		}
+
 		/* binding socket */
 		socket.current = ws;
-	});
+	}, []);
 
 
 	useEffect(() => {

@@ -69,8 +69,8 @@ router.put(
         param('filmId').exists().isNumeric()
     ],
     (request, response, next) => {
+        if (request.body.rating) request.body.private = 1;
         request.body.favorite = (request.body.favorite) ? 1 : 0;
-        request.body.private = (request.body.private) ? 1 : 0;
         request.schema = filmSchema;
         next();
     },
@@ -79,6 +79,7 @@ router.put(
     isLoggedIn,
     async (request, response) => {
         try {
+            console.log("HERE");
             const result = await filmController.editFilm(request.session.passport.user.id, request.params.filmId, request.body);
             return response.status(result.code).json(result.message);
         } catch (error) {

@@ -113,13 +113,12 @@ class UsersController {
 			var loginMessage;
 			const film = await this.usersService.getActiveFilmUser(userId);
 			if (film !== undefined) {
-				loginMessage = new WSMessage('login', userId, userName, film.id, film.title);
+				loginMessage = new WSMessage('login', parseInt(userId), userName, film.id, film.title);
 			} else {
-				loginMessage = new WSMessage('login', userId, userName, undefined, undefined);
+				loginMessage = new WSMessage('login', parseInt(userId), userName, undefined, undefined);
 			}
 
 			/* sending messages */
-			console.log(loginMessage);
 			WebSocket.sendAllClients(loginMessage);
 			WebSocket.saveMessage(userId, loginMessage);
 			

@@ -62,9 +62,9 @@ router.post(
 /* DELETE /api/users/authenticator */
 router.delete(
     '/authenticator',
-    // isLoggedIn,
+    isLoggedIn,
     async (request, response) => {
-        // await usersController.logoutUser(request.session.passport.user.id, request.session.passport.user.name);
+        await usersController.logoutUser(request.session.passport.user.id, request.session.passport.user.name);
         request.logOut(() => {
             response.status(200).json({});
         });
@@ -109,7 +109,6 @@ router.put(
     isLoggedIn,
     async (request, response) => {
         try {
-            console.log(request.session.passport.user);
             const result = await reviewsController.selectFilm(request.params.userId, request.session.passport.user.name, request.body);
             return response.status(result.code).json(result.message);
         } catch (error) {

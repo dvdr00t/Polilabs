@@ -552,7 +552,6 @@ function OnlineLayout(props) {
   const {handleErrors} = useContext(MessageContext);
   const { filterLabel } = useParams();
   const filterId = filterLabel || (location.pathname === "/" && 'filter-all');
-  var onlineList = props.onlineList;
 
   
 
@@ -566,7 +565,7 @@ function OnlineLayout(props) {
     <>
       <h1 className="pb-3">Online Users</h1>
                     <div className="user">
-                        <OnlineList  usersList={onlineList}/>
+                        <OnlineList  usersList={props.onlineList}/>
                    </div>  
     </>
   )

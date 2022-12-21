@@ -4,7 +4,7 @@ module.exports = Object.freeze({
     IMAGES_PATH: "uploadedImages",
     PROTO_PATH: "proto/conversion.proto",
     REMOTE_URL: "localhost:50051",
-    WEBSOCKET_PORT: 50011,
+    WEBSOCKET_PORT: 50012,
     MAX_CHUNK_SIZE: 1024, // 1 MB
 
     /* --- GOOD THINGS --- */

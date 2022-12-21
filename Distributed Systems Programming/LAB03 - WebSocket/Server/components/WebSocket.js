@@ -23,7 +23,7 @@ console.log(`[+] WebSocket server listening on localhost:${constants.WEBSOCKET_P
 
 /* configuring web socket */
 var loginMessagesMap = new Map();
-wss.on('connection', (ws) => {
+wss.on('connection', ws => {
 
     /* on a new connection, inform the newly connected client about all the users who are currently logged in the service */
     loginMessagesMap.forEach(function each(message) {

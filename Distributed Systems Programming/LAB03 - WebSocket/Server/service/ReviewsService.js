@@ -5,21 +5,21 @@
  *  Teacher: Riccardo Sisto 
  *  Date: 2022-11-24
  * ----------------------------------------------------------------------------
- * @file InvitationsService.js 
+ * @file ReviewsService.js 
  * @author Davide Arcolini
  * ----------------------------------------------------------------------------
- * InvitationsService.js collects all the queries that are useful to the
+ * ReviewsService.js collects all the queries that are useful to the
  * controller in order to implement the logic. It will contact the DAO class,
  * passing the completed query and returning the result to the controller.
  * ----------------------------------------------------------------------------
 */
 'use strict';
 
-class InvitationsService {
+class ReviewsService {
 
 
 	/**
-     * Constructor of the class FilmService
+     * Constructor of the class ReviewsService
      * @param {Object} dao
     */
 	constructor (dao) {
@@ -233,9 +233,10 @@ class InvitationsService {
 					filmId
 				]
 			);
-			await this.dao.run("COMMIT");
+			await this.dao.run("COMMIT TRANSACTION");
 
 		} catch (error) {
+			console.log("[+] Initiating rollback operation...");
 			await this.dao.run("ROLLBACK");
 			throw error;
 		}
@@ -244,4 +245,4 @@ class InvitationsService {
 
 }
 
-module.exports = InvitationsService;
+module.exports = ReviewsService;

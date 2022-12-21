@@ -194,7 +194,7 @@ async function deleteFilm(film) {
  * This function deletes an issued review.
  */
  async function deleteReview(review) {
-  const response = await fetch(SERVER_URL + "films/public/" + review.filmId + "/reviews/" + review.reviewerId, {
+  const response = await fetch(SERVER_URL + "films/" + review.filmId + "/reviews/" + review.reviewerId, {
     method: 'DELETE',
     credentials: 'include'
   });

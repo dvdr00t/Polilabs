@@ -64,7 +64,8 @@ class ReviewsController {
 			var next = Number(pageNo) + 1;
 
 			/* retrieving reviews in the selected pagination schema */
-			let reviews = await this.reviewsService.getReviews(filmId)
+			let reviews = await this.reviewsService.getReviews(filmId);
+			console.log(reviews);
 
 			/* crafting return values */
 			if (pageNo > pageTot) {
@@ -260,16 +261,20 @@ class ReviewsController {
 
 			/* retrieving the film and checking */
 			const film = await this.filmService.getFilm(filmObject.id);
+			console.log(film);
 			if (film === undefined) {
 				return constants.ERROR_404;
 			} 
 
+			/* updating status in the DB */
 			await this.reviewsService.selectFilm(userId, film.id);
 			
 			/* updating status through websocket */
-			const updateMessage = new WSMessage('update', userId, username, film.id, film.title);
+			const updateMessage = new WSMessage('update', parseInt(userId), username, film.id, film.title);
 			WebSocket.sendAllClients(updateMessage);
-			WebSocket.saveMessage(userId, new WSMessage('login', userId, username, film.id, film.title));
+			WebSocket.saveMessage(userId, new WSMessage('login', parseInt(userId), username, film.id, film.title));
+
+			return constants.MESSAGE_204;
 
 		} catch (error) {
 			/* some errors occurred */
