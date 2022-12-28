@@ -1,0 +1,57 @@
+/**
+ *				   REST API IMPLEMENTATION - LAB 01 
+ * ----------------------------------------------------------------------------
+ *  Course: Distributed System Programming
+ *  Teacher: Riccardo Sisto 
+ *  Date: 2022-11-24
+ * ----------------------------------------------------------------------------
+ * @file conversion.proto
+ * @author Davide Arcolini
+ * ----------------------------------------------------------------------------
+ * conversion.proto contains the proto definition of the services and messages
+ * implemented in order to communicate between the Server and the JavaServer to
+ * perform the conversion of the image.
+*/
+
+syntax = "proto3";
+
+/* namespace definition */
+package conversion;
+
+/* definition of the service */
+service Converter {
+    rpc convertFile (stream ConversionRequest) returns (stream ConversionReply);
+}
+
+
+/* definition of the request messages */
+message ConversionRequest {
+
+    /** 
+     * The protocol of communication between Server and JavaServer is composed of two messages: 
+     *  1- a first message is sent indicating the media type used in the conversion
+     *  2- a second message is sent containing the actual image
+    */
+    oneof content {
+        MetadataRequest metadata = 1;
+        bytes file = 2;
+    }
+}
+
+message MetadataRequest {
+    string src_mediaType = 1;
+    string dst_mediaType = 2;
+}
+
+/* definition of the response messages */
+message ConversionReply {
+    oneof content {
+        MetadataReply metadata = 1;
+        bytes file = 2;
+    }
+}
+
+message MetadataReply {
+    bool success = 1;
+    string error = 2;
+}

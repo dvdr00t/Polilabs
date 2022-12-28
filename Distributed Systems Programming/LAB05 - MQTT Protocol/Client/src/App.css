@@ -1,0 +1,110 @@
+/* 
+ * [2021/2022]
+ * 01UDFOV Applicazioni Web I / 01TXYOV Web Applications I
+ * BigLab 1
+ */
+
+/* Global */
+.vheight-100 {
+  min-height: 100vh;
+}
+
+/* Styles related to NavBar */
+.navbar-padding {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.below-nav {
+  padding-top: 5rem;
+}
+
+/* Icons */
+.icon-size {
+  font-size: 1.5rem;
+}
+
+/* Filters and projects */
+.list-group-item {
+  background-color: transparent;
+}
+
+.list-group-item.active {
+  background-color: #055c9d;
+  border-color: #055c9d;
+}
+
+.list-group-item-action:hover {
+  background-color: #0e86d4;
+  color: white;
+}
+
+small.watch-date {
+  text-align: right;
+}
+
+.projects-title {
+  margin-top: 2rem;
+}
+
+.notbold{
+  font-weight:normal;
+}​
+
+/* Class for important tasks */
+.favorite {
+  color: red;
+}
+
+.bi-favorite {
+  color: red;
+}
+
+
+/* Chaning color when mouse over to suggest that interaction is possible */
+
+.bi-star:hover {
+  fill: #0e86d4;
+  color: #055c9d;
+}
+
+.bi-star-fill:hover {
+  fill: #0e86d4;
+  color: #055c9d;
+}
+
+.bi-trash:hover {
+  fill: red;
+  color: red;
+}
+
+.bi-pencil-square:hover {
+  fill: green;
+  color: green;
+}
+
+/* Add task button */
+.fixed-right-bottom {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 1030;
+  margin: 0 1.5rem 1.5rem 0;
+  border-radius: 50%;
+}
+
+/* Adding padding to form */
+.form-padding {
+  padding: 2rem;
+}
+
+
+.keep-white-space {
+  white-space: pre-wrap;
+}
+
+.toast {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+}
