@@ -1,0 +1,42 @@
+Foremost version 1.5.7 by Jesse Kornblum, Kris Kendall, and Nick Mikus
+Audit File
+
+Foremost started at Tue Jan 10 12:47:21 2023
+Invocation: foremost -t all -i /dev/sda -o /home/caine/Desktop/recovered_foremost/ -v 
+Output directory: /home/caine/Desktop/recovered_foremost
+Configuration file: /etc/foremost.conf
+------------------------------------------------------------------
+File: /dev/sda
+Start: Tue Jan 10 12:47:21 2023
+Length: 5 GB (5368709120 bytes)
+ 
+Num	 Name (bs=512)	       Size	 File Offset	 Comment 
+
+0:	00031528.jpg 	     171 KB 	   16142336 	 
+1:	00037760.jpg 	       3 MB 	   19333120 	 
+2:	00044992.jpg 	     682 KB 	   23035904 	 
+3:	00075678.jpg 	      23 KB 	   38747457 	 
+4:	00075816.jpg 	     171 KB 	   38817792 	 
+5:	00082048.jpg 	       3 MB 	   42008576 	 
+6:	00031296.zip 	      39 KB 	   16023552 	 
+7:	00075584.zip 	      39 KB 	   38699008 	 
+8:	00075664.zip 	      52 KB 	   38739968 	 
+9:	00044288.exe 	     175 KB 	   22675456 	 07/09/2015 16:53:19
+10:	00044640.exe 	     175 KB 	   22855680 	 07/09/2015 16:53:19
+11:	00044453.png 	      70 KB 	   22760104 	  (256 x 256)
+12:	00044805.png 	      70 KB 	   22940328 	  (256 x 256)
+13:	00075664.png 	       6 KB 	   38740099 	  (181 x 256)
+14:	00036272.pdf 	     167 KB 	   18571264 	 
+15:	00080560.pdf 	     167 KB 	   41246720 	 
+Finish: Tue Jan 10 12:50:17 2023
+
+16 FILES EXTRACTED
+	
+jpg:= 6
+zip:= 3
+exe:= 2
+png:= 3
+pdf:= 2
+------------------------------------------------------------------
+
+Foremost finished at Tue Jan 10 12:50:17 2023
